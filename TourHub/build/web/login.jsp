@@ -100,7 +100,7 @@
                                                             Remember me
                                                         </label>
                                                     </div>
-                                                    <!-- Thông báo lỗi nếu có -->
+                                                    <!-- ThÃ´ng bÃ¡o lá»i náº¿u cÃ³ -->
                                                     <% if (request.getAttribute("error") != null) { %>
                                                         <p style="color:red;"><%= request.getAttribute("error") %></p>
                                                     <% } %>
