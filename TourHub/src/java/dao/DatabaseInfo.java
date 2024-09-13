@@ -10,3 +10,4 @@ public interface DatabaseInfo {
 
 //DESKTOP-EQJSVSA : Thien
 //ADMIN-PC\SQLEXPRESS : TNTD
+//justduck : Duc
