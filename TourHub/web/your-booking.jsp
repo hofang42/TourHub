@@ -22,13 +22,13 @@
                 <span class="text">TourHub</span>
             </a>
             <ul class="side-menu top">
-                <li class="active">
+                <li>
                     <a href="your-profile.jsp">
                         <i class='bx bxs-dashboard' ></i>
                         <span class="text">User Information</span>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="your-booking.jsp">
                         <i class='bx bxs-shopping-bag-alt' ></i>
                         <span class="text">My Booking</span>
@@ -99,11 +99,12 @@
             <!-- MAIN -->
             <main>
 
-
                 <div class="table-data">
                     <div class="order">
                         <div class="head">
-                            <h3>User Information</h3>
+                            <h3>Recent Booking</h3>
+                            <i class='bx bx-search' ></i>
+                            <i class='bx bx-filter' ></i>
                         </div>
                         <!-- Enter data here -->
                     </div>

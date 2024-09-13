@@ -1,6 +1,6 @@
 <%@ page import="model.User" %>
 <%
-    User user = (User) session.getAttribute("user");
+    User user = (User) session.getAttribute("currentUser");
     if (user == null) {
         response.sendRedirect("login.jsp");
     }
