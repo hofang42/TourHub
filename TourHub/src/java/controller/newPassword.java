@@ -1,10 +1,18 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+<<<<<<< HEAD
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+=======
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
  */
 package controller;
 
 import DAO.UserDB;
+<<<<<<< HEAD
+=======
+import jakarta.servlet.RequestDispatcher;
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,7 +29,11 @@ import java.sql.ResultSet;
 
 /**
  *
+<<<<<<< HEAD
  * @author duc
+=======
+ * @author NOMNOM
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
  */
 @WebServlet(name = "newPassword", urlPatterns = {"/newPassword"})
 public class newPassword extends HttpServlet {
@@ -29,6 +41,7 @@ public class newPassword extends HttpServlet {
     public static Connection conn = null;
     public static PreparedStatement ps = null;
     public static ResultSet rs = null;
+<<<<<<< HEAD
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,6 +52,9 @@ public class newPassword extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+=======
+    
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -47,7 +63,11 @@ public class newPassword extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
+<<<<<<< HEAD
             out.println("<title>Servlet newPassword</title>");
+=======
+            out.println("<title>Servlet newPassword</title>");            
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet newPassword at " + request.getContextPath() + "</h1>");
@@ -56,16 +76,42 @@ public class newPassword extends HttpServlet {
         }
     }
 
+<<<<<<< HEAD
+=======
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
+<<<<<<< HEAD
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+=======
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
         HttpSession session = request.getSession();
         String newPassword = request.getParameter("password");
         String confPassword = request.getParameter("confPassword");
@@ -104,8 +150,22 @@ public class newPassword extends HttpServlet {
         }
     }
 
+<<<<<<< HEAD
     @Override
     public String getServletInfo() {
         return "Short description";
     }
 }
+=======
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}
+>>>>>>> 753a9d95120426d16f52963cbad05d81abbd5651
