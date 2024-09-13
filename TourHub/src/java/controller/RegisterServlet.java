@@ -43,7 +43,7 @@ public class RegisterServlet extends HttpServlet {
         }
 
         // If no duplicates, register the user
-        boolean isRegistered = userDB.registerUser(new User(0, username, password, userStatus, role, firstName, lastName, email, phone, address, new Date()));
+        boolean isRegistered = userDB.registerUser(new User(0, username, password, firstName, lastName, phone, email, address, new Date(), userStatus, role));
 
         if (isRegistered) {
             response.sendRedirect("login.jsp");
@@ -107,7 +107,7 @@ public class RegisterServlet extends HttpServlet {
         }
 
         // Nếu không có lỗi, tiến hành đăng ký người dùng
-        boolean isRegistered = userDB.registerUser(new User(0, username, password, "unverified", "customer", firstName, lastName, email, phone, address, new Date()));
+        boolean isRegistered = userDB.registerUser(new User(0, username, password, firstName, lastName, phone, email, address, new Date(), "unverified", "customer"));
 
         if (isRegistered) {
             response.sendRedirect("login.jsp");

@@ -113,7 +113,6 @@
         
         <section class="section">
             <!-- Input data here-->
-            
         </section>
 
         <%@include file="includes/footer.jsp" %>

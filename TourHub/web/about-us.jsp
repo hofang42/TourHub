@@ -51,6 +51,7 @@ file="includes/header.jsp" %>
         </div>
       </div>
     </div>
+<<<<<<< HEAD
   </div>
   <!-- Page-->
   <div class="page">
@@ -104,6 +105,40 @@ file="includes/header.jsp" %>
                     height="46"
                 /></a>
               </div>
+=======
+    <!-- Page-->
+    <div class="page"><a class="section section-banner text-center d-none d-xl-block" href="https://www.templatemonster.com/intense-multipurpose-html-template.html" style="background-image: url(assests/images/banner/background-04-1920x60.jpg); background-image: -webkit-image-set( url(assests/images/banner/background-04-1920x60.jpg) 1x, url(assests/images/banner/background-04-3840x120.jpg) 2x )"><img src="assests/images/banner/foreground-04-1600x60.png" srcset="assests/images/banner/foreground-04-1600x60.png 1x, assests/images/banner/foreground-04-3200x120.png 2x" alt="" width="1600" height="310"></a>
+        <!-- Page Header-->
+        <header class="section page-header breadcrumbs-custom-wrap bg-gradient bg-secondary-2 novi-background bg-cover">
+            <!-- RD Navbar-->
+            <div class="rd-navbar-wrap rd-navbar-default">
+                <nav class="rd-navbar" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-fullwidth" data-xl-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-fixed" data-xl-device-layout="rd-navbar-static" data-md-stick-up-offset="2px" data-lg-stick-up-offset="2px" data-stick-up="true" data-sm-stick-up="true" data-md-stick-up="true" data-lg-stick-up="true" data-xl-stick-up="true">
+                    <div class="rd-navbar-inner"> 
+                        <!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel">
+                            <!-- RD Navbar Toggle-->
+                            <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
+                            <!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img class="logo-default" src="assests/images/logo-default-208x46.png" alt="" width="208" height="46"/><img class="logo-inverse" src="assests/images/logo-inverse-208x46.png" alt="" width="208" height="46"/></a></div>
+                        </div>
+                        <div class="rd-navbar-aside-right">
+                            <div class="rd-navbar-nav-wrap">
+                                <!-- RD Navbar Nav-->
+                                <ul class="rd-navbar-nav">
+                                    <li><a href="index.jsp">Home</a>
+                                    </li>
+                                    <li class="active"><a href="about-us.jsp">About Us</a>
+                                    </li>
+                                    <li><a href="contacts.jsp">Contacts</a>
+                                    </li>
+                                    <li><a href="typography.jsp">Typography</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+>>>>>>> c2da947e75f0de5ac53119ce86f925e4db80e176
             </div>
             <div class="rd-navbar-aside-right">
               <div class="rd-navbar-nav-wrap">
@@ -955,6 +990,19 @@ file="includes/header.jsp" %>
       </div>
     </section>
 
+<<<<<<< HEAD
     <%@include file="includes/footer.jsp" %>
   </div>
 </body>
+=======
+        <!-- CTA Gradient-->
+        <section class="section section-xs text-center bg-gray-700 novi-background bg-cover">
+            <div class="container container-wide">
+                <div class="box-cta-thin">
+                    <p class="big"><strong>The most affordable prices!  </strong>&nbsp;<span>Choose your favorite destination!</span>&nbsp;<a class="link-bold" href="#">Order a tour! </a></p>
+                </div>
+            </div>
+        </section>
+        <a class="section section-banner" href="https://www.templatemonster.com/intense-multipurpose-html-template.html" style="background-image: url(assests/images/banner/background-03-1920x310.jpg); background-image: -webkit-image-set( url(assests/images/banner/background-03-1920x310.jpg) 1x, url(assests/images/banner/background-03-3840x620.jpg) 2x )"><img src="assests/images/banner/foreground-03-1600x310.png" srcset="assests/images/banner/foreground-03-1600x310.png 1x, assests/images/banner/foreground-03-3200x620.png 2x" alt="" width="1600" height="310"></a>
+<%@include file="includes/footer.jsp" %>
+>>>>>>> c2da947e75f0de5ac53119ce86f925e4db80e176
