@@ -37,17 +37,8 @@ public class User {
         this.phone = phone;
         this.address = address;
     }
-
-    public User(String username, String password, String firstName, String lastName, String email, String phone, String address, Date createdAt) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.createdAt = createdAt;
-    }
+    
+    
 
     public int getUserId() {
         return userId;

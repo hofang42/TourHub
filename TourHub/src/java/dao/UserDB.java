@@ -173,13 +173,14 @@ public class UserDB implements DatabaseInfo {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("userStatus"), // Fetch userStatus
-                        rs.getString("role"), // Fetch role
+                        rs.getString("role"),
                         rs.getString("firstName"),
                         rs.getString("lastName"),
-                        rs.getString("email"),
                         rs.getString("phone"),
+                        rs.getString("email"),
                         rs.getString("address"),
                         rs.getTimestamp("createdAt")
+                // Fetch role
                 );
             }
         } catch (SQLException e) {
@@ -238,5 +239,44 @@ public class UserDB implements DatabaseInfo {
             e.printStackTrace();
         }
         return false;
+    }
+
+    //Kiem tra email co trong database hay la khong
+    public boolean checkEmailExists(String email) {
+        boolean exists = false;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String query = "SELECT email FROM Users WHERE email = ?";
+        try {
+            conn = getConnect();
+            if (conn != null) {
+                ps = conn.prepareStatement(query);
+                ps.setString(1, email);
+                rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    exists = true;  // Email co trong database
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return exists;
     }
 }
