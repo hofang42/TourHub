@@ -20,6 +20,3 @@
 <script src="js/html5shiv.min.js"> </script>
         <![endif]--> 
     </head>
-
-
-

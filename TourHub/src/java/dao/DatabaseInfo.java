@@ -11,3 +11,4 @@ public interface DatabaseInfo {
 //DESKTOP-EQJSVSA : Thien
 //ADMIN-PC\SQLEXPRESS : TNTD
 //HOFANG42\\SQLHF: hofang
+//justduck : Duc
