@@ -3,6 +3,8 @@ package DAO;
 import java.sql.*;
 import model.User;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserDB implements DatabaseInfo {
 
@@ -116,4 +118,141 @@ public class UserDB implements DatabaseInfo {
         }
         return false;
     }
+    
+    //Kiem tra email co trong database hay la khong
+    public boolean checkEmailExists(String email) {
+        boolean exists = false;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String query = "SELECT email FROM [User] WHERE email = ?";
+        try {
+            conn = getConnect();
+            if (conn != null) {
+                ps = conn.prepareStatement(query);
+                ps.setString(1, email);
+                rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    exists = true;  // Email co trong database
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return exists;
+    }
+    
+//-------------------------------------------------
+    
+    //Lấy all user ra
+    public User getUsers(String username, String password) {
+        User user = null;
+        String query = "Select username, password, userStatus, role, "
+                + "firstName, lastName, email, phone, address, createdAt"
+                + "from [User] where username =? and password=? ";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                username = rs.getString(2);
+                password = rs.getString(3);
+                String userStatus = rs.getString(4);
+                String role = rs.getString(5);
+                String firstName = rs.getString(6);
+                String lastName = rs.getString(7);
+                String email = rs.getString(8);
+                String phone = rs.getString(9);
+                String address = rs.getString(10);
+                Date createdAt = rs.getDate(11);
+//                user = new User(id, username, password, userStatus, role, firstName, lastName, email, phone, address, createdAt);
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return user;
+    }
+
+    //Thêm user mới
+    public void insertUser(User user) {
+        String sql = "INSERT INTO [User] (username, password, role, email) VALUES (?, ?, ?, ?)";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(2, user.getUsername());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(4, user.getRole());
+            stmt.setString(5, user.getEmail());
+            stmt.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    //Change password
+    public boolean updatePassword(int userId, String newPassword) {
+        String query = "UPDATE [User] SET password=? WHERE UserId=?";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, newPassword);
+            stmt.setInt(2, userId);
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated == 0) {
+                throw new SQLException("Update failed, no rows affected.");
+            }
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false; // Password update failed
+        }
+    }
+
+    //Edit profile function
+    public boolean updateUser(User user) {
+        boolean result = false;
+        String sql = "UPDATE [User] SET "
+                + "firstName =?, lastName=?, email=?, phone=?, address=?, username=?"
+                + "from [User] WHERE userId=?";
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getFirstName());
+            stmt.setString(2, user.getLastName());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getPhone());
+            stmt.setString(5, user.getAddress());
+            stmt.setString(6, user.getUsername());
+            stmt.setInt(7, user.getUserId());
+
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                result = true;
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    
 }
