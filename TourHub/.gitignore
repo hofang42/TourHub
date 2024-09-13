@@ -1,4 +1,23 @@
+# Thư mục build chứa các tệp biên dịch và không cần thiết đưa vào Git
 build/
+
+# Thư mục nbproject chứa cấu hình của NetBeans
 nbproject/
-test/
-build.xml
+
+# Tệp nhị phân, log, và các tệp khác không cần thiết đưa vào Git
+*.log
+*.class
+*.jar
+
+# Thư mục và tệp hệ thống của IDE hoặc công cụ xây dựng
+*.swp
+*.swo
+
+# Các tệp cấu hình IDE hoặc công cụ xây dựng khác
+.idea/
+*.iml
+*.classpath
+*.project
+*.settings/
+*.tmp
+*.bak
