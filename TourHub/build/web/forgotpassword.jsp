@@ -74,19 +74,7 @@
     </head>
     <body>
         <div class="full-height">
-            <!-- Header -->
-            <header class="header">
-                <div class="container">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a class="navbar-brand" href="#">TourHub</a>
-                        <form class="login-form" action="login" method="post">
-                            <input type="text" class="form-control" name="username" placeholder="Username" required>
-                            <input type="password" class="form-control" name="password" placeholder="Password" required>
-                            <button type="submit" class="btn btn-primary btn-sm">Login</button>
-                        </form>
-                    </div>
-                </div>
-            </header>
+            
             
             <!-- Main Content -->
             <section class="content">
