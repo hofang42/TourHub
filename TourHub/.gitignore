@@ -1,5 +1,1 @@
-# Thư mục build chứa các tệp biên dịch và không cần thiết đưa vào Git
-build/
-
-# Thư mục nbproject chứa cấu hình của NetBeans
-nbproject/
+/site/build/
