@@ -1,16 +1,20 @@
 package model;
 
+import java.util.Date;
+
 public class User {
 
-    int userId;
-    String username, password, userStatus,
+    private int userId;
+    private String username, password, userStatus,
             role, firstName, lastName,
-            email, phone, address, createdAt;
+            email, phone, address;
+
+    private Date createdAt;
 
     public User() {
     }
 
-    public User(int userId, String username, String password, String userStatus, String role, String firstName, String lastName, String email, String phone, String address, String createdAt) {
+    public User(int userId, String username, String password, String userStatus, String role, String firstName, String lastName, String email, String phone, String address, Date createdAt) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -33,7 +37,17 @@ public class User {
         this.phone = phone;
         this.address = address;
     }
-    
+
+    public User(String username, String password, String firstName, String lastName, String email, String phone, String address, Date createdAt) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.createdAt = createdAt;
+    }
 
     public int getUserId() {
         return userId;
@@ -114,14 +128,19 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
-    
-    public String getCreatedAt() {
+
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "User [userId=" + userId + ", username=" + username + ", password=" + password
+                + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone
+                + ", email=" + email + ", address=" + address + ", createdAt=" + createdAt + "]";
+    }
 }

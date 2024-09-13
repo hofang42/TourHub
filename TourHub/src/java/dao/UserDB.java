@@ -7,6 +7,8 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
+import model.User;
+import java.util.Date;
 
 public class UserDB implements DatabaseInfo {
 
@@ -49,7 +51,7 @@ public class UserDB implements DatabaseInfo {
                 String email = rs.getString(8);
                 String phone = rs.getString(9);
                 String address = rs.getString(10);
-                String createdAt = rs.getString(11);
+                Date createdAt = rs.getDate(11);
                 user = new User(id, username, password, userStatus, role, firstName, lastName, email, phone, address, createdAt);
             }
 
@@ -111,11 +113,63 @@ public class UserDB implements DatabaseInfo {
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 result = true;
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public boolean registerUser(User user) {
+        String sql = "INSERT INTO Users(username, password, firstName, lastName, phone, email, address, createdAt, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getFirstName());
+            ps.setString(4, user.getLastName());
+            ps.setString(5, user.getPhone());
+            ps.setString(6, user.getEmail());
+            ps.setString(7, user.getAddress());
+            ps.setTimestamp(8, new Timestamp(new Date().getTime()));
+            ps.setBoolean(9, false);  // Set user as unverified
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void verifyUser(String email) {
+        String sql = "UPDATE [User] SET verified = ? WHERE email = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, true);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public User authenticate(String email, String password) {
+        String sql = "SELECT * FROM Users WHERE email = ? AND password = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getInt("userId"), rs.getString("username"),
+                        rs.getString("password"), rs.getString("userStatus"), rs.getString("role"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"), rs.getString("email"),
+                        rs.getString("phone"), rs.getString("address"),
+                        rs.getTimestamp("createdAt"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
