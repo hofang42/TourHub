@@ -11,6 +11,10 @@ CREATE TABLE [User] (
     email NVARCHAR(100),
     address NVARCHAR(200),
     createdAt DATETIME DEFAULT GETDATE(),
-	verified BIT DEFAULT 0,
+	userStatus NVARCHAR(50),
+	role NVARCHAR(50),
 );
+drop table [USER]
+
+
 

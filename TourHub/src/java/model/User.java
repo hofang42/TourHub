@@ -13,13 +13,15 @@ public class User {
     private String email;
     private String address;
     private Date createdAt;
+    private String userStatus;
+    private String role;
 
     // Default constructor
     public User() {
     }
 
     // Parameterized constructor
-    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, String address, Date createdAt) {
+    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, String address, Date createdAt, String userStatus, String role) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -29,6 +31,8 @@ public class User {
         this.email = email;
         this.address = address;
         this.createdAt = createdAt;
+        this.userStatus = userStatus;
+        this.role = role;
     }
 
     // Getters and setters
@@ -104,10 +108,27 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "User [userId=" + userId + ", username=" + username + ", password=" + password
                 + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone
-                + ", email=" + email + ", address=" + address + ", createdAt=" + createdAt + "]";
+                + ", email=" + email + ", address=" + address + ", createdAt=" + createdAt
+                + ", userStatus=" + userStatus + ", role=" + role + "]";
     }
 }

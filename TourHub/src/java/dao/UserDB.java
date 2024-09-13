@@ -22,7 +22,11 @@ public class UserDB implements DatabaseInfo {
     }
 
     public boolean registerUser(User user) {
-        String sql = "INSERT INTO [User](username, password, firstName, lastName, phone, email, address, createdAt, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if (isUsernameExists(user.getUsername()) || isEmailExists(user.getEmail())) {
+            return false; // Username or email already exists
+        }
+
+        String sql = "INSERT INTO [User] (username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -31,10 +35,12 @@ public class UserDB implements DatabaseInfo {
             ps.setString(5, user.getPhone());
             ps.setString(6, user.getEmail());
             ps.setString(7, user.getAddress());
-            ps.setTimestamp(8, new Timestamp(new Date().getTime()));
-            ps.setBoolean(9, false);  // Set user as unverified
-            int rows = ps.executeUpdate();
-            return rows > 0;
+            ps.setTimestamp(8, new java.sql.Timestamp(user.getCreatedAt().getTime()));
+            ps.setString(9, user.getUserStatus());
+            ps.setString(10, user.getRole());
+
+            ps.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -53,17 +59,29 @@ public class UserDB implements DatabaseInfo {
     }
 
     public User authenticate(String email, String password) {
-        String sql = "SELECT * FROM [User] WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM [User] WHERE email = ? AND (password = ? OR password = '')"; // Handle no password for Google users
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
-            ps.setString(2, password);
+            if (password != null) {
+                ps.setString(2, password);
+            } else {
+                ps.setString(2, ""); // Check for Google users (empty password)
+            }
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new User(rs.getInt("userId"), rs.getString("username"),
-                        rs.getString("password"), rs.getString("firstName"),
-                        rs.getString("lastName"), rs.getString("phone"),
-                        rs.getString("email"), rs.getString("address"),
-                        rs.getTimestamp("createdAt"));
+                return new User(
+                        rs.getInt("userId"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getTimestamp("createdAt"),
+                        rs.getString("userStatus"), // Fetch userStatus
+                        rs.getString("role") // Fetch role
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,4 +89,31 @@ public class UserDB implements DatabaseInfo {
         return null;
     }
 
+    public boolean isUsernameExists(String username) {
+        String sql = "SELECT COUNT(*) FROM [User] WHERE username = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true; // Username exists
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM [User] WHERE email = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true; // Email exists
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
