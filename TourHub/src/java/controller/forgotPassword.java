@@ -126,19 +126,19 @@ public class forgotPassword extends HttpServlet {
                     throw new RuntimeException("Error sending email", e);
                 }
 
-                dispatcher = request.getRequestDispatcher("EnterOtp.jsp");
+                dispatcher = request.getRequestDispatcher("enterotp.jsp");
                 request.setAttribute("message", "OTP is sent to your email id");
                 mySession.setAttribute("otp", otpvalue);
                 mySession.setAttribute("email", email);
                 dispatcher.forward(request, response);
             } else {
-                dispatcher = request.getRequestDispatcher("forgotPassword.jsp");
+                dispatcher = request.getRequestDispatcher("forgotpassword.jsp");
                 request.setAttribute("error", "Email is not registered");
                 dispatcher.forward(request, response);
             }
         } else {
 
-            dispatcher = request.getRequestDispatcher("forgotPassword.jsp");
+            dispatcher = request.getRequestDispatcher("forgotpassword.jsp");
             request.setAttribute("error", "Please enter a valid email address");
             dispatcher.forward(request, response);
         }
