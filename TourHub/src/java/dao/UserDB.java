@@ -118,7 +118,7 @@ public class UserDB implements DatabaseInfo {
         }
         return false;
     }
-    
+
     //Kiem tra email co trong database hay la khong
     public boolean checkEmailExists(String email) {
         boolean exists = false;
@@ -157,9 +157,18 @@ public class UserDB implements DatabaseInfo {
         }
         return exists;
     }
-    
+
+    public void updateUserStatusToVerified(String email) {
+        String sql = "UPDATE users SET userStatus = 'verified' WHERE email = ?";
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 //-------------------------------------------------
-    
     //Lấy all user ra
     public User getUsers(String username, String password) {
         User user = null;
@@ -253,6 +262,5 @@ public class UserDB implements DatabaseInfo {
         }
         return result;
     }
-    
-    
+
 }

@@ -130,6 +130,7 @@ public class forgotPassword extends HttpServlet {
                 request.setAttribute("message", "OTP is sent to your email id");
                 mySession.setAttribute("otp", otpvalue);
                 mySession.setAttribute("email", email);
+                mySession.setAttribute("type", "forgotPassword");  // Set type for password reset
                 dispatcher.forward(request, response);
             } else {
                 dispatcher = request.getRequestDispatcher("forgotpassword.jsp");
