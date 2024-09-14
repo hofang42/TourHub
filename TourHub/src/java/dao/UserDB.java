@@ -1,5 +1,8 @@
 package DAO;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.sql.*;
 import model.User;
 import java.util.Date;
@@ -252,6 +255,27 @@ public class UserDB implements DatabaseInfo {
             e.printStackTrace();
         }
         return result;
+    }
+    
+    public User getUserFromSession(HttpSession session, HttpServletRequest request) {
+        String userName = (String) session.getAttribute("user");
+        String pass = (String) session.getAttribute("pass");
+
+        if (userName == null || pass == null) {
+            // Check cookies only if session attributes are not present
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("user")) userName = cookie.getValue();
+                    if (cookie.getName().equals("pass")) pass = cookie.getValue();
+                }
+            }
+        }
+
+        if (userName != null && pass != null) {
+            return getUsers(userName, pass); // Assuming this method fetches the User object
+        }
+        return null; // or throw an exception if user not found
     }
     
     
