@@ -109,13 +109,13 @@ public class forgotPassword extends HttpServlet {
                 Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("trongducdoan25@gmail.com", "fymw ilhs vtuj sczy");
+                        return new PasswordAuthentication("tourhubforlife@gmail.com", "fymw ilhs vtuj sczy");
                     }
                 });
 
                 try {
                     MimeMessage message = new MimeMessage(session);
-                    message.setFrom(new InternetAddress("trongducdoan25@gmail.com"));
+                    message.setFrom(new InternetAddress("tourhubforlife@gmail.com"));
                     message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                     message.setSubject("OTP for Password Reset");
                     message.setText("Your OTP is: " + otpvalue);

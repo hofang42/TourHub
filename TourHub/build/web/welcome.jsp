@@ -1,10 +1,4 @@
-<%@ page import="model.User" %>
-<%
-    User user = (User) session.getAttribute("currentUser");
-    if (user == null) {
-        response.sendRedirect("login.jsp");
-    }
-%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,8 +6,18 @@
     <title>Welcome</title>
 </head>
 <body>
-    <h1>Welcome, <%= user.getUsername() %>!</h1>
-    <p>Your email: <%= user.getEmail() %></p>
+
+    <jsp:useBean id="user" scope="session" class="model.User" />
+    <%
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+    %>
+    
+    <h1>Welcome, <jsp:getProperty name="user" property="username" />!</h1>
+    <p>Your email: <jsp:getProperty name="user" property="email" /></p>
     <a href="logout">Logout</a>
+
 </body>
 </html>
