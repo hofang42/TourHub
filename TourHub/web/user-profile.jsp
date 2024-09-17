@@ -1,8 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="model.User"%>
+<%@ page import="model.User" %>
 <%@ page import="DAO.UserDB"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<jsp:useBean id="user" class="DAO.UserDB" scope="session" />
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -12,7 +13,8 @@
         <!-- Boxicons -->
         <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
         <!-- My CSS -->
-        <link rel="stylesheet" href="assests/css/style_profile.css">
+        <link rel="stylesheet" href="assests/css/style_profile.css">       
+        <link href="assests/css/customer.css" rel="stylesheet" />
 
         <title>User Profile</title>
     </head>
@@ -110,80 +112,57 @@
                             <h3>User Information</h3>
                         </div>
                         <!-- Enter data here -->
-                        <!-- ========================= Main ==================== -->
-                        <div class="main-admin">
-                            <div class="information">
-                                <jsp:useBean id="userDB" class="DAO.UserDB" scope="session" />
-                                <% 
-                                    // Gọi phương thức getUserFromSession từ UserDB
-                                    User user = userDB.getUserFromSession(session, request);
-                    
-                                    if (user == null) {
-                                        response.sendRedirect("index.jsp");
-                                    } else {
-                                        request.setAttribute("user", user);
-                                    }
-                                %>
 
-                                <c:choose>
-                                    <c:when test="${user == null}">
-                                        <c:redirect url="index.jsp" />
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="profile-card">
-                                            <div>
-                                                <div class="profile-info">
-                                                    <label>Username:</label>
-                                                    <p><span>${user.username}</span></p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>Password:</label>
-                                                    <p>
-                                                        <span id="passwordDisplay">********</span>
-                                                        <button onclick="togglePassword()">Show</button>
-                                                    </p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>Email:</label>
-                                                    <p><span>${user.email}</span></p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>FullName:</label>
-                                                    <p><span>${user.fName} ${user.lName}</span></p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>Address:</label>
-                                                    <p><span>${user.address}</span></p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>Phone Number:</label>
-                                                    <p><span>${user.phone}</span></p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>Sex:</label>
-                                                    <p><span>${user.sex}</span></p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>Date of Birth:</label>
-                                                    <p><span>${user.dob}</span></p>
-                                                </div>
-                                                <div class="profile-info">
-                                                    <label>Money left:</label>
-                                                    <p><span>${user.money} $</span></p>
-                                                </div>
-                                            </div>
-                                            <div class="change-info-button">
-                                                <form action="updateinfo.jsp">
-                                                    <button type="submit">Change Information</button>
-                                                </form>
-                                            </div>
+                        <c:choose>
+                            <c:when test="${user == null}">
+                                <c:redirect url="index.jsp" />
+                            </c:when>
+                            <c:otherwise>
+                                <div class="profile-card">
+                                    <div>
+                                        <div class="profile-info">
+                                            <label>Username:</label>
+                                            <p><span>${currentUser.username}</span></p>
                                         </div>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </div>
+                                        <div class="profile-info">
+                                            <label>Password:</label>
+                                            <p>
+                                                <span id="passwordDisplay">********</span>
+                                                <button onclick="togglePassword()">Show</button>
+                                            </p>
+                                            <form class="changeform" action="user-updateinfo.jsp" method="get">
+                                                <button type="submit" name="buttonChange" value="pass">Change password</button>
+                                            </form>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Email:</label>
+                                            <p><span>${currentUser.email}</span></p>
+                                            <form class="changeform" action="user-updateinfo.jsp" method="get">
+                                                <button type="submit" name="buttonChange" value="email">Change email</button>
+                                            </form>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Full Name:</label>
+                                            <p><span>${currentUser.firstName} ${currentUser.lastName}</span></p>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Phone Number:</label>
+                                            <p><span>${currentUser.phone}</span></p>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Address:</label>
+                                            <p><span>${currentUser.address}</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="change-info-button">
+                                        <form action="user-updateinfo.jsp">
+                                            <button type="submit">Change Information</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
-                </div>
                 </div>
             </main>
             <!-- MAIN -->
@@ -193,31 +172,31 @@
 
         <script src="assests/js/script_profile.js"></script>
         <script>
-                                                            function togglePassword() {
-                                                                var passwordField = document.getElementById('passwordDisplay');
-                                                                var button = event.target;
+                                                    function togglePassword() {
+                                                        var passwordField = document.getElementById('passwordDisplay');
+                                                        var button = event.target;
 
-                                                                if (passwordField.innerHTML === "********") {
-                                                                    passwordField.innerHTML = "${user.password}";
-                                                                    button.textContent = "Hide";
-                                                                } else {
-                                                                    passwordField.innerHTML = "********";
-                                                                    button.textContent = "Show";
-                                                                }
-                                                            }
+                                                        if (passwordField.innerHTML === "********") {
+                                                            passwordField.innerHTML = "${currentUser.password}";
+                                                            button.textContent = "Hide";
+                                                        } else {
+                                                            passwordField.innerHTML = "********";
+                                                            button.textContent = "Show";
+                                                        }
+                                                    }
 
-                                                            document.addEventListener('DOMContentLoaded', function () {
-                                                                const burger = document.querySelector('.burger');
-                                                                const navigation = document.querySelector('.navigation-admin');
-                                                                const main = document.querySelector('.main-admin');
-                                                                const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        const burger = document.querySelector('.burger');
+                                                        const navigation = document.querySelector('.navigation-admin');
+                                                        const main = document.querySelector('.main-admin');
+                                                        const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                                                burger.addEventListener('click', function () {
-                                                                    navigation.classList.toggle('active');
-                                                                    main.classList.toggle('active');
-                                                                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                                                });
-                                                            });
+                                                        burger.addEventListener('click', function () {
+                                                            navigation.classList.toggle('active');
+                                                            main.classList.toggle('active');
+                                                            profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                                        });
+                                                    });
         </script>
     </body>
 </html>

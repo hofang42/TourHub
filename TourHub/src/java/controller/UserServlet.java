@@ -66,29 +66,34 @@ public class UserServlet extends HttpServlet {
     
     private void handleUpdate(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        // Lấy thông tin từ form
-//        int userID = Integer.parseInt(request.getParameter("userID")); // Parse to int
-//        String username = request.getParameter("username");
-//        String email = request.getParameter("email");
-//        String firstName = request.getParameter("firstName");
-//        String lastName = request.getParameter("lastName");
-//        String address = request.getParameter("address");
-//        String phone = request.getParameter("phone");
-//
-//        User user = new User(userID, username, firstName, lastName, email, phone, address);
-//
-//        UserDB userDB = new UserDB();
-//        boolean isUpdated = userDB.updateUser(user);
-//
-//        if (isUpdated) {
-//            HttpSession session = request.getSession();
-//            session.setAttribute("user", username);
-//            session.setAttribute("userDetails", user);
-//            response.sendRedirect("customer.jsp");
-//        } else {
-//            // Xử lý nếu cập nhật thất bại
-//            response.sendRedirect("updateinfo.jsp?error=UpdateFailed");
-//        }
+        // Lấy thông tin từ form
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String email = request.getParameter("email");
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String address = request.getParameter("address");
+        String phone = request.getParameter("phone");
+
+        // Tạo một đối tượng User
+        User user = new User(userId, username, password, firstName, lastName, phone,  email, address);
+
+        // Cập nhật thông tin người dùng trong cơ sở dữ liệu
+        UserDB userDB = new UserDB();
+        boolean isUpdated = userDB.updateUser(user);
+
+        if (isUpdated) {
+            // Nếu cập nhật thành công, lưu thông tin mới vào session
+            HttpSession session = request.getSession();
+            session.setAttribute("currentUser", user);
+
+            // Chuyển hướng trở lại trang thông tin người dùng
+            response.sendRedirect("user-profile.jsp");
+        } else {
+            // Xử lý nếu cập nhật thất bại
+            response.sendRedirect("updateinfo.jsp?error=UpdateFailed");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

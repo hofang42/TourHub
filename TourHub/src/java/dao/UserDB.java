@@ -164,22 +164,21 @@ public class UserDB implements DatabaseInfo {
 //-------------------------------------------------
     
     //Lấy all user ra
-    public User getUsers(String username, String password) {
+    public User getUsers(String username) {
         User user = null;
         String query = "Select username, password, userStatus, role, "
                 + "firstName, lastName, email, phone, address, createdAt"
-                + "from [User] where username =? and password=? ";
+                + "from [User] where username =?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
             stmt.setString(1, username);
-            stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 int id = rs.getInt(1);
                 username = rs.getString(2);
-                password = rs.getString(3);
+                String password = rs.getString(3);
                 String userStatus = rs.getString(4);
                 String role = rs.getString(5);
                 String firstName = rs.getString(6);
@@ -188,7 +187,7 @@ public class UserDB implements DatabaseInfo {
                 String phone = rs.getString(9);
                 String address = rs.getString(10);
                 Date createdAt = rs.getDate(11);
-//                user = new User(id, username, password, userStatus, role, firstName, lastName, email, phone, address, createdAt);
+               user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
             }
 
         } catch (Exception ex) {
@@ -258,24 +257,8 @@ public class UserDB implements DatabaseInfo {
     }
     
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
-        String userName = (String) session.getAttribute("user");
-        String pass = (String) session.getAttribute("pass");
-
-        if (userName == null || pass == null) {
-            // Check cookies only if session attributes are not present
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("user")) userName = cookie.getValue();
-                    if (cookie.getName().equals("pass")) pass = cookie.getValue();
-                }
-            }
-        }
-
-        if (userName != null && pass != null) {
-            return getUsers(userName, pass); // Assuming this method fetches the User object
-        }
-        return null; // or throw an exception if user not found
+        User user = (User) session.getAttribute("currentUser");
+        return user; // or throw an exception if user not found
     }
     
     
