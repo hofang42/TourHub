@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,16 +8,17 @@
 </head>
 <body>
 
-    <jsp:useBean id="user" scope="session" class="model.User" />
+
+    <jsp:useBean id="currentUser" class="model.User" scope="session" />
     <%
-        if (user == null) {
+        if (currentUser == null) {
             response.sendRedirect("login.jsp");
             return;
         }
     %>
     
-    <h1>Welcome, <jsp:getProperty name="user" property="username" />!</h1>
-    <p>Your email: <jsp:getProperty name="user" property="email" /></p>
+    <h1>Welcome, ${currentUser.username}!</h1>
+    <p>Your email:${currentUser.email}</p>
     <a href="logout">Logout</a>
 
 </body>

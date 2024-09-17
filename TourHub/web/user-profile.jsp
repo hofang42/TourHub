@@ -3,7 +3,7 @@
 <%@ page import="DAO.UserDB"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<jsp:useBean id="user" class="DAO.UserDB" scope="session" />
+<jsp:useBean id="currentUser" class="model.User" scope="session" />
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -23,7 +23,7 @@
 
         <!-- SIDEBAR -->
         <section id="sidebar">
-            <a href="#" class="brand">
+            <a href="index.jsp" class="brand">
                 <i class='bx bxs-smile'></i>
                 <span class="text">TourHub</span>
             </a>
@@ -67,7 +67,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="logout">
+                    <a href="logout" class="logout">
                         <i class='bx bxs-log-out-circle' ></i>
                         <span class="text">Logout</span>
                     </a>
@@ -94,11 +94,12 @@
                 <label for="switch-mode" class="switch-mode"></label>
                 <a href="#" class="notification">
                     <i class='bx bxs-bell' ></i>
-                    <span class="num">8</span>
+                    <!-- <span class="num">8</span> -->
                 </a>
-                <a href="#" class="profile">
-                    <img src="img/people.png">
-                </a>
+                <div class="image-container">
+                    <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
+                </div>
+
             </nav>
             <!-- NAVBAR -->
 
@@ -114,7 +115,7 @@
                         <!-- Enter data here -->
 
                         <c:choose>
-                            <c:when test="${user == null}">
+                            <c:when test="${currentUser == null}">
                                 <c:redirect url="index.jsp" />
                             </c:when>
                             <c:otherwise>
@@ -159,6 +160,7 @@
                                             <button type="submit">Change Information</button>
                                         </form>
                                     </div>
+
                                 </div>
                             </c:otherwise>
                         </c:choose>

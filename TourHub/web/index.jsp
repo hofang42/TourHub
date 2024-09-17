@@ -1,4 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="model.User" %>
+<%@ page import="DAO.UserDB"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<jsp:useBean id="currentUser" class="model.User" scope="session" />
 <%@include file="includes/header.jsp" %>
 <body>
     <!-- Page preloader-->
@@ -105,7 +110,27 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="#">Book a tour now</a></div>
+
+                        <c:choose>
+                            <c:when test="${currentUser == null}">
+                                <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="#">Book a tour now</a></div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="dropdown">
+                                    <button class="avatar-button" onclick="toggleDropdown()">
+                                        <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
+                                    </button>
+                                    <div id="dropdownContent" class="dropdown-content">
+                                        <a href="user-profile.jsp">Profile</a>
+                                        <a href="settings.jsp">Settings</a>
+                                        <a href="logout">Logout</a>
+                                    </div>
+                                </div>
+
+                            </c:otherwise>
+                        </c:choose>
+
+
                     </div>
                 </nav>
             </div>
