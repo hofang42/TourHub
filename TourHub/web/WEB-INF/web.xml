@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
+<<<<<<< HEAD
         <servlet-name>forgotPassword</servlet-name>
         <servlet-class>controller.forgotPassword</servlet-class>
     </servlet>
@@ -15,6 +16,14 @@
     <servlet-mapping>
         <servlet-name>newPassword</servlet-name>
         <url-pattern>/newPassword</url-pattern>
+=======
+        <servlet-name>ForgotPasswordControl</servlet-name>
+        <servlet-class>Control.ForgotPasswordControl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ForgotPasswordControl</servlet-name>
+        <url-pattern>/ForgotPasswordControl</url-pattern>
+>>>>>>> d8d0fa7da1ee4ba9017e640d3e6939f577706fe2
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
