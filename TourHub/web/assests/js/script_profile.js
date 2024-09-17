@@ -74,3 +74,33 @@ switchMode.addEventListener('change', function () {
 		document.body.classList.remove('dark');
 	}
 })
+
+
+
+function validatePassword() {
+        var newPassword = document.querySelector('input[name="newPassword"]').value;
+        var confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+        if (newPassword !== confirmPassword) {
+            alert("Passwords do not match!");
+            return false;
+        }
+        return true;
+    }
+    
+    
+function togglePassword(inputId, toggleIconId) {
+    var passwordField = document.getElementById(inputId);
+    var toggleIcon = document.getElementById(toggleIconId);
+    
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    }
+}
+
+
