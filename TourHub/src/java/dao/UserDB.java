@@ -1,5 +1,8 @@
 package DAO;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.sql.*;
 import model.User;
 import java.util.Date;
@@ -118,7 +121,7 @@ public class UserDB implements DatabaseInfo {
         }
         return false;
     }
-
+    
     //Kiem tra email co trong database hay la khong
     public boolean checkEmailExists(String email) {
         boolean exists = false;
@@ -157,35 +160,25 @@ public class UserDB implements DatabaseInfo {
         }
         return exists;
     }
-
-    public void updateUserStatusToVerified(String email) {
-        String sql = "UPDATE users SET userStatus = 'verified' WHERE email = ?";
-        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, email);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+    
 //-------------------------------------------------
+    
     //Lấy all user ra
-    public User getUsers(String username, String password) {
+    public User getUsers(String username) {
         User user = null;
         String query = "Select username, password, userStatus, role, "
                 + "firstName, lastName, email, phone, address, createdAt"
-                + "from [User] where username =? and password=? ";
+                + "from [User] where username =?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
             stmt.setString(1, username);
-            stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 int id = rs.getInt(1);
                 username = rs.getString(2);
-                password = rs.getString(3);
+                String password = rs.getString(3);
                 String userStatus = rs.getString(4);
                 String role = rs.getString(5);
                 String firstName = rs.getString(6);
@@ -194,7 +187,7 @@ public class UserDB implements DatabaseInfo {
                 String phone = rs.getString(9);
                 String address = rs.getString(10);
                 Date createdAt = rs.getDate(11);
-//                user = new User(id, username, password, userStatus, role, firstName, lastName, email, phone, address, createdAt);
+               user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
             }
 
         } catch (Exception ex) {
@@ -262,5 +255,11 @@ public class UserDB implements DatabaseInfo {
         }
         return result;
     }
-
+    
+    public User getUserFromSession(HttpSession session, HttpServletRequest request) {
+        User user = (User) session.getAttribute("currentUser");
+        return user; // or throw an exception if user not found
+    }
+    
+    
 }
