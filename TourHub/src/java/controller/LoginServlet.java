@@ -1,7 +1,7 @@
 package controller;
 
 
-import DAO.UserDB;
+import dao.UserDB;
 import model.User;
 import entity.GoogleAccount;
 import java.io.IOException;

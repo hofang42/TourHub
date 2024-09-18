@@ -1,6 +1,6 @@
 package controller;
 
-import DAO.UserDB;
+import dao.UserDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

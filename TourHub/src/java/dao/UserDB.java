@@ -1,4 +1,4 @@
-package DAO;
+package dao;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -168,16 +168,6 @@ public class UserDB implements DatabaseInfo {
             }
         }
         return exists;
-    }
-    
-    public void updateUserStatusToVerified(String email) {
-        String sql = "UPDATE users SET userStatus = 'verified' WHERE email = ?";
-        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, email);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
     
 //-------------------------------------------------
