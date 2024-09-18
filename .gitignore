@@ -1,5 +1,6 @@
 /TourHub/build/
-/TourHub/nbproject/private/
 /.idea
 /out
 /TourHub/.idea
+/TourHub/dist/
+/TourHub/nbproject

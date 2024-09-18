@@ -53,10 +53,6 @@
                                                             Remember me
                                                         </label>
                                                     </div>
-                                                    <!-- Thông báo lỗi nếu có -->
-                                                    <% if (request.getAttribute("error") != null) { %>
-                                                    <p style="color:red;"><%= request.getAttribute("error") %></p>
-                                                    <% } %>
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="text-end">
