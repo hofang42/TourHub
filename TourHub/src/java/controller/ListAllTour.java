@@ -5,6 +5,7 @@
 package controller;
 
 import DAO.TourDB;
+import com.google.gson.Gson;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,6 +37,8 @@ public class ListAllTour extends HttpServlet {
         try {
             TourDB tourDB = new TourDB();
             List<Tour> tours = tourDB.getTours();  // Ensure getTours() handles exceptions
+            String toursJson = new Gson().toJson(tours);
+            request.setAttribute("toursJson", toursJson);
             request.setAttribute("tours", tours);
             request.getRequestDispatcher("index.jsp").forward(request, response);  // Make sure index.jsp exists
         } catch (Exception e) {
@@ -86,8 +89,7 @@ public class ListAllTour extends HttpServlet {
     public static void main(String[] args) {
         TourDB tourDB = new TourDB();
         List<Tour> tours = tourDB.getTours();
-        for (Tour tour : tours) {
-            System.out.println(tour.toString());
-        }
+        String toursJson = new Gson().toJson(tours);
+        System.out.println(toursJson.toString());
     }
 }

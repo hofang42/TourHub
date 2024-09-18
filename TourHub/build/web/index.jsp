@@ -1,6 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@include file="includes/header.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<style>
+    /* Add pointer cursor for buttons */
+    .group-btn .btn {
+        cursor: pointer;
+    }
+</style>
 <body>
     <!-- Page preloader-->
     <div class="page-loader"> 
@@ -183,32 +189,17 @@
                     </div>
                     <div class="col-xl-3 text-xl-right"><a class="button button-secondary button-nina" href="#">view all tours</a></div>
                 </div>
+                <div class="group-btn" role="group" aria-label="City Options">
+                    <button type="button" class="btn btn-primary active" city="Phú Quốc">Phú Quốc</button>
+                    <button type="button" class="btn btn-outline-primary" city="Da Nang">Da Nang</button>
+                    <button type="button" class="btn btn-outline-primary" city="Hà Nội">Ha Noi</button>
+                    <button type="button" class="btn btn-outline-primary" city="TP Ho Chi Minh">TP Ho Chi Minh</button>
+                    <button type="button" class="btn btn-outline-primary" city="Quy Nhon">Quy Nhon</button>
+                </div>
                 <div class="row row-50">
                     <c:if test="${empty tours}">
                         <p>No tours available.</p>
-                    </c:if>
-                    <c:forEach items="${tours}" var="tour">
-                        <div class="col-md-6 col-xl-4">
-                            <article class="event-default-wrap">
-                                <div class="event-default">
-                                    <figure class="event-default-image">
-                                        <img src="${tour.tourImg}" alt="${tour.tourName}" width="570" height="370"/>
-                                    </figure>
-                                    <div class="event-default-caption">
-                                        <a class="button button-xs button-secondary button-nina" href="#">Learn more</a>
-                                    </div>
-                                </div>
-                                <div class="event-default-inner">
-                                    <div>
-                                        <h5><a class="event-default-title" href="#">${tour.tourName}</a></h5>
-                                        <span class="heading-5">$${tour.price}</span>
-                                    </div>                                    
-                                    <div class="heading-6">${tour.totalTime}</div>
-                                </div>
-
-                            </article>
-                        </div>
-                    </c:forEach>
+                    </c:if>                   
                 </div>
             </div>
         </section>
@@ -275,6 +266,152 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section>    
+        <% 
+            // Retrieve the JSON string from the request attribute
+            String toursJson = (String) request.getAttribute("toursJson");
+            // Escape special characters for safe embedding
+            String encodedToursJson = toursJson
+                .replace("\\", "\\\\")  // Escape backslashes
+                .replace("\"", "\\\"")  // Escape double quotes
+                .replace("\n", "\\n")   // Escape new lines
+                .replace("\r", "\\r");  // Escape carriage returns
+        %>
+
+        <script>
+            // Safely embed the JSON data into JavaScript
+            const toursJson = "<%= encodedToursJson %>";
+
+            // Parse the JSON string into a JavaScript object
+            const tours = JSON.parse(toursJson);
+
+            // Function to display tours based on the selected city
+            function displayTours(city) {
+                // Filter tours based on the selected city
+                const filteredTours = tours.filter(tour =>
+                    tour.tourName.toLowerCase().includes(city.toLowerCase())
+                );
+
+                const cityList = document.querySelector('.row.row-50');
+                // Clear the existing list
+                cityList.innerHTML = '';
+
+                if (filteredTours.length === 0) {
+                    cityList.innerHTML = 'No tours found for the selected city.';
+                    return;
+                }
+
+                // Display filtered tours
+                filteredTours.forEach(tour => {
+                    const colDiv = document.createElement('div');
+                    colDiv.classList.add('col-md-6', 'col-xl-4');
+
+                    const article = document.createElement('article');
+                    article.classList.add('event-default-wrap');
+
+                    const eventDefault = document.createElement('div');
+                    eventDefault.classList.add('event-default');
+
+                    const figure = document.createElement('figure');
+                    figure.classList.add('event-default-image');
+
+                    const img = document.createElement('img');
+                    img.src = tour.tourImg;
+                    img.alt = tour.tourName;
+                    img.width = 570;
+                    img.height = 370;
+                    figure.appendChild(img);
+
+                    eventDefault.appendChild(figure);
+
+                    const captionDiv = document.createElement('div');
+                    captionDiv.classList.add('event-default-caption');
+
+                    const learnMoreBtn = document.createElement('a');
+                    learnMoreBtn.classList.add('button', 'button-xs', 'button-secondary', 'button-nina');
+                    learnMoreBtn.href = "#";
+                    learnMoreBtn.textContent = "Learn more";
+                    captionDiv.appendChild(learnMoreBtn);
+
+                    eventDefault.appendChild(captionDiv);
+                    article.appendChild(eventDefault);
+
+                    const eventDefaultInner = document.createElement('div');
+                    eventDefaultInner.classList.add('event-default-inner');
+
+                    const tourInfoDiv = document.createElement('div');
+
+                    const tourName = document.createElement('h5');
+                    const tourLink = document.createElement('a');
+                    tourLink.classList.add('event-default-title');
+                    tourLink.href = "#";
+                    tourLink.textContent = tour.tourName;
+                    tourName.appendChild(tourLink);
+                    tourInfoDiv.appendChild(tourName);
+                    eventDefaultInner.appendChild(tourInfoDiv);
+
+                    const priceSpan = document.createElement('span');
+                    priceSpan.classList.add('heading-5');
+                    priceSpan.textContent = tour.price + " VND";
+                    tourInfoDiv.appendChild(priceSpan);
+
+                    const totalTimeDiv = document.createElement('div');
+                    totalTimeDiv.classList.add('heading-6');
+                    totalTimeDiv.textContent = tour.totalTime;
+                    eventDefaultInner.appendChild(totalTimeDiv);
+
+                    article.appendChild(eventDefaultInner);
+
+                    colDiv.appendChild(article);
+                    cityList.appendChild(colDiv);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Automatically display tours for "Phú Quốc" when the page loads
+                displayTours("Phú Quốc");
+
+                // Add event listeners to buttons
+                document.querySelectorAll('button[city]').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const city = this.getAttribute('city');  // Get the city from the button's city attribute
+                        displayTours(city);  // Call displayTours function with the selected city
+                    });
+                });
+            });
+            // Function to handle button click and change classes
+            function handleButtonClick(event) {
+                // Get the currently active button
+                const activeButton = document.querySelector('.group-btn .active');
+
+                // If there is an active button, remove the 'active' class
+                if (activeButton) {
+                    activeButton.classList.remove('active');
+                    activeButton.classList.add('btn-outline-primary');
+                    activeButton.classList.remove('btn-primary');
+                }
+
+                // Add 'active' class to the clicked button
+                const clickedButton = event.currentTarget;
+                clickedButton.classList.remove('btn-outline-primary');
+                clickedButton.classList.add('btn-primary');
+                clickedButton.classList.add('active');
+
+                // Call the function to display tours based on the selected city
+                const city = clickedButton.getAttribute('city');
+                displayTours(city);
+            }
+
+// Function to initialize event listeners
+            function initializeButtonListeners() {
+                document.querySelectorAll('.group-btn .btn').forEach(button => {
+                    button.addEventListener('click', handleButtonClick);
+                });
+            }
+
+// Run initialization on DOMContentLoaded
+            document.addEventListener('DOMContentLoaded', initializeButtonListeners);
+
+        </script>
 
         <%@include file="includes/footer.jsp" %>
