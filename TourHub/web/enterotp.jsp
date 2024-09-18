@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>User OTP</title>
+        <title>Enter OTP</title>
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     </head>
     <body>
@@ -19,8 +19,7 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-6">
-                        <form action="user" method="post">
-                            <input type="hidden" name="action" value="checkotp" />
+                        <form action="ValidateOtp" method="post">
                             <div class="row gy-3">
                                 <div class="col-12">
                                     <div class="form-floating">
