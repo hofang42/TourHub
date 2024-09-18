@@ -4,7 +4,7 @@
  */
 package controller;
 
-import DAO.UserDB;
+import DataAccess.UserDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -215,7 +215,7 @@ public class UserServlet extends HttpServlet {
                 mySession.setAttribute("userId", userId);  // Set type for password reset
                 dispatcher.forward(request, response);
             } else {
-                dispatcher = request.getRequestDispatcher("uuser-updateinfo.jsp?buttonChange=email");
+                dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=email");
                 request.setAttribute("error", "Email is already registered");
                 dispatcher.forward(request, response);
             }

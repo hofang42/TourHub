@@ -1,5 +1,4 @@
-package DAO;
-
+package DataAccess;
 
 public interface DatabaseInfo {
     public static String DRIVERNAME="com.microsoft.sqlserver.jdbc.SQLServerDriver";
