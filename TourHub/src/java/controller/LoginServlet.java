@@ -68,7 +68,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("currentUser", user);
 
             // Redirect to the homepage or user dashboard
-            response.sendRedirect("welcome.jsp");
+            response.sendRedirect("index.jsp");
         }
     }
 
