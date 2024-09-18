@@ -107,6 +107,8 @@
                                     </li>
                                     <li><a href="typography.jsp">Typography</a>
                                     </li>
+                                    <li><a href="faqs.jsp">FAQs</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
