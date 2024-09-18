@@ -3,17 +3,28 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/welcome.jsp</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/newpassword.jsp</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DAO/DatabaseInfo.java</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/login.jsp</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/forgotPassword.java</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DAO/UserDB.java</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/RegisterServlet.java</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/LoginServlet.java</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/forgotpassword.jsp</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/newPassword.java</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/ValidateOtp.java</file>
+<<<<<<< HEAD
+            <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/web/login.jsp</file>
+            <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/web/assests/css/changeinfouser.css</file>
+            <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/src/java/dao/UserDB.java</file>
+            <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/src/java/controller/UserServlet.java</file>
+            <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/web/user-profile.jsp</file>
+            <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/web/user-updateinfo.jsp</file>
+=======
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/src/java/dao/DatabaseInfo.java</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/src/java/controller/ValidateOtp.java</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/web/login.jsp</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/src/java/controller/RegisterServlet.java</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/src/java/controller/LoginServlet.java</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/web/welcome.jsp</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/src/java/controller/forgotPassword.java</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/web/newpassword.jsp</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/web/enterotp.jsp</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/web/register.jsp</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/src/java/dao/UserDB.java</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/src/java/controller/newPassword.java</file>
+            <file>file:/D:/Ky5/Project/TourHub/TourHub/web/user-profile.jsp</file>
+>>>>>>> 45d5831b36bfa81902fe5cc81190087ba0b172b0
         </group>
     </open-files>
 </project-private>

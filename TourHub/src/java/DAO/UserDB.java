@@ -170,40 +170,52 @@ public class UserDB implements DatabaseInfo {
         return exists;
     }
     
+    public void updateUserStatusToVerified(String email) {
+        String sql = "UPDATE users SET userStatus = 'verified' WHERE email = ?";
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 //-------------------------------------------------
     
     //Lấy all user ra
-    public User getUsers(String username) {
-        User user = null;
-        String query = "Select username, password, userStatus, role, "
-                + "firstName, lastName, email, phone, address, createdAt"
-                + "from [User] where username =?";
+    public User getUser(int userId) {
+    User user = null;
+    // Fixed: Added space after "createdAt"
+    String query = "SELECT userId, username, password, userStatus, role, "
+                 + "firstName, lastName, email, phone, address, createdAt "
+                 + "FROM [User] WHERE userId = ?";
 
-        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+    try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
+        stmt.setInt(1, userId);
+        ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                int id = rs.getInt(1);
-                username = rs.getString(2);
-                String password = rs.getString(3);
-                String userStatus = rs.getString(4);
-                String role = rs.getString(5);
-                String firstName = rs.getString(6);
-                String lastName = rs.getString(7);
-                String email = rs.getString(8);
-                String phone = rs.getString(9);
-                String address = rs.getString(10);
-                Date createdAt = rs.getDate(11);
-               user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
-            }
+        if (rs.next()) {
+            int id = rs.getInt(1);
+            String username = rs.getString(2);
+            String password = rs.getString(3);
+            String userStatus = rs.getString(4);
+            String role = rs.getString(5);
+            String firstName = rs.getString(6);
+            String lastName = rs.getString(7);
+            String email = rs.getString(8);
+            String phone = rs.getString(9);
+            String address = rs.getString(10);
+            Date createdAt = rs.getDate(11);
 
-        } catch (Exception ex) {
-            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+            user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
         }
-        return user;
+
+    } catch (Exception ex) {
+        Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
     }
+    return user;
+}
 
     //Thêm user mới
     public void insertUser(User user) {
@@ -227,6 +239,24 @@ public class UserDB implements DatabaseInfo {
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
             stmt.setString(1, newPassword);
+            stmt.setInt(2, userId);
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated == 0) {
+                throw new SQLException("Update failed, no rows affected.");
+            }
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false; // Password update failed
+        }
+    }
+    
+    public boolean updateEmail(int userId, String newEmail) {
+        String query = "UPDATE [User] SET email=? WHERE UserId=?";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, newEmail);
             stmt.setInt(2, userId);
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated == 0) {
