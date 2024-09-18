@@ -1,6 +1,6 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="model.User"%>
-<%@ page import="dao.UserDB"%>
+<%@ page import="DataAccess.UserDB"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:useBean id="currentUser" class="model.User" scope="session" />
 <!DOCTYPE html>
