@@ -26,6 +26,7 @@
 <!-- Javascript-->
 <script src="assests/js/core.min.js"></script>
 <script src="assests/js/script.js"></script>
+
 <!-- coded by barber-->
 </body>
 </html>

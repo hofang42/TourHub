@@ -3,8 +3,65 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <style>
     /* Add pointer cursor for buttons */
-    .group-btn .btn {
+    .group-btn .btn{
         cursor: pointer;
+    }
+    .btn-primary{
+        cursor: pointer;
+    }
+    .custom-radius {
+        border-radius: 35px !important;
+    }
+    .transparent-bg {
+        background-color: transparent !important; /* Ensure the background is fully transparent */
+    }
+
+    .search-box{
+        width: 100%;
+        background: #fff;
+        margin: 200px auto 0;
+    }
+
+    .row{
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+    }
+
+    input{
+        flex: 1;
+        height: 50px;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        font-size: 18px;
+        padding: 10px 20px;
+    }
+    button{
+        background: transparent;
+        border: 0;
+        outline: 0;
+    }
+    button .fa-search{
+        /*width: 25px;*/
+        font-size: 22px;
+        cursor: pointer;
+    }
+    ::placehoder{
+        color: #555;
+    }
+    .result-box ul{
+        border-top: 1px solid #999;
+        padding: 15px 10px;
+    }
+    .result-box ul li{
+        list-style: none;
+        border-radius: 3px;
+        padding: 15px 10px;
+        cursor: pointer;
+    }
+    .result-box ul li:hover{
+        background-color: #ffc107;
     }
 </style>
 <body>
@@ -130,7 +187,7 @@
                                     <div class="row row-fix justify-content-sm-center justify-content-md-start">
                                         <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
                                             <h3>Hundreds of Amazing Destinations</h3>
-                                            <!--<div class="divider divider-decorate"></div>-->
+                                            <div class="divider divider-decorate"></div>
                                             <p class="text-spacing-sm">We offer a variety of destinations to travel to, ranging from exotic to some extreme ones. They include very popular countries and cities like Paris, Rio de Janeiro, Cairo and a lot of others.</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
                                         </div>
                                     </div>
@@ -143,7 +200,7 @@
                                     <div class="row row-fix justify-content-sm-center justify-content-md-start">
                                         <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
                                             <h3>The Trip of Your Dream</h3>
-                                            <!--<div class="divider divider-decorate"></div>-->
+                                            <div class="divider divider-decorate"></div>
                                             <p class="text-spacing-sm">Our travel agency is ready to offer you an exciting vacation that is designed to fit your own needs and wishes. Whether it’s an exotic cruise or a trip to your favorite resort, you will surely have the best experience.</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
                                         </div>
                                     </div>
@@ -156,26 +213,34 @@
                                     <div class="row row-fix justify-content-sm-center justify-content-md-start">
                                         <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
                                             <h3>unique Travel Insights</h3>
-                                            <!--<div class="divider divider-decorate"></div>-->
+                                            <div class="divider divider-decorate"></div>
                                             <p class="text-spacing-sm">Our team is ready to provide you with unique weekly travel insights that include photos, videos, and articles about untravelled tourist paths. We know everything about the places you’ve never been to!</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                          
+                        </div>
+                    </div>
+
+                    <!-- Swiper controls-->
+                    <div class="container container-bigger form-request-wrap form-request-wrap-modern">
+                        <div class="row row-fix justify-content-sm-center justify-content-lg-end">
+                            <div class="col-lg-6 col-xxl-5">
+                                <div class="form-request form-request-modern bg-gray-lighter novi-background transparent-bg">     
+                                    <div class="search-box custom-radius">
+                                        <div class="row">
+                                            <input type="text" id="input-box" placeholder="Search your tour" autocomplete="off">
+                                            <button class="btn btn-primary">SEARCH</button>
+                                        </div>
+                                        <div class="result-box">                                           
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Swiper controls-->
-                    <div class="swiper-pagination-wrap">
-                        <div class="container container-bigger">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="swiper-pagination"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
+
         </section>
 
         <section class="section section-variant-1 bg-default novi-background bg-cover"> 
@@ -281,21 +346,17 @@
         <script>
             // Safely embed the JSON data into JavaScript
             const toursJson = "<%= encodedToursJson %>";
-
             // Parse the JSON string into a JavaScript object
             const tours = JSON.parse(toursJson);
-
             // Function to display tours based on the selected city
             function displayTours(city) {
                 // Filter tours based on the selected city
                 const filteredTours = tours.filter(tour =>
                     tour.tourName.toLowerCase().includes(city.toLowerCase())
                 );
-
                 const cityList = document.querySelector('.row.row-50');
                 // Clear the existing list
                 cityList.innerHTML = '';
-
                 if (filteredTours.length === 0) {
                     cityList.innerHTML = 'No tours found for the selected city.';
                     return;
@@ -305,42 +366,31 @@
                 filteredTours.forEach(tour => {
                     const colDiv = document.createElement('div');
                     colDiv.classList.add('col-md-6', 'col-xl-4');
-
                     const article = document.createElement('article');
                     article.classList.add('event-default-wrap');
-
                     const eventDefault = document.createElement('div');
                     eventDefault.classList.add('event-default');
-
                     const figure = document.createElement('figure');
                     figure.classList.add('event-default-image');
-
                     const img = document.createElement('img');
                     img.src = tour.tourImg;
                     img.alt = tour.tourName;
                     img.width = 570;
                     img.height = 370;
                     figure.appendChild(img);
-
                     eventDefault.appendChild(figure);
-
                     const captionDiv = document.createElement('div');
                     captionDiv.classList.add('event-default-caption');
-
                     const learnMoreBtn = document.createElement('a');
                     learnMoreBtn.classList.add('button', 'button-xs', 'button-secondary', 'button-nina');
                     learnMoreBtn.href = "#";
                     learnMoreBtn.textContent = "Learn more";
                     captionDiv.appendChild(learnMoreBtn);
-
                     eventDefault.appendChild(captionDiv);
                     article.appendChild(eventDefault);
-
                     const eventDefaultInner = document.createElement('div');
                     eventDefaultInner.classList.add('event-default-inner');
-
                     const tourInfoDiv = document.createElement('div');
-
                     const tourName = document.createElement('h5');
                     const tourLink = document.createElement('a');
                     tourLink.classList.add('event-default-title');
@@ -349,19 +399,15 @@
                     tourName.appendChild(tourLink);
                     tourInfoDiv.appendChild(tourName);
                     eventDefaultInner.appendChild(tourInfoDiv);
-
                     const priceSpan = document.createElement('span');
                     priceSpan.classList.add('heading-5');
                     priceSpan.textContent = tour.price + " VND";
                     tourInfoDiv.appendChild(priceSpan);
-
                     const totalTimeDiv = document.createElement('div');
                     totalTimeDiv.classList.add('heading-6');
                     totalTimeDiv.textContent = tour.totalTime;
                     eventDefaultInner.appendChild(totalTimeDiv);
-
                     article.appendChild(eventDefaultInner);
-
                     colDiv.appendChild(article);
                     cityList.appendChild(colDiv);
                 });
@@ -370,48 +416,132 @@
             document.addEventListener('DOMContentLoaded', function () {
                 // Automatically display tours for "Phú Quốc" when the page loads
                 displayTours("Phú Quốc");
-
                 // Add event listeners to buttons
                 document.querySelectorAll('button[city]').forEach(button => {
                     button.addEventListener('click', function () {
-                        const city = this.getAttribute('city');  // Get the city from the button's city attribute
-                        displayTours(city);  // Call displayTours function with the selected city
+                        const city = this.getAttribute('city'); // Get the city from the button's city attribute
+                        displayTours(city); // Call displayTours function with the selected city
                     });
                 });
             });
             // Function to handle button click and change classes
+            document.querySelectorAll('.group-btn button').forEach(button => {
+                button.addEventListener('click', handleButtonClick);
+            });
             function handleButtonClick(event) {
-                // Get the currently active button
+                // Get the currently active button                 
                 const activeButton = document.querySelector('.group-btn .active');
-
-                // If there is an active button, remove the 'active' class
+                // If there is an active button, remove the 'active' class                 
                 if (activeButton) {
                     activeButton.classList.remove('active');
                     activeButton.classList.add('btn-outline-primary');
                     activeButton.classList.remove('btn-primary');
                 }
 
-                // Add 'active' class to the clicked button
+                // Add 'active' class to the clicked button                 
                 const clickedButton = event.currentTarget;
                 clickedButton.classList.remove('btn-outline-primary');
                 clickedButton.classList.add('btn-primary');
                 clickedButton.classList.add('active');
-
-                // Call the function to display tours based on the selected city
+                // Call the function to display tours based on the selected city                 
                 const city = clickedButton.getAttribute('city');
                 displayTours(city);
             }
 
-// Function to initialize event listeners
-            function initializeButtonListeners() {
-                document.querySelectorAll('.group-btn .btn').forEach(button => {
-                    button.addEventListener('click', handleButtonClick);
-                });
+
+
+            function removeDiacritics(str) {
+                const diacriticsMap = {
+                    'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
+                    'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
+                    'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
+                    'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
+                    'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
+                    'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
+                    'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
+                    'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
+                    'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
+                    'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
+                    'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
+                    'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
+                    'Đ': 'D', 'đ': 'd'
+                };
+
+                return str.split('').map(char => diacriticsMap[char] || char).join('');
             }
 
-// Run initialization on DOMContentLoaded
-            document.addEventListener('DOMContentLoaded', initializeButtonListeners);
+
+            //Function to show search box
+            const resultBox = document.querySelector(".result-box");
+            const inputBox = document.getElementById("input-box");
+            document.addEventListener("DOMContentLoaded", function () {
+                const toursJson = "<%= encodedToursJson %>";
+                const tours = JSON.parse(toursJson); // Parse the JSON string into an array of objects
+                if (inputBox) {
+                    inputBox.onkeyup = function () {
+                        let result = [];
+                        let input = inputBox.value.trim();
+
+                        if (input.length) {
+                            resultBox.style.display = 'block';
+
+                            // Filter the tours based on the input
+                            result = tours.filter((tour) => {
+                                const normalizedInput = removeDiacritics(input.toLowerCase()).trim();
+                                const normalizedTourName = removeDiacritics(tour.tourName.toLowerCase());
+
+                                const inputWords = normalizedInput.split(" ").filter(word => word !== "");
+
+                                return inputWords.every((word) => normalizedTourName.includes(word));
+                            });
+
+
+
+                            // Log the actual object array for debugging
+                            console.log("Filtered Result: ", result);
+
+                        } else {
+                            resultBox.innerHTML = '';
+                            resultBox.style.display = 'none';
+                        }
+
+                        displaySearchs(result); // Call display function with the filtered results
+                    };
+                }
+            });
+
+            function displaySearchs(result) {
+                if (result.length > 0) {
+                    const content = result.map((item) => {
+                        // Build the HTML using string concatenation
+                        let listItem = '<li onclick="selectInput(this)" style="display: flex; align-items: center; margin-bottom: 10px;">';
+                        listItem += '<div style="flex-shrink: 0;">'; // Ensures the image doesn’t shrink
+                        listItem += '<img src="' + item.tourImg + '" alt="' + item.tourName + '" style="width: 100px; height: 100px; object-fit: cover;">'; // Increase image size
+                        listItem += '</div>';
+                        listItem += '<span style="margin-left: 15px; font-size: 18px;">' + item.tourName + '</span>'; // Spacing and styling for the title
+                        listItem += '</li>';
+
+                        return listItem;
+                    });
+
+                    resultBox.innerHTML = "<ul>" + content.join('') + "</ul>"; // Join the content and set the inner HTML
+                } else {
+                    resultBox.innerHTML = "<ul><li>No results found</li></ul>"; // Display a message if no results
+                }
+            }
+
+
+
+
+            function selectInput(list) {
+                // Use innerText to get the text of the selected list item
+                inputBox.value = list.innerText; // or use list.textContent
+
+                // Optionally clear the result box and hide it
+                resultBox.innerHTML = '';
+                resultBox.style.display = 'none'; // Hide the result box
+            }
 
         </script>
-
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>-->
         <%@include file="includes/footer.jsp" %>
