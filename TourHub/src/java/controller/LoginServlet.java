@@ -13,18 +13,18 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
-
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String code = request.getParameter("code"); // Google login code
 
         UserDB userDB = new UserDB();
         User user = null;
-
+        
         if (code != null) {
             // Google Login Flow
             GoogleLogin googleLogin = new GoogleLogin();
@@ -33,7 +33,7 @@ public class LoginServlet extends HttpServlet {
 
             // Check if Google account exists in the User table
             user = userDB.authenticate(googleAccount.getEmail(), null);
-
+            
             if (user == null) {
                 // Register the Google user if not found in the database
                 user = new User();
@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
         } else if (email != null && password != null) {
             // Manual login
             user = userDB.authenticate(email, password);
-
+            
             if (user == null) {
                 request.setAttribute("error", "Invalid email or password");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -61,29 +61,29 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
-
+        
         if (user != null) {
             // Save user information in session
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
 
             // Redirect to the homepage or user dashboard
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("/Project_SWP/home");            
         }
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
+    
     @Override
     public String getServletInfo() {
         return "Handles Google and manual login";

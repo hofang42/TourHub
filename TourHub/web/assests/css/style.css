@@ -2370,8 +2370,8 @@ section {
 * Background Gray Darker
 */
 .bg-gray-darker {
-    background-color: #151515;
-    fill: #151515;
+    background-color: #444;
+    /*fill: #151515;*/
 }
 
 .bg-gray-darker .way-point > svg {

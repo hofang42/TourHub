@@ -1,73 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@include file="includes/header.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<style>
-    /* Add pointer cursor for buttons */
-    .group-btn .btn{
-        cursor: pointer;
-    }
-    .btn-primary{
-        cursor: pointer;
-    }
-    .custom-radius {
-        border-radius: 35px !important;
-    }
-    .transparent-bg {
-        background-color: transparent !important; /* Ensure the background is fully transparent */
-    }
 
-    .search-box{
-        width: 100%;
-        background: #fff;
-        margin: 200px auto 0;
-    }
-
-    .row{
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-    }
-
-    input{
-        flex: 1;
-        height: 50px;
-        background: transparent;
-        border: 0;
-        outline: 0;
-        font-size: 18px;
-        padding: 10px 20px;
-    }
-    button{
-        background: transparent;
-        border: 0;
-        outline: 0;
-    }
-    button .fa-search{
-        /*width: 25px;*/
-        font-size: 22px;
-        cursor: pointer;
-    }
-    ::placehoder{
-        color: #555;
-    }
-    .result-box ul{
-        border-top: 1px solid #999;
-        padding: 15px 10px;
-    }
-    .result-box ul li{
-        list-style: none;
-        border-radius: 3px;
-        padding: 15px 10px;
-        cursor: pointer;
-    }
-    .result-box ul li:hover{
-        background-color: #ffc107;
-    }
-</style>
+<%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <body>
     <!-- Page preloader-->
     <div class="page-loader"> 
-        <div class="page-loader-body"> 
+        <div class="page-loader-body "> 
             <div class="preloader-wrapper big active"> 
                 <div class="spinner-layer spinner-blue"> 
                     <div class="circle-clipper left">
@@ -170,8 +109,22 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="login">Login</a></div>
-                        <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="register">Register</a></div>
+                        <c:if test="${sessionScope.currentUser == null}">
+                            <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="login">Login</a></div>
+                            <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="register">Register</a></div>
+                        </c:if>
+                        <c:if test="${sessionScope.currentUser != null}">
+                            <div class="dropdown">
+                                <button class="avatar-button" onclick="toggleDropdown()">
+                                    <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
+                                </button>
+                                <div id="dropdownContent" class="dropdown-content">
+                                    <a href="user-profile.jsp">Profile</a>
+                                    <a href="settings.jsp">Settings</a>
+                                    <a href="logout">Logout</a>
+                                </div>
+                            </div>
+                        </c:if>
                     </div>
                 </nav>
             </div>
@@ -229,10 +182,17 @@
                                 <div class="form-request form-request-modern bg-gray-lighter novi-background transparent-bg">     
                                     <div class="search-box custom-radius">
                                         <div class="row">
+
                                             <input type="text" id="input-box" placeholder="Search your tour" autocomplete="off">
                                             <button class="btn btn-primary">SEARCH</button>
                                         </div>
-                                        <div class="result-box">                                           
+                                        <div class="search-container">
+                                            <span class="icon">🔍</span>
+                                            <span class="search-text">Tìm <strong id="search-keyword"></strong></span>
+                                            <span class="arrow"><a href="login.jsp">→</a></span>
+                                        </div>
+
+                                        <div class="result-box">                                               
                                         </div>
                                     </div>
                                 </div>
@@ -268,6 +228,79 @@
                 </div>
             </div>
         </section>
+
+
+        <section class="section section-variant-1 bg-default novi-background bg-cover"> 
+            <div class="container-fluid"> <!-- Make it full width -->
+                <div class="row justify-content-xl-end text-center text-xl-left">
+                    <div class="col-xl-12"> <!-- Full width column -->
+                        <div class="parallax-text-wrap">
+                            <h3>Best Destinations In Viet Nam</h3><span class="parallax-text">Destination</span>
+                        </div>
+                        <hr class="divider divider-decorate">
+                    </div>
+
+                    <!-- Full width Owl Carousel Container -->
+                    <div class="owl-carousel owl-theme location-slider" 
+                         data-items="5"      
+                         data-dots="false"    
+                         data-nav="false"     
+                         data-loop="false"   
+                         data-autoplay="true" 
+                         data-margin="5">   
+
+                        <!-- First Location Card -->
+                        <div class="item">
+                            <div class="location-card">
+                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
+                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
+                            </div>
+                        </div>
+
+                        <!-- Other location cards follow in the same pattern -->
+                        <div class="item">
+                            <div class="location-card">
+                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
+                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="location-card">
+                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
+                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="location-card">
+                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
+                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="location-card">
+                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
+                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="location-card">
+                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
+                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>                              
+        </section>
+
+
+
+
+
+
+
+
+
         <section class="section section-lg text-center bg-gray-lighter novi-background bg-cover">
             <div class="container container-bigger">
                 <h3>testimonials</h3>
@@ -332,216 +365,21 @@
                 </div>
             </div>
         </section>    
+
         <% 
-            // Retrieve the JSON string from the request attribute
-            String toursJson = (String) request.getAttribute("toursJson");
-            // Escape special characters for safe embedding
-            String encodedToursJson = toursJson
-                .replace("\\", "\\\\")  // Escape backslashes
-                .replace("\"", "\\\"")  // Escape double quotes
-                .replace("\n", "\\n")   // Escape new lines
-                .replace("\r", "\\r");  // Escape carriage returns
+                   // Retrieve the JSON string from the request attribute
+                   String toursJson = (String) request.getAttribute("toursJson");
+                   // Escape special characters for safe embedding
+                   String encodedToursJson = toursJson
+                       .replace("\\", "\\\\")  // Escape backslashes
+                       .replace("\"", "\\\"")  // Escape double quotes
+                       .replace("\n", "\\n")   // Escape new lines
+                       .replace("\r", "\\r");  // Escape carriage returns
         %>
-
         <script>
-            // Safely embed the JSON data into JavaScript
             const toursJson = "<%= encodedToursJson %>";
-            // Parse the JSON string into a JavaScript object
-            const tours = JSON.parse(toursJson);
-            // Function to display tours based on the selected city
-            function displayTours(city) {
-                // Filter tours based on the selected city
-                const filteredTours = tours.filter(tour =>
-                    tour.tourName.toLowerCase().includes(city.toLowerCase())
-                );
-                const cityList = document.querySelector('.row.row-50');
-                // Clear the existing list
-                cityList.innerHTML = '';
-                if (filteredTours.length === 0) {
-                    cityList.innerHTML = 'No tours found for the selected city.';
-                    return;
-                }
-
-                // Display filtered tours
-                filteredTours.forEach(tour => {
-                    const colDiv = document.createElement('div');
-                    colDiv.classList.add('col-md-6', 'col-xl-4');
-                    const article = document.createElement('article');
-                    article.classList.add('event-default-wrap');
-                    const eventDefault = document.createElement('div');
-                    eventDefault.classList.add('event-default');
-                    const figure = document.createElement('figure');
-                    figure.classList.add('event-default-image');
-                    const img = document.createElement('img');
-                    img.src = tour.tourImg;
-                    img.alt = tour.tourName;
-                    img.width = 570;
-                    img.height = 370;
-                    figure.appendChild(img);
-                    eventDefault.appendChild(figure);
-                    const captionDiv = document.createElement('div');
-                    captionDiv.classList.add('event-default-caption');
-                    const learnMoreBtn = document.createElement('a');
-                    learnMoreBtn.classList.add('button', 'button-xs', 'button-secondary', 'button-nina');
-                    learnMoreBtn.href = "#";
-                    learnMoreBtn.textContent = "Learn more";
-                    captionDiv.appendChild(learnMoreBtn);
-                    eventDefault.appendChild(captionDiv);
-                    article.appendChild(eventDefault);
-                    const eventDefaultInner = document.createElement('div');
-                    eventDefaultInner.classList.add('event-default-inner');
-                    const tourInfoDiv = document.createElement('div');
-                    const tourName = document.createElement('h5');
-                    const tourLink = document.createElement('a');
-                    tourLink.classList.add('event-default-title');
-                    tourLink.href = "#";
-                    tourLink.textContent = tour.tourName;
-                    tourName.appendChild(tourLink);
-                    tourInfoDiv.appendChild(tourName);
-                    eventDefaultInner.appendChild(tourInfoDiv);
-                    const priceSpan = document.createElement('span');
-                    priceSpan.classList.add('heading-5');
-                    priceSpan.textContent = tour.price + " VND";
-                    tourInfoDiv.appendChild(priceSpan);
-                    const totalTimeDiv = document.createElement('div');
-                    totalTimeDiv.classList.add('heading-6');
-                    totalTimeDiv.textContent = tour.totalTime;
-                    eventDefaultInner.appendChild(totalTimeDiv);
-                    article.appendChild(eventDefaultInner);
-                    colDiv.appendChild(article);
-                    cityList.appendChild(colDiv);
-                });
-            }
-
-            document.addEventListener('DOMContentLoaded', function () {
-                // Automatically display tours for "Phú Quốc" when the page loads
-                displayTours("Phú Quốc");
-                // Add event listeners to buttons
-                document.querySelectorAll('button[city]').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const city = this.getAttribute('city'); // Get the city from the button's city attribute
-                        displayTours(city); // Call displayTours function with the selected city
-                    });
-                });
-            });
-            // Function to handle button click and change classes
-            document.querySelectorAll('.group-btn button').forEach(button => {
-                button.addEventListener('click', handleButtonClick);
-            });
-            function handleButtonClick(event) {
-                // Get the currently active button                 
-                const activeButton = document.querySelector('.group-btn .active');
-                // If there is an active button, remove the 'active' class                 
-                if (activeButton) {
-                    activeButton.classList.remove('active');
-                    activeButton.classList.add('btn-outline-primary');
-                    activeButton.classList.remove('btn-primary');
-                }
-
-                // Add 'active' class to the clicked button                 
-                const clickedButton = event.currentTarget;
-                clickedButton.classList.remove('btn-outline-primary');
-                clickedButton.classList.add('btn-primary');
-                clickedButton.classList.add('active');
-                // Call the function to display tours based on the selected city                 
-                const city = clickedButton.getAttribute('city');
-                displayTours(city);
-            }
-
-
-
-            function removeDiacritics(str) {
-                const diacriticsMap = {
-                    'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
-                    'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
-                    'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
-                    'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
-                    'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
-                    'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
-                    'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
-                    'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
-                    'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
-                    'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
-                    'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
-                    'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
-                    'Đ': 'D', 'đ': 'd'
-                };
-
-                return str.split('').map(char => diacriticsMap[char] || char).join('');
-            }
-
-
-            //Function to show search box
-            const resultBox = document.querySelector(".result-box");
-            const inputBox = document.getElementById("input-box");
-            document.addEventListener("DOMContentLoaded", function () {
-                const toursJson = "<%= encodedToursJson %>";
-                const tours = JSON.parse(toursJson); // Parse the JSON string into an array of objects
-                if (inputBox) {
-                    inputBox.onkeyup = function () {
-                        let result = [];
-                        let input = inputBox.value.trim();
-
-                        if (input.length) {
-                            resultBox.style.display = 'block';
-
-                            // Filter the tours based on the input
-                            result = tours.filter((tour) => {
-                                const normalizedInput = removeDiacritics(input.toLowerCase()).trim();
-                                const normalizedTourName = removeDiacritics(tour.tourName.toLowerCase());
-
-                                const inputWords = normalizedInput.split(" ").filter(word => word !== "");
-
-                                return inputWords.every((word) => normalizedTourName.includes(word));
-                            });
-
-
-
-                            // Log the actual object array for debugging
-                            console.log("Filtered Result: ", result);
-
-                        } else {
-                            resultBox.innerHTML = '';
-                            resultBox.style.display = 'none';
-                        }
-
-                        displaySearchs(result); // Call display function with the filtered results
-                    };
-                }
-            });
-
-            function displaySearchs(result) {
-                if (result.length > 0) {
-                    const content = result.map((item) => {
-                        // Build the HTML using string concatenation
-                        let listItem = '<li onclick="selectInput(this)" style="display: flex; align-items: center; margin-bottom: 10px;">';
-                        listItem += '<div style="flex-shrink: 0;">'; // Ensures the image doesn’t shrink
-                        listItem += '<img src="' + item.tourImg + '" alt="' + item.tourName + '" style="width: 100px; height: 100px; object-fit: cover;">'; // Increase image size
-                        listItem += '</div>';
-                        listItem += '<span style="margin-left: 15px; font-size: 18px;">' + item.tourName + '</span>'; // Spacing and styling for the title
-                        listItem += '</li>';
-
-                        return listItem;
-                    });
-
-                    resultBox.innerHTML = "<ul>" + content.join('') + "</ul>"; // Join the content and set the inner HTML
-                } else {
-                    resultBox.innerHTML = "<ul><li>No results found</li></ul>"; // Display a message if no results
-                }
-            }
-
-
-
-
-            function selectInput(list) {
-                // Use innerText to get the text of the selected list item
-                inputBox.value = list.innerText; // or use list.textContent
-
-                // Optionally clear the result box and hide it
-                resultBox.innerHTML = '';
-                resultBox.style.display = 'none'; // Hide the result box
-            }
-
+            const tours = JSON.parse(toursJson); // Parse the JSON string            
         </script>
-        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>-->
+        <script src="assests/js/home.js"></script>
+
         <%@include file="includes/footer.jsp" %>
