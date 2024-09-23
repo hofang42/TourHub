@@ -31,8 +31,12 @@
                                     <button class="btn btn-primary btn-lg" type="submit">Verify OTP</button>
                                 </div>
                             </div>
-                            <div class="text-danger mt-3">
-                                <p><%= request.getAttribute("message") != null ? request.getAttribute("message") : "" %></p>
+
+                            <!-- Error Message -->
+                            <div class="text-danger mt-3 text-center">
+                                <c:if test="${not empty message}">
+                                    <p>${message}</p>
+                                </c:if>
                             </div>
                         </form>
                     </div>

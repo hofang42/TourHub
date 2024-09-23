@@ -20,6 +20,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import utils.Encrypt;
 
 @WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
 public class RegisterServlet extends HttpServlet {
@@ -72,7 +73,8 @@ public class RegisterServlet extends HttpServlet {
         }
 
         // If no errors, proceed to register the user
-        boolean isRegistered = userDB.registerUser(new User(0, username, password, firstName, lastName, phone, email, address, new Date(), "unverified", "customer"));
+        String hashedPassword = Encrypt.toSHA256(password);
+        boolean isRegistered = userDB.registerUser(new User(0, username, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", "customer"));
 
         if (isRegistered) {
             // Generate OTP
@@ -101,7 +103,8 @@ public class RegisterServlet extends HttpServlet {
         return password.length() >= 8 && password.length() <= 16
                 && password.chars().anyMatch(Character::isUpperCase)
                 && password.chars().anyMatch(Character::isLowerCase)
-                && password.chars().anyMatch(Character::isDigit);
+                && password.chars().anyMatch(Character::isDigit)
+                && !password.contains(" ");  // Ensure no whitespace
     }
 
     private void sendOtpEmail(String to, int otp) {

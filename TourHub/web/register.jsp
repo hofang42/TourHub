@@ -1,4 +1,4 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8"%> 
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,7 +18,7 @@
                         <div class="row gy-3">
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="username" placeholder="Username" value="<%= request.getAttribute("username") != null ? request.getAttribute("username") : "" %>" required>
+                                    <input type="text" class="form-control" name="username" placeholder="Username" value="${username}" required>
                                     <label for="username">Username</label>
                                 </div>
                             </div>
@@ -36,41 +36,44 @@
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="email" class="form-control" name="email" placeholder="Email" value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>" required>
+                                    <input type="email" class="form-control" name="email" placeholder="Email" value="${email}" required>
                                     <label for="email">Email</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="firstName" placeholder="First Name" value="<%= request.getAttribute("firstName") != null ? request.getAttribute("firstName") : "" %>" required>
+                                    <input type="text" class="form-control" name="firstName" placeholder="First Name" value="${firstName}" required>
                                     <label for="firstName">First Name</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="lastName" placeholder="Last Name" value="<%= request.getAttribute("lastName") != null ? request.getAttribute("lastName") : "" %>" required>
+                                    <input type="text" class="form-control" name="lastName" placeholder="Last Name" value="${lastName}" required>
                                     <label for="lastName">Last Name</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="phone" placeholder="Phone" value="<%= request.getAttribute("phone") != null ? request.getAttribute("phone") : "" %>" required>
+                                    <input type="text" class="form-control" name="phone" placeholder="Phone" value="${phone}" required>
                                     <label for="phone">Phone</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="address" placeholder="Address" value="<%= request.getAttribute("address") != null ? request.getAttribute("address") : "" %>" required>
+                                    <input type="text" class="form-control" name="address" placeholder="Address" value="${address}" required>
                                     <label for="address">Address</label>
                                 </div>
                             </div>
-                            <% if (request.getAttribute("error") != null) { %>
+
+                            <!-- Display Error Messages -->
+                            <c:if test="${not empty error}">
                                 <div class="col-12">
                                     <div class="alert alert-danger">
-                                        <%= request.getAttribute("error") %>
+                                        <c:out value="${error}"/>
                                     </div>
                                 </div>
-                            <% } %>
+                            </c:if>
+
                             <div class="col-12">
                                 <div class="d-grid">
                                     <button class="btn btn-primary btn-lg" type="submit">Register</button>

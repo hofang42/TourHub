@@ -1,4 +1,5 @@
 package DataAccess;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -7,6 +8,7 @@ import model.User;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.Encrypt;
 
 public class UserDB implements DatabaseInfo {
 
@@ -51,41 +53,33 @@ public class UserDB implements DatabaseInfo {
         return false;
     }
 
-    public void verifyUser(String email) {
-        String sql = "UPDATE [User] SET verified = ? WHERE email = ?";
-        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setBoolean(1, true);
-            ps.setString(2, email);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public User authenticate(String email, String password) {
-        String sql = "SELECT * FROM [User] WHERE email = ? AND (password = ? OR password = '')"; // Handle no password for Google users
+        String sql = "SELECT * FROM [User] WHERE email = ?";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
-            if (password != null) {
-                ps.setString(2, password);
-            } else {
-                ps.setString(2, ""); // Check for Google users (empty password)
-            }
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new User(
-                        rs.getInt("userId"),
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("phone"),
-                        rs.getString("email"),
-                        rs.getString("address"),
-                        rs.getTimestamp("createdAt"),
-                        rs.getString("userStatus"), // Fetch userStatus
-                        rs.getString("role") // Fetch role
-                );
+                String storedHashedPassword = rs.getString("password");
+
+                // Use the same static salt method to hash the input password
+                String hashedInputPassword = Encrypt.toSHA256(password);
+
+                // Compare hashed input password with stored hashed password
+                if (storedHashedPassword.equals(hashedInputPassword)) {
+                    return new User(
+                            rs.getInt("userId"),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            rs.getString("firstName"),
+                            rs.getString("lastName"),
+                            rs.getString("phone"),
+                            rs.getString("email"),
+                            rs.getString("address"),
+                            rs.getTimestamp("createdAt"),
+                            rs.getString("userStatus"),
+                            rs.getString("role")
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,7 +114,7 @@ public class UserDB implements DatabaseInfo {
         }
         return false;
     }
-    
+
     //Kiem tra email co trong database hay la khong
     public boolean checkEmailExists(String email) {
         boolean exists = false;
@@ -159,9 +153,9 @@ public class UserDB implements DatabaseInfo {
         }
         return exists;
     }
-    
+
     public void updateUserStatusToVerified(String email) {
-        String sql = "UPDATE users SET userStatus = 'verified' WHERE email = ?";
+        String sql = "UPDATE [User] SET userStatus = 'verified' WHERE email = ?";
         try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.executeUpdate();
@@ -169,43 +163,42 @@ public class UserDB implements DatabaseInfo {
             e.printStackTrace();
         }
     }
-    
+
 //-------------------------------------------------
-    
     //Lấy all user ra
     public User getUser(int userId) {
-    User user = null;
-    // Fixed: Added space after "createdAt"
-    String query = "SELECT userId, username, password, userStatus, role, "
-                 + "firstName, lastName, email, phone, address, createdAt "
-                 + "FROM [User] WHERE userId = ?";
+        User user = null;
+        // Fixed: Added space after "createdAt"
+        String query = "SELECT userId, username, password, userStatus, role, "
+                + "firstName, lastName, email, phone, address, createdAt "
+                + "FROM [User] WHERE userId = ?";
 
-    try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
-        stmt.setInt(1, userId);
-        ResultSet rs = stmt.executeQuery();
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
 
-        if (rs.next()) {
-            int id = rs.getInt(1);
-            String username = rs.getString(2);
-            String password = rs.getString(3);
-            String userStatus = rs.getString(4);
-            String role = rs.getString(5);
-            String firstName = rs.getString(6);
-            String lastName = rs.getString(7);
-            String email = rs.getString(8);
-            String phone = rs.getString(9);
-            String address = rs.getString(10);
-            Date createdAt = rs.getDate(11);
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                String username = rs.getString(2);
+                String password = rs.getString(3);
+                String userStatus = rs.getString(4);
+                String role = rs.getString(5);
+                String firstName = rs.getString(6);
+                String lastName = rs.getString(7);
+                String email = rs.getString(8);
+                String phone = rs.getString(9);
+                String address = rs.getString(10);
+                Date createdAt = rs.getDate(11);
 
-            user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
+                user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    } catch (Exception ex) {
-        Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        return user;
     }
-    return user;
-}
 
     //Thêm user mới
     public void insertUser(User user) {
@@ -240,7 +233,7 @@ public class UserDB implements DatabaseInfo {
             return false; // Password update failed
         }
     }
-    
+
     public boolean updateEmail(int userId, String newEmail) {
         String query = "UPDATE [User] SET email=? WHERE UserId=?";
 
@@ -284,11 +277,10 @@ public class UserDB implements DatabaseInfo {
         }
         return result;
     }
-    
+
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
         User user = (User) session.getAttribute("currentUser");
         return user; // or throw an exception if user not found
     }
-    
-    
+
 }
