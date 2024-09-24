@@ -121,6 +121,9 @@
                                 <div id="dropdownContent" class="dropdown-content">
                                     <a href="user-profile.jsp">Profile</a>
                                     <a href="settings.jsp">Settings</a>
+                                    <c:if test="${sessionScope.currentUser.role.equals('provider')}">
+                                        <a href="">Studio</a>
+                                    </c:if>
                                     <a href="logout">Logout</a>
                                 </div>
                             </div>
@@ -292,14 +295,6 @@
                 </div>
             </div>                              
         </section>
-
-
-
-
-
-
-
-
 
         <section class="section section-lg text-center bg-gray-lighter novi-background bg-cover">
             <div class="container container-bigger">

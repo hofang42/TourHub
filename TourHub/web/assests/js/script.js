@@ -1497,9 +1497,4 @@ $document.ready(function () {
     }
 
 
-
-
-
-
-
 });
