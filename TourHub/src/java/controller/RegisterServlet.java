@@ -36,6 +36,7 @@ public class RegisterServlet extends HttpServlet {
         String lastName = request.getParameter("lastName");
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
+        String role = request.getParameter("role");
 
         UserDB userDB = new UserDB();
         String error = "";
@@ -74,7 +75,7 @@ public class RegisterServlet extends HttpServlet {
 
         // If no errors, proceed to register the user
         String hashedPassword = Encrypt.toSHA256(password);
-        boolean isRegistered = userDB.registerUser(new User(0, username, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", "customer"));
+        boolean isRegistered = userDB.registerUser(new User(0, username, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", role));
 
         if (isRegistered) {
             // Generate OTP

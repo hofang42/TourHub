@@ -43,7 +43,7 @@ public class UserDB implements DatabaseInfo {
             ps.setString(7, user.getAddress());
             ps.setTimestamp(8, new java.sql.Timestamp(user.getCreatedAt().getTime()));
             ps.setString(9, user.getUserStatus());
-            ps.setString(10, user.getRole());
+            ps.setString(10, user.getRole());  // Save role
 
             ps.executeUpdate();
             return true;

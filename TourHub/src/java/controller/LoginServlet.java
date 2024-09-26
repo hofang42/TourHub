@@ -44,8 +44,8 @@ public class LoginServlet extends HttpServlet {
                 user.setPassword(""); // No password for Google users
                 user.setCreatedAt(new java.util.Date());
                 user.setUserStatus("verified");
-                user.setRole("customer");
                 userDB.registerUser(user); // Save user in the DB
+                response.sendRedirect("completeRegistration.jsp");
             }
         } else if (email != null && password != null) {
             // Manual login
