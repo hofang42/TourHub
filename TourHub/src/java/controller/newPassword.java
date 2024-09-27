@@ -4,7 +4,7 @@
  */
 package controller;
 
-import DAO.UserDB;
+import DataAccess.UserDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -99,16 +99,16 @@ public class newPassword extends HttpServlet {
                 if (rowCount > 0) {
                     response.sendRedirect("login.jsp?status=resetSuccess");
                 } else {
-                    response.sendRedirect("newPassword.jsp?status=resetFailed");
+                    response.sendRedirect("newpassword.jsp?status=resetFailed");
                 }
             } catch (SQLException e) {
                 // Xử lý ngoại lệ SQL
                 e.printStackTrace();
-                response.sendRedirect("newPassword.jsp?status=resetFailed");
+                response.sendRedirect("newpassword.jsp?status=resetFailed");
             }
         } else {
             // Nếu mật khẩu không khớp, thông báo lỗi
-            response.sendRedirect("newPassword.jsp?status=passwordMismatch");
+            response.sendRedirect("newpassword.jsp?status=passwordMismatch");
         }
     }
 

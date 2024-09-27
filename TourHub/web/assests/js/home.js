@@ -213,3 +213,53 @@ window.addEventListener('click', function (event) {
         });
     }
 });
+//
+$(document).ready(function () {
+    $('.location-slider').owlCarousel({
+        items: 5, // Default items for screens below 480px
+        loop: true, // Enable looping of items
+        autoplay: true, // Autoplay feature
+        autoplayTimeout: 3000, // 3 seconds delay between slides
+        margin: 10, // Margin between items
+        dots: false, // No dots navigation
+        nav: false, // No navigation arrows
+        responsive: {// Responsive breakpoints
+            0: {
+                items: 1    // 1 item below 480px
+            },
+            480: {
+                items: 2    // 2 items between 480px and 767px
+            },
+            768: {
+                items: 3    // 3 items between 768px and 991px
+            },
+            1024: {
+                items: 5    // 5 items for 1024px and larger screens
+            }
+        }
+    });
+});
+
+
+$(document).ready(function () {
+    $('.location-link').click(function (e) {
+//        e.preventDefault(); // Prevent default link behavior
+
+        var provinceId = $(this).data('id'); // Get province ID
+        $.ajax({
+            url: 'UpdateVisitCountServlet', //servlet URL handle the update
+            type: 'POST',
+            data: {id: provinceId},
+            success: function (response) {
+                console.log('Visit count updated successfully:', response);
+                // Redirect to login.jsp after updating the visit count
+//                window.location.href = 'login.jsp';
+            },
+            error: function (xhr, status, error) {
+                console.error('Error updating visit count:', error);
+                // Optionally, redirect to login.jsp in case of an error as well
+//                window.location.href = 'login.jsp';
+            }
+        });
+    });
+});

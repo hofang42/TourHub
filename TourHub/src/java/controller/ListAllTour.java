@@ -4,7 +4,8 @@
  */
 package controller;
 
-import DAO.TourDB;
+import DataAccess.ProvinceDB;
+import DataAccess.TourDB;
 import com.google.gson.Gson;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import model.Province;
 import model.Tour;
 
 /**
@@ -40,10 +42,16 @@ public class ListAllTour extends HttpServlet {
             String toursJson = new Gson().toJson(tours);
             request.setAttribute("toursJson", toursJson);
             request.setAttribute("tours", tours);
+
+            ProvinceDB provinceDB = new ProvinceDB();
+            List<Province> provinces = provinceDB.getProvinceByVisitCount();
+            request.getSession().setAttribute("provinces", provinces);
+
             request.getRequestDispatcher("index.jsp").forward(request, response);  // Make sure index.jsp exists
         } catch (Exception e) {
             // Handle potential exceptions (e.g., DB connection issues)
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to fetch tours.");
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

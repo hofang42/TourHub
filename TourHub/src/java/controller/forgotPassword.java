@@ -4,7 +4,7 @@
  */
 package controller;
 
-import DAO.UserDB;
+import DataAccess.UserDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -109,13 +109,13 @@ public class forgotPassword extends HttpServlet {
                 Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("trongducdoan25@gmail.com", "fymw ilhs vtuj sczy");
+                        return new PasswordAuthentication("tourhubforlife@gmail.com", "zlnk ggii octx hbdf");
                     }
                 });
 
                 try {
                     MimeMessage message = new MimeMessage(session);
-                    message.setFrom(new InternetAddress("trongducdoan25@gmail.com"));
+                    message.setFrom(new InternetAddress("tourhubforlife@gmail.com"));
                     message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                     message.setSubject("OTP for Password Reset");
                     message.setText("Your OTP is: " + otpvalue);
@@ -130,6 +130,7 @@ public class forgotPassword extends HttpServlet {
                 request.setAttribute("message", "OTP is sent to your email id");
                 mySession.setAttribute("otp", otpvalue);
                 mySession.setAttribute("email", email);
+                mySession.setAttribute("type", "forgotPassword");  // Set type for password reset
                 dispatcher.forward(request, response);
             } else {
                 dispatcher = request.getRequestDispatcher("forgotpassword.jsp");

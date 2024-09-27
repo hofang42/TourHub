@@ -5,56 +5,56 @@
 <%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <body>
     <!-- Page preloader-->
-    <div class="page-loader"> 
-        <div class="page-loader-body "> 
-            <div class="preloader-wrapper big active"> 
-                <div class="spinner-layer spinner-blue"> 
-                    <div class="circle-clipper left">
-                        <div class="circle"> </div>
-                    </div>
-                    <div class="gap-patch">
-                        <div class="circle"> </div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
+    <!--        <div class="page-loader"> 
+                <div class="page-loader-body "> 
+                    <div class="preloader-wrapper big active"> 
+                        <div class="spinner-layer spinner-blue"> 
+                            <div class="circle-clipper left">
+                                <div class="circle"> </div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"> </div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                        <div class="spinner-layer spinner-red">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"> </div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                        <div class="spinner-layer spinner-yellow"> 
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"> </div>
+                            </div>
+                        </div>
+                        <div class="spinner-layer spinner-green"> 
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="spinner-layer spinner-red">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="gap-patch">
-                        <div class="circle"> </div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-                <div class="spinner-layer spinner-yellow"> 
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="gap-patch">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"> </div>
-                    </div>
-                </div>
-                <div class="spinner-layer spinner-green"> 
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="gap-patch">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            </div>-->
     <!-- Page-->
     <div class="page">
         <!-- Page Header-->
@@ -91,20 +91,23 @@
                             <!-- RD Navbar Toggle-->
                             <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
                             <!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img class="logo-default" src="assests/images/logo-favicon/logo.png" alt="" width="208" height="46"/>
+                            <div class="rd-navbar-brand"><a class="brand-name" href="home"><img class="logo-default" src="assests/images/logo-favicon/logo.png" alt="" width="208" height="46"/>
                                     <img class="logo-inverse" src="assests/images/logo-favicon/logo.png" alt="" width="208" height="46"/></a></div>
+
                         </div>
                         <div class="rd-navbar-aside-center">
                             <div class="rd-navbar-nav-wrap">
                                 <!-- RD Navbar Nav-->
                                 <ul class="rd-navbar-nav">
-                                    <li class="active"><a href="index.jsp">Home</a>
+                                    <li class="active"><a href="home">Home</a>
                                     </li>
                                     <li><a href="about-us.jsp">About Us</a>
                                     </li>
                                     <li><a href="contacts.jsp">Contacts</a>
                                     </li>
                                     <li><a href="typography.jsp">Typography</a>
+                                    </li>
+                                    <li><a href="faqs.jsp">FAQs</a>
                                     </li>
                                 </ul>
                             </div>
@@ -121,6 +124,9 @@
                                 <div id="dropdownContent" class="dropdown-content">
                                     <a href="user-profile.jsp">Profile</a>
                                     <a href="settings.jsp">Settings</a>
+                                    <c:if test="${sessionScope.currentUser.role.equals('provider') || sessionScope.currentUser.role.equals('Admin')}">
+                                        <a href="">Studio</a>
+                                    </c:if>
                                     <a href="logout">Logout</a>
                                 </div>
                             </div>
@@ -204,7 +210,8 @@
         </section>
 
         <section class="section section-variant-1 bg-default novi-background bg-cover"> 
-            <div class="container container-wide">
+            <!--container-wide-->
+            <div class="container "> 
                 <div class="row row-fix justify-content-xl-end row-30 text-center text-xl-left">
                     <div class="col-xl-8">
                         <div class="parallax-text-wrap">
@@ -230,8 +237,8 @@
         </section>
 
 
-        <section class="section section-variant-1 bg-default novi-background bg-cover"> 
-            <div class="container-fluid"> <!-- Make it full width -->
+        <section class="section section-variant-1 bg-default novi-background bg-cover container"> 
+            <div class="container"> <!-- Make it full width -->
                 <div class="row justify-content-xl-end text-center text-xl-left">
                     <div class="col-xl-12"> <!-- Full width column -->
                         <div class="parallax-text-wrap">
@@ -241,65 +248,28 @@
                     </div>
 
                     <!-- Full width Owl Carousel Container -->
-                    <div class="owl-carousel owl-theme location-slider" 
-                         data-items="5"      
-                         data-dots="false"    
-                         data-nav="false"     
-                         data-loop="false"   
-                         data-autoplay="true" 
-                         data-margin="5">   
+                    <div class="owl-carousel owl-theme location-slider">
+                        <c:forEach items="${sessionScope.provinces}" var="province">
+                            <!--Location Card--> 
+                            <div class="item" >
+                                <a href="login.jsp" data-id="${province.province_id}" class="location-link">
+                                    <div class="location-card">
 
-                        <!-- First Location Card -->
-                        <div class="item">
-                            <div class="location-card">
-                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
-                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
-                            </div>
-                        </div>
+                                        <img class="quote-boxed-image" src="assests/images/provinces/${province.image_url}" alt="${province.province_name}" style="width: 100%; height: auto"/>
+                                        <div class="location-name">${province.province_name}</div>
 
-                        <!-- Other location cards follow in the same pattern -->
-                        <div class="item">
-                            <div class="location-card">
-                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
-                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
+                                    </div>
+                                </a>
                             </div>
-                        </div>
-                        <div class="item">
-                            <div class="location-card">
-                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
-                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="location-card">
-                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
-                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="location-card">
-                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
-                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="location-card">
-                                <img class="quote-boxed-image" src="assests/images/banner/bg1.webp" alt="Tỉnh Thừa Thiên Huế" style="width: 100%; height: auto"/>
-                                <div class="location-name">Tỉnh Thừa Thiên Huế</div>
-                            </div>
-                        </div>
-                    </div>    
+                        </c:forEach>
+                    </div>   
+
+                    <div class="owl-carousel owl-theme location-slider">
+                    </div>
+
                 </div>
             </div>                              
         </section>
-
-
-
-
-
-
-
-
 
         <section class="section section-lg text-center bg-gray-lighter novi-background bg-cover">
             <div class="container container-bigger">

@@ -10,7 +10,7 @@
         <!-- My CSS -->
         <link rel="stylesheet" href="assests/css/style_profile.css">
 
-        <title>User Profile</title>
+        <title>Booking</title>
     </head>
     <body>
 
@@ -40,18 +40,23 @@
                         <span class="text">Message</span>
                     </a>
                 </li>
-                <%-- <li>
-                    <a href="#">
-                        <i class='bx bxs-doughnut-chart' ></i>
-                        <span class="text">Analytics</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-group' ></i>
-                        <span class="text">Team</span>
-                    </a>
-                </li> --%>
+                <c:if test="${sessionScope.currentUser.role.equals('provider') || sessionScope.currentUser.role.equals('Admin')}">
+                    <li>
+                    <c:if test="${sessionScope.currentUser.role == 'provider' || sessionScope.currentUser.role == 'Admin'}">
+                        <a href="${sessionScope.currentUser.role == 'provider' ? 'provider-analysis.jsp' : '#'}">
+                            <i class='bx bxs-doughnut-chart'></i>
+                            <span class="text">Analytics</span>
+                        </a>
+                    </c:if>
+
+                    </li>
+                </c:if>
+                <!--                <li>
+                                    <a href="#">
+                                        <i class='bx bxs-group' ></i>
+                                        <span class="text">Team</span>
+                                    </a>
+                                </li> -->
             </ul>
             <ul class="side-menu">
                 <li>
@@ -116,5 +121,19 @@
 
 
         <script src="assests/js/script_profile.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const burger = document.querySelector('.burger');
+                const navigation = document.querySelector('.navigation-admin');
+                const main = document.querySelector('.main-admin');
+                const profileCard = document.querySelector('.profile-card'); // Select the profile card
+
+                burger.addEventListener('click', function () {
+                    navigation.classList.toggle('active');
+                    main.classList.toggle('active');
+                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                });
+            });
+        </script>
     </body>
 </html>

@@ -1,10 +1,5 @@
-<%@ page import="model.User" %>
-<%
-    User user = (User) session.getAttribute("currentUser");
-    if (user == null) {
-        response.sendRedirect("login.jsp");
-    }
-%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,8 +7,19 @@
     <title>Welcome</title>
 </head>
 <body>
-    <h1>Welcome, <%= user.getUsername() %>!</h1>
-    <p>Your email: <%= user.getEmail() %></p>
+
+
+    <jsp:useBean id="currentUser" class="model.User" scope="session" />
+    <%
+        if (currentUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+    %>
+    
+    <h1>Welcome, ${currentUser.username}!</h1>
+    <p>Your email:${currentUser.email}</p>
     <a href="logout">Logout</a>
+
 </body>
 </html>
