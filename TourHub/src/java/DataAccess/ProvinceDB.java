@@ -63,7 +63,7 @@ public class ProvinceDB {
         return provinces;
     }
 
-    public int updateVisitCount(int province_id) {
+    public int updateVisitProvinceCount(int province_id) {
         try (Connection connection = DriverManager.getConnection(DBURL, USERDB, PASSDB)) {
             String sql = "UPDATE provinces SET visit_count = visit_count + 1 WHERE province_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {

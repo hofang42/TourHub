@@ -5,6 +5,7 @@
 package controller;
 
 import DataAccess.ProvinceDB;
+import DataAccess.TourDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
  *
  * @author hoang
@@ -57,7 +59,30 @@ public class UpdateVisitCountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            // Validate and parse provinceId
+            String idParam = request.getParameter("id");
+
+            // Update visit count in the database
+            TourDB tourDB = new TourDB();
+            int success = tourDB.addNewCountTourVisit(idParam);
+
+            // Handle success/failure
+            if (success > 0) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("Visit count updated successfully.");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Failed to update visit count.");
+            }
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Invalid Province ID format.");
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("An error occurred while updating visit count.");
+            e.printStackTrace();  // Ideally replace with proper logging
+        }
     }
 
     /**
@@ -84,7 +109,7 @@ public class UpdateVisitCountServlet extends HttpServlet {
 
             // Update visit count in the database
             ProvinceDB provinceDB = new ProvinceDB();
-            int success = provinceDB.updateVisitCount(provinceId);
+            int success = provinceDB.updateVisitProvinceCount(provinceId);
 
             // Handle success/failure
             if (success > 0) {

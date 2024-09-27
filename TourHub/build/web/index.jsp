@@ -124,8 +124,11 @@
                                 <div id="dropdownContent" class="dropdown-content">
                                     <a href="user-profile.jsp">Profile</a>
                                     <a href="settings.jsp">Settings</a>
-                                    <c:if test="${sessionScope.currentUser.role.equals('provider') || sessionScope.currentUser.role.equals('Admin')}">
-                                        <a href="">Studio</a>
+                                    <c:if test="${sessionScope.currentUser.role.equals('Provider')}">
+                                        <a href="provider-analys">Studio</a>
+                                    </c:if>
+                                    <c:if test="${sessionScope.currentUser.role.equals('Admin')}">
+                                        <a href="admin-analysis.jsp">Studio</a>
                                     </c:if>
                                     <a href="logout">Logout</a>
                                 </div>

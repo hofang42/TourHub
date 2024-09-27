@@ -100,12 +100,19 @@ function displayTours(city) {
 
     // Display filtered tours
     filteredTours.forEach(tour => {
+        // Create the column div and set its classes
         const colDiv = document.createElement('div');
         colDiv.classList.add('col-md-6', 'col-xl-4');
+
+        // Create the article element and set its class
         const article = document.createElement('article');
         article.classList.add('event-default-wrap');
+
+        // Create the event default div and set its class
         const eventDefault = document.createElement('div');
         eventDefault.classList.add('event-default');
+
+        // Create and append the image
         const figure = document.createElement('figure');
         figure.classList.add('event-default-image');
         const img = document.createElement('img');
@@ -114,37 +121,68 @@ function displayTours(city) {
         img.width = 570;
         img.height = 370;
         figure.appendChild(img);
+
+        // Append the figure to the event default div
         eventDefault.appendChild(figure);
+
+        // Create the caption div and set its class
         const captionDiv = document.createElement('div');
         captionDiv.classList.add('event-default-caption');
+
+        // Create the "Learn more" button, set its properties, and append it to the caption div
         const learnMoreBtn = document.createElement('a');
-        learnMoreBtn.classList.add('button', 'button-xs', 'button-secondary', 'button-nina');
+        learnMoreBtn.classList.add('button', 'button-xs', 'button-secondary', 'button-nina', 'tour-visit-count');
         learnMoreBtn.href = "#";
         learnMoreBtn.textContent = "Learn more";
+        learnMoreBtn.setAttribute('data-id', tour.tourId);
         captionDiv.appendChild(learnMoreBtn);
+
+        // Append the caption div to the event default div
         eventDefault.appendChild(captionDiv);
+
+        // Append the event default div to the article element
         article.appendChild(eventDefault);
+
+        // Create the inner div for additional information and set its class
         const eventDefaultInner = document.createElement('div');
         eventDefaultInner.classList.add('event-default-inner');
+
+        // Create the tour info div and append the tour name and price
         const tourInfoDiv = document.createElement('div');
+
+        // Create the tour name heading and link
         const tourName = document.createElement('h5');
         const tourLink = document.createElement('a');
         tourLink.classList.add('event-default-title');
         tourLink.href = "#";
         tourLink.textContent = tour.tourName;
         tourName.appendChild(tourLink);
+
+        // Append the tour name to the tour info div
         tourInfoDiv.appendChild(tourName);
-        eventDefaultInner.appendChild(tourInfoDiv);
+
+        // Create the price span, set its content, and append it to the tour info div
         const priceSpan = document.createElement('span');
         priceSpan.classList.add('heading-5');
-        priceSpan.textContent = tour.price + " VND";
+        priceSpan.textContent = `${tour.price} VND`;
         tourInfoDiv.appendChild(priceSpan);
+
+        // Append the tour info div to the event default inner div
+        eventDefaultInner.appendChild(tourInfoDiv);
+
+        // Create the total time div, set its content, and append it to the event default inner div
         const totalTimeDiv = document.createElement('div');
         totalTimeDiv.classList.add('heading-6');
         totalTimeDiv.textContent = tour.totalTime;
         eventDefaultInner.appendChild(totalTimeDiv);
+
+        // Append the inner div to the article element
         article.appendChild(eventDefaultInner);
+
+        // Append the article element to the column div
         colDiv.appendChild(article);
+
+        // Finally, append the column div to the cityList container
         cityList.appendChild(colDiv);
     });
 }
@@ -250,6 +288,29 @@ $(document).ready(function () {
             url: 'UpdateVisitCountServlet', //servlet URL handle the update
             type: 'POST',
             data: {id: provinceId},
+            success: function (response) {
+                console.log('Visit count updated successfully:', response);
+                // Redirect to login.jsp after updating the visit count
+//                window.location.href = 'login.jsp';
+            },
+            error: function (xhr, status, error) {
+                console.error('Error updating visit count:', error);
+                // Optionally, redirect to login.jsp in case of an error as well
+//                window.location.href = 'login.jsp';
+            }
+        });
+    });
+});
+
+$(document).ready(function () {
+    $('.tour-visit-count').click(function (e) {
+//        e.preventDefault(); // Prevent default link behavior
+
+        var tourId = $(this).data('id'); // Get province ID
+        $.ajax({
+            url: 'UpdateVisitCountServlet', //servlet URL handle the update
+            type: 'GET',
+            data: {id: tourId},
             success: function (response) {
                 console.log('Visit count updated successfully:', response);
                 // Redirect to login.jsp after updating the visit count

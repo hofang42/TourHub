@@ -15,6 +15,7 @@ public class User {
     private Date createdAt;
     private String userStatus;
     private String role;
+    private String avatar;
 
     // Default constructor
     public User() {
@@ -45,8 +46,20 @@ public class User {
         this.email = email;
         this.address = address;
     }
-    
-    
+
+    public User(int userId, String password, String firstName, String lastName, String phone, String email, String address, Date createdAt, String userStatus, String role, String avatar) {
+        this.userId = userId;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.createdAt = createdAt;
+        this.userStatus = userStatus;
+        this.role = role;
+        this.avatar = avatar;
+    }
 
     // Getters and setters
     public int getUserId() {
@@ -135,6 +148,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @Override

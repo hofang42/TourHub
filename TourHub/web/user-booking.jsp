@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -40,16 +42,14 @@
                         <span class="text">Message</span>
                     </a>
                 </li>
-                <c:if test="${sessionScope.currentUser.role.equals('provider') || sessionScope.currentUser.role.equals('Admin')}">
+                <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
                     <li>
-                    <c:if test="${sessionScope.currentUser.role == 'provider' || sessionScope.currentUser.role == 'Admin'}">
-                        <a href="${sessionScope.currentUser.role == 'provider' ? 'provider-analysis.jsp' : '#'}">
+
+                        <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
                             <i class='bx bxs-doughnut-chart'></i>
                             <span class="text">Analytics</span>
                         </a>
-                    </c:if>
-
-                    </li>
+                    </li>   
                 </c:if>
                 <!--                <li>
                                     <a href="#">

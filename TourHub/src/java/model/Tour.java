@@ -12,7 +12,7 @@ import java.sql.Date;
  */
 public class Tour {
 
-    private int tourId;
+    private String tourId;
     private String tourName;
     private String description;
     private String totalTime;
@@ -22,6 +22,10 @@ public class Tour {
     private int companyId;
     private Date createdAt;
     private String tourImg;
+    private Date startDate;
+    private Date endDate;
+    private float avgRating;
+    private int numOfReview;
 
     public Tour() {
     }
@@ -34,7 +38,7 @@ public class Tour {
         this.tourImg = tourImg;
     }
 
-    public Tour(int tourId, String tourName, String description, String totalTime, float price, int slot, String tourStatus, int companyId, Date createdAt, String tourImg) {
+    public Tour(String tourId, String tourName, String description, String totalTime, float price, int slot, String tourStatus, int companyId, Date createdAt, String tourImg, Date startDate, Date endDate, float avgRating, int numOfReview) {
         this.tourId = tourId;
         this.tourName = tourName;
         this.description = description;
@@ -45,13 +49,17 @@ public class Tour {
         this.companyId = companyId;
         this.createdAt = createdAt;
         this.tourImg = tourImg;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.avgRating = avgRating;
+        this.numOfReview = numOfReview;
     }
 
-    public int getTourId() {
+    public String getTourId() {
         return tourId;
     }
 
-    public void setTourId(int tourId) {
+    public void setTourId(String tourId) {
         this.tourId = tourId;
     }
 
@@ -117,6 +125,38 @@ public class Tour {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public float getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(float avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public int getNumOfReview() {
+        return numOfReview;
+    }
+
+    public void setNumOfReview(int numOfReview) {
+        this.numOfReview = numOfReview;
     }
 
     @Override
