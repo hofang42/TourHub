@@ -225,8 +225,28 @@ public class UserDB implements DatabaseInfo {
 
     public User getUserFromSession(HttpSession session) {
         return (User) session.getAttribute("currentUser");
-    }    
-    
+    }
+
+    public Integer getProviderIdFromUserId(int userId) throws SQLException {
+        String query = "SELECT c.company_Id FROM [User] u JOIN Company c ON u.user_Id = c.user_Id WHERE u.user_Id = ?";
+        Integer providerId = null;
+
+        try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    providerId = rs.getInt("company_Id");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // or handle exception as needed
+        }
+
+        return providerId; // This will return null if no providerId is found
+    }
+
     public static void main(String[] args) {
         UserDB userDB = new UserDB();
         User user = userDB.getUser(1);
@@ -236,4 +256,5 @@ public class UserDB implements DatabaseInfo {
             System.out.println("User not found.");
         }
     }
+
 }

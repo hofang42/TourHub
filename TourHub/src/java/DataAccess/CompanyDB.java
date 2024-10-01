@@ -8,7 +8,6 @@ import static DataAccess.DatabaseInfo.DBURL;
 import static DataAccess.DatabaseInfo.DRIVERNAME;
 import static DataAccess.DatabaseInfo.PASSDB;
 import static DataAccess.DatabaseInfo.USERDB;
-import static DataAccess.ProvinceDB.getConnect;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

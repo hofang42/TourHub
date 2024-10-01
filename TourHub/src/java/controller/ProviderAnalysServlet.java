@@ -4,10 +4,11 @@
  */
 package controller;
 
+import DataAccess.BookingDB;
 import DataAccess.CompanyDB;
 import DataAccess.TourDB;
+import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,8 +16,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.BookingDetails;
 import model.User;
 
 /**
@@ -52,7 +58,70 @@ public class ProviderAnalysServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("currentUser");
+
+        // Retrieve the date string from the request
+        String dateString = request.getParameter("date");
+
+        // Initialize dateInput
+        java.sql.Date dateInput = null; // Use java.sql.Date directly
+
+        // Check if the dateString is not null and try to parse it
+        if (dateString != null && !dateString.isEmpty()) {
+            try {
+                // Parse the date string to java.util.Date
+                java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+                dateInput = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
+            } catch (ParseException e) {
+                e.printStackTrace(); // Handle parsing error
+                // Optionally, you could set dateInput to null or handle it differently
+            }
+        }
+
+        // Check if the user is null
+        if (user == null) {
+            response.sendRedirect("login.jsp"); // Redirect to login if not authenticated
+            return; // Stop further processing
+        }
+
+        System.out.println("USER PROFILE: " + user.getUserId());
+        TourDB tourDB = new TourDB();
+        CompanyDB companyDB = new CompanyDB();
+        BookingDB bookingDB = new BookingDB();
+        int companyId = 0;
+
+        try {
+            companyId = companyDB.getCompanyIdFromUserId(user.getUserId());
+        } catch (SQLException ex) {
+            Logger.getLogger(ProviderAnalysServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        float totalProfitThisMonth = tourDB.getTotalProfit(companyId);
+        int visitToday = tourDB.getTodayVisit(companyId); // Assuming getVisitsByDate accepts a date
+        int bookingThisMonth = bookingDB.getTotalBookingThisMonth(companyId); // Use dateInput if available
+        List<BookingDetails> bookings = bookingDB.getBookingDetails(); // Consider if you need to filter this by date as well
+
+        // After parsing the dateString
+        if (dateString != null && !dateString.isEmpty()) {
+            try {
+                java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+                dateInput = new java.sql.Date(utilDate.getTime());
+                session.setAttribute("date", dateInput); // Store the date in session
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Set session attributes for the JSP
+        request.getSession().setAttribute("totalProfitThisMonth", totalProfitThisMonth);
+        request.getSession().setAttribute("visitToday", visitToday);
+        request.getSession().setAttribute("bookingThisMonth", bookingThisMonth);
+        request.getSession().setAttribute("currentUser", user);
+        request.getSession().setAttribute("bookings", bookings);
+        session.setAttribute("date", dateInput);
+
+        request.getRequestDispatcher("provider-analysis.jsp").forward(request, response);
     }
 
     /**
@@ -64,36 +133,125 @@ public class ProviderAnalysServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+//    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        HttpSession session = request.getSession();
+//        User user = (User) session.getAttribute("currentUser");
+//
+//        // Check if the user is null
+//        if (user == null) {
+//            response.sendRedirect("login.jsp"); // Redirect to login if not authenticated
+//            return; // Stop further processing
+//        }
+//
+//        System.out.println("USER PROFILE" + user.getUserId());
+//        TourDB tourDB = new TourDB();
+//        CompanyDB companyDB = new CompanyDB();
+//        BookingDB bookingDB = new BookingDB();
+//        int companyId = 0;
+//        try {
+//            companyId = companyDB.getCompanyIdFromUserId(user.getUserId());
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ProviderAnalysServlet.class
+//                    .getName()).log(Level.SEVERE, null, ex);
+//        }
+//        int totalVisitATour = tourDB.getTotalVisitATour(companyId);
+//        int visitToday = tourDB.getTodayVisit(companyId);
+//        int bookingThisMonth = bookingDB.getTotalBookingThisMonth(companyId);
+//        List<BookingDetails> bookings = bookingDB.getBookingDetails();
+//
+//        request.getSession().setAttribute("totalVisitATour", totalVisitATour);
+//        request.getSession().setAttribute("visitToday", visitToday);
+//        request.getSession().setAttribute("bookingThisMonth", bookingThisMonth);
+//        request.getSession().setAttribute("currentUser", user);
+//        request.getSession().setAttribute("bookings", bookings);
+//
+//        request.getRequestDispatcher("provider-analysis.jsp").forward(request, response);
+////        response.sendRedirect("provider-analysis.jsp");
+//    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Get current user from session
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("currentUser");
 
-        // Check if the user is null
-        if (user == null) {
-            response.sendRedirect("login.jsp"); // Redirect to login if not authenticated
-            return; // Stop further processing
+        // Retrieve the date string from the request
+        String dateString = request.getParameter("date");
+
+        // Initialize dateInput (use java.sql.Date directly)
+        java.sql.Date dateInput = null;
+
+        // Check if dateString is not null or empty
+        if (dateString != null && !dateString.isEmpty()) {
+            try {
+                // Parse the date string to java.util.Date
+                java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+                dateInput = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
-        System.out.println("USER PROFILE" + user.getUserId());
+        // After parsing the dateString
+        if (dateString != null && !dateString.isEmpty()) {
+            try {
+                java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+                dateInput = new java.sql.Date(utilDate.getTime());
+                session.setAttribute("date", dateInput); // Store the date in session
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // If user is null, send error response (JSON)
+        if (user == null) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("error", "User not logged in");
+            response.getWriter().write(errorResponse.toString());
+            return;
+        }
+        // Create instances of your databases
         TourDB tourDB = new TourDB();
         CompanyDB companyDB = new CompanyDB();
+        BookingDB bookingDB = new BookingDB();
         int companyId = 0;
+
+        // Get company ID associated with the current user
         try {
             companyId = companyDB.getCompanyIdFromUserId(user.getUserId());
         } catch (SQLException ex) {
             Logger.getLogger(ProviderAnalysServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        int totalVisitATour = tourDB.getTotalVisitATour(companyId);
-        int visitToday = tourDB.getTodayVisit(companyId);
-        int bookingThisMonth = tourDB.getTotalBookingThisMonth(companyId);
-        request.getSession().setAttribute("totalVisitATour", totalVisitATour);
-        request.getSession().setAttribute("visitToday", visitToday);
-        request.getSession().setAttribute("bookingThisMonth", bookingThisMonth);
-        request.getSession().setAttribute("currentUser", user);
 
-        request.getRequestDispatcher("provider-analysis.jsp").forward(request, response);
-//        response.sendRedirect("provider-analysis.jsp");
+        // Fetch data based on the date provided (or lack of it)
+        float totalVisitATour = (dateInput != null)
+                ? tourDB.getTotalProfitAMonth(companyId, dateInput)
+                : tourDB.getTotalProfit(companyId);
+
+        int visitToday = (dateInput != null)
+                ? tourDB.getTodayVisitsByDate(companyId, dateInput)
+                : tourDB.getTodayVisit(companyId);
+
+        int bookingThisMonth = (dateInput != null)
+                ? bookingDB.getTotalBookingAMonthByDate(companyId, dateInput)
+                : bookingDB.getTotalBookingThisMonth(companyId);
+
+        // Prepare the JSON response
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.addProperty("totalVisitATour", totalVisitATour);
+        jsonResponse.addProperty("visitToday", visitToday);
+        jsonResponse.addProperty("bookingThisMonth", bookingThisMonth);
+
+        // Write the JSON response
+        response.getWriter().write(jsonResponse.toString());
+        response.getWriter().flush();
+
     }
 
     /**
@@ -108,7 +266,7 @@ public class ProviderAnalysServlet extends HttpServlet {
 
     public static void main(String[] args) {
         TourDB tourDB = new TourDB();
-        int totalVisitATour = tourDB.getTotalBookingThisMonth(2);
+        int totalVisitATour = tourDB.getTodayVisitsByDate(2, new Date("2024-09-26"));
         System.out.println(totalVisitATour);
     }
 }

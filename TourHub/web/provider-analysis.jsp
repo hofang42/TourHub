@@ -7,6 +7,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -54,7 +56,7 @@
 
 
                 <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
-                    <li class="active">
+                    <li class="active dropdown-btn">
 
                         <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
                             <i class='bx bxs-doughnut-chart'></i>
@@ -66,7 +68,7 @@
                 </div>
                 <!-- Sub-menu -->
                 <ul class="sub-menu">
-                    <li><a href="#">Tour Management</a></li>
+                    <li><a href="tour-management.jsp">Tour Management</a></li>
                     <li><a href="#">Payment</a></li>
                     <li><a href="#">Feature 3</a></li>
                 </ul>
@@ -120,16 +122,16 @@
             <main>
                 <h1>Dashboard</h1>
                 <div class="date">
-                    <input type="date" id="date" onchange=" GetProductByDate(), GetTotalProduct()"/>
+                    <input type="date" id="date" name="date" onchange="reloadData()"/>
                 </div>
                 <!-- Start Insight -->
                 <div class="insights">
                     <!-- Start selling  -->
                     <div class="sales" id="sale_total">
-                        <div class="sales-title"><h3>Total visit</h3></div>
+                        <div class="sales-title"><h3>Profit this month</h3></div>
                         <div class="sales-content">
-                            <h1>
-                                ${sessionScope.totalVisitATour != null ? sessionScope.totalVisitATour : 0}
+                            <h1 id="totalVisitValue">
+                                ${sessionScope.totalProfitThisMonth != null ? sessionScope.totalProfitThisMonth : 0}
                             </h1>
                         </div>
                     </div>
@@ -138,42 +140,62 @@
                     <div class="sales" id="sale_total">
                         <div class="sales-title"><h3>Visit today</h3></div>
                         <div class="sales-content">
-                            <h1>
+                            <h1 id="visitTodayValue">
                                 ${sessionScope.visitToday != null ? sessionScope.visitToday : 0}
                             </h1>
                         </div>
                     </div>
                     <div class="sales" id="sale_total">
-                        <div class="sales-title text"><h3>Number of booking this month</h3></div>
+                        <div class="sales-title text">
+                            <h3>
+                                <c:if test="${empty sessionScope.date}">
+                                    Number of bookings this month
+                                </c:if>
+                                <c:if test="${not empty sessionScope.date}">
+                                    Number of bookings month <fmt:formatDate value="${sessionScope.date}" pattern="MM/yyyy"/>
+                                </c:if>
+                            </h3>
+                        </div>
                         <div class="sales-content text">
-                            <h1>
+                            <h1 id="bookingThisMonthValue">
                                 ${sessionScope.bookingThisMonth != null ? sessionScope.bookingThisMonth : 0}
                             </h1>
                         </div>
                     </div>
+
                     <!-- End Incomes  -->
                 </div>
                 <!-- End Insight -->
                 <!-- Start recent order -->
-                <div class="recent_oder">
-                    <h1>Recent Orders</h1>
+                <div class="recent_order">
+                    <h1>Recent Tour Booking</h1>
                     <table>
                         <thead>
                             <tr>
-                                <th>Product Name</th>
-                                <th>Product ID</th>
-                                <th>Amounts</th>
+                                <th>Tour Name</th>
+                                <th>Customer Name</th>
+                                <th>Slot</th>
                                 <th>Status</th>
+                                <th>Total Cost</th>
                             </tr>
                         </thead>
                         <tbody id="product_list">
-                            <c:forEach items="${data}" var="data">
+                            <c:forEach items="${sessionScope.bookings}" var="booking">
                                 <tr>
-                                    <td>${data.product_name}</td>
-                                    <td>${data.product_id}</td>
-                                    <td>${data.price}</td>
-                                    <td>${data.status}</td>
-                                    <td class="primary">Details</td>
+                                    <td>${booking.tourName}</td>
+                                    <td>${booking.customerName}</td>
+                                    <td>${booking.slotOrder}</td>
+                                    <td style="color:
+                                        <c:choose>
+                                            <c:when test="${booking.bookStatus == 'confirmed'}">green</c:when>
+                                            <c:when test="${booking.bookStatus == 'canceled'}">red</c:when>
+                                            <c:when test="${booking.bookStatus == 'pending'}">#FFCC00</c:when>
+                                            <c:otherwise>black</c:otherwise>
+                                        </c:choose>
+                                        ">
+                                        ${booking.bookStatus}
+                                    </td>
+                                    <td>${booking.totalCost} VND</td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -187,7 +209,8 @@
         <!-- CONTENT -->
 
 
-        <script src="assests/js/script_profile.js"></script>      
+        <script src="assests/js/script_profile.js"></script>     
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             const burger = document.querySelector('.burger');
@@ -201,13 +224,18 @@
                                 profileCard.classList.toggle('active'); // Toggle the active class on the profile card
                             });
                         });
-                        var dropdown = document.getElementsByClassName("dropdown-btn");
-                        for (var i = 0; i < dropdown.length; i++) {
-                            dropdown[i].addEventListener("click", function () {
+                        // Select all dropdown buttons
+                        var dropdowns = document.getElementsByClassName("dropdown-btn");
+
+                        for (var i = 0; i < dropdowns.length; i++) {
+                            dropdowns[i].addEventListener("click", function (event) {
+                                event.preventDefault(); // Prevent the default action (navigation)
+
                                 this.classList.toggle("active");
 
-                                // Toggle next sibling of the dropdown button (which is outside the parent <li>)
-                                var subMenu = document.querySelector('.sub-menu');
+                                // Select the next sibling which is the sub-menu
+                                var subMenu = this.nextElementSibling; // Change from querySelector to nextElementSibling
+
                                 if (subMenu.style.display === "block") {
                                     subMenu.style.display = "none";
                                 } else {
@@ -216,7 +244,27 @@
                             });
                         }
 
+
         </script>
+        <script>
+            function reloadData() {
+                var date = document.getElementById("date").value;
+                $.ajax({
+                    url: "/Project_SWP/provider-analys",
+                    type: "POST",
+                    data: {
+                        date: date
+                    },
+                    success: function (data) {
+                        // Assuming 'data' is a JSON object
+                        document.querySelector("#totalVisitValue").innerHTML = data.totalVisitATour || 0;
+                        document.querySelector("#visitTodayValue").innerHTML = data.visitToday || 0;
+                        document.querySelector("#bookingThisMonthValue").innerHTML = data.bookingThisMonth || 0;
+                    }
+                });
+            }
+        </script>
+
         <script src="dist/js/theme.min.js"></script>
     </body>
 </html>

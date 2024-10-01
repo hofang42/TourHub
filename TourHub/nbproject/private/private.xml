@@ -6,17 +6,23 @@
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/GoogleLogin.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/index.jsp</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/newPassword.java</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/model/BookingDetails.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/RegisterServlet.java</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/css/style_profile.css</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/ValidateOtp.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/user-booking.jsp</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/js/home.js</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/css/style.css</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/DataAccess/CompanyDB.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/user-otp.jsp</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/css/provider_analysis.css</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/ProviderAnalysServlet.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/LogoutServlet.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/DataAccess/TourDB.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/js/script_profile.js</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/search-page.jsp</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/UserServlet.java</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/model/Tour.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/LoginServlet.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/DataAccess/DatabaseInfo.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/DataAccess/ProvinceDB.java</file>
@@ -25,12 +31,18 @@
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/includes/header.jsp</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/welcome.jsp</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/ListAllTour.java</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/model/Company.java</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/css/customer.css</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/user-profile.jsp</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/model/User.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/forgotPassword.java</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/DataAccess/BookingDB.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/css/index.css</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/css/home.css</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/login.jsp</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/src/java/controller/UpdateVisitCountServlet.java</file>
             <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/provider-analysis.jsp</file>
+            <file>file:/E:/FPTU/Major%205/SWP/project-clone/TourHub/TourHub/web/assests/css/search-page.css</file>
         </group>
     </open-files>
 </project-private>

@@ -8,6 +8,7 @@ import static DataAccess.DatabaseInfo.DBURL;
 import static DataAccess.DatabaseInfo.DRIVERNAME;
 import static DataAccess.DatabaseInfo.PASSDB;
 import static DataAccess.DatabaseInfo.USERDB;
+import jakarta.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,6 +19,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Tour;
@@ -77,22 +79,24 @@ public class TourDB {
         return tours;
     }
 
-    public int getTotalVisitATour(int companyId) {
-        String query = "SELECT COUNT(*) FROM TourVisitCount WHERE company_Id = ?";
-        int totalVisits = 0;  // Variable to store the total count of visits
+    public float getTotalProfit(int companyId) {
+        String query = "SELECT SUM(total_Cost) AS [Total Profit] FROM Booking b JOIN Tour t ON b.tour_Id = t.tour_Id WHERE company_Id = ? AND book_Status = 'confirmed'"
+                + "AND MONTH(b.book_Date) = MONTH(GETDATE()) "
+                + "AND YEAR(b.book_Date) = YEAR(GETDATE())";
+        float totalProfit = 0;  // Variable to store the total sum of profit
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setInt(1, companyId);  // Set the tour_Id parameter
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    totalVisits = rs.getInt(1);  // Retrieve the count from the result set
+                    totalProfit = rs.getInt(1);  // Retrieve the sum from the result set
                 }
             }
         } catch (SQLException ex) {
             Logger.getLogger(TourDB.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return totalVisits;  // Return the total visit count
+        return totalProfit;  // Return the total visit count
     }
 
     public int getTodayVisit(int companyId) {
@@ -151,30 +155,85 @@ public class TourDB {
         }
     }
 
-    public int getTotalBookingThisMonth(int companyId) {
-        int bookingCount = 0;
-        String query = "SELECT COUNT(*) AS booking_count "
-                + "FROM Booking b "
-                + "JOIN Customer c ON b.cus_Id = c.cus_Id "
-                + "JOIN [User] u ON c.user_Id = u.user_Id "
-                + "JOIN Tour t ON b.tour_Id = t.tour_Id "
-                + "WHERE t.company_Id = ? "
-                + "AND MONTH(b.book_Date) = MONTH(GETDATE()) "
-                + "AND YEAR(b.book_Date) = YEAR(GETDATE())";
+    //With a day input
+    public float getTotalProfitAMonth(int companyId, java.util.Date visitDate) {
+        String query = "SELECT SUM(total_Cost) AS [Total Profit] FROM Booking b JOIN Tour t ON b.tour_Id = t.tour_Id WHERE company_Id = ? AND book_Status = 'confirmed' AND MONTH(book_Date) = MONTH(?)";
+        float totalProfitAMonth = 0;  // Variable to store the total profit a month
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setInt(1, companyId);  // Set the companyId parameter
+            stmt.setDate(2, new java.sql.Date(visitDate.getTime())); // Set the visitDate parameter
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    totalProfitAMonth = rs.getInt(1);  // Retrieve the sum from the result set
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TourDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return totalProfitAMonth;  // Return the total profit a month
+    }
+
+    public int getTodayVisitsByDate(int companyId, java.util.Date visitDate) {
+        int visitCount = 0;
+        String query = "SELECT COUNT(*) AS visit_count FROM TourVisitCount WHERE company_Id = ? "
+                + "AND DAY(visitDate) = DAY(?) "
+                + "AND MONTH(visitDate) = MONTH(?) "
+                + "AND YEAR(visitDate) = YEAR(?)";
 
         try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setInt(1, companyId); // Set the company ID parameter
+
+            // Set parameters for company ID and visit date
+            pstmt.setInt(1, companyId);
+            pstmt.setDate(2, new java.sql.Date(visitDate.getTime())); // For DAY() comparison
+            pstmt.setDate(3, new java.sql.Date(visitDate.getTime())); // For MONTH() comparison
+            pstmt.setDate(4, new java.sql.Date(visitDate.getTime())); // For YEAR() comparison
 
             // Execute the query and retrieve the result
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    bookingCount = rs.getInt("booking_count");
+                    visitCount = rs.getInt("visit_count"); // Retrieve the visit count using alias
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Consider using a logging framework for production
+            e.printStackTrace(); // Consider using a logging framework like SLF4J for production
         }
 
-        return bookingCount;
+        return visitCount;
+    }
+
+    public void saveTourToDatabase(HttpServletRequest request, String tourName, String tourDescription, String startDate,
+            String endDate, String location, int purchasesTime,
+            String totalTime, double price, int slot, String tourImg) throws SQLException {
+        int companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUserId());
+        String tourId = generateTourId();
+        String query = "INSERT INTO Tour (tour_Id, tour_Name, tour_Description, start_Date, end_Date, "
+                + "location, purchases_Time, total_Time, price, slot, tour_Img, company_Id)"
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, tourId);
+            pstmt.setString(2, tourName);
+            pstmt.setString(3, tourDescription);
+            pstmt.setString(4, startDate);
+            pstmt.setString(5, endDate);
+            pstmt.setString(6, location);
+            pstmt.setInt(7, purchasesTime);
+            pstmt.setString(8, totalTime);
+            pstmt.setDouble(9, price);
+            pstmt.setInt(10, slot);
+            pstmt.setString(11, tourImg);
+            pstmt.setInt(12, companyId);
+            pstmt.executeUpdate();
+        }
+
+    }
+
+    private String generateTourId() {
+        // Use a random number generator to create a unique ID
+        Random random = new Random();
+        int idNumber = random.nextInt(10000000); // Generate a number between 0-9999999
+        return "T" + String.format("%07d", idNumber); // Format the number to be 7 digits long
     }
 }
