@@ -5,7 +5,6 @@ import java.util.Date;
 public class User {
 
     private int userId;
-    private String username;
     private String password;
     private String firstName;
     private String lastName;
@@ -15,15 +14,15 @@ public class User {
     private Date createdAt;
     private String userStatus;
     private String role;
+    private String avatar;
 
     // Default constructor
     public User() {
     }
 
     // Parameterized constructor
-    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, String address, Date createdAt, String userStatus, String role) {
+    public User(int userId, String password, String firstName, String lastName, String phone, String email, String address, Date createdAt, String userStatus, String role, String avatar) {
         this.userId = userId;
-        this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -33,36 +32,15 @@ public class User {
         this.createdAt = createdAt;
         this.userStatus = userStatus;
         this.role = role;
+        this.avatar = avatar;
     }
 
-    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, String address) {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-    }
-    
-    
-
-    // Getters and setters
     public int getUserId() {
         return userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -137,11 +115,17 @@ public class User {
         this.role = role;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", username=" + username + ", password=" + password
-                + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone
-                + ", email=" + email + ", address=" + address + ", createdAt=" + createdAt
-                + ", userStatus=" + userStatus + ", role=" + role + "]";
+        return "User{" + "userId=" + userId + ", password=" + password + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone + ", email=" + email + ", address=" + address + ", createdAt=" + createdAt + ", userStatus=" + userStatus + ", role=" + role + ", avatar=" + avatar + '}';
     }
+
 }

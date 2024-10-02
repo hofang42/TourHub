@@ -16,7 +16,61 @@
                     </div>
                     <form action="register" method="post">
                         <div class="row gy-3">
-                            <!-- Other form fields remain the same -->
+                            <!-- First Name -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required>
+                                    <label for="firstName">First Name</label>
+                                </div>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required>
+                                    <label for="lastName">Last Name</label>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                                    <label for="email">Email</label>
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone" required>
+                                    <label for="phone">Phone</label>
+                                </div>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="address" name="address" placeholder="Address" required>
+                                    <label for="address">Address</label>
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                    <label for="password">Password</label>
+                                </div>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating">
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                                    <label for="confirmPassword">Confirm Password</label>
+                                </div>
+                            </div>
 
                             <!-- Role Selection -->
                             <div class="col-12">
@@ -29,12 +83,25 @@
                                 </div>
                             </div>
 
-                            <!-- Error handling remains the same -->
+                            <!-- Error Handling (if applicable) -->
+                            <div class="col-12">
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger" role="alert">
+                                        ${error}
+                                    </div>
+                                </c:if>
+                            </div>
 
+                            <!-- Submit Button -->
                             <div class="col-12">
                                 <div class="d-grid">
                                     <button class="btn btn-primary btn-lg" type="submit">Register</button>
                                 </div>
+                            </div>
+
+                            <!-- Already Registered -->
+                            <div class="col-12 text-center">
+                                <p>Already have an account? <a href="login.jsp">Login here</a>.</p>
                             </div>
                         </div>
                     </form>

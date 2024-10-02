@@ -37,7 +37,6 @@ public class LoginServlet extends HttpServlet {
             if (user == null) {
                 // Register the Google user if not found in the database
                 user = new User();
-                user.setUsername(googleAccount.getName());
                 user.setEmail(googleAccount.getEmail());
                 user.setFirstName(googleAccount.getGiven_name());
                 user.setLastName(googleAccount.getFamily_name());

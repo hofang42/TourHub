@@ -28,7 +28,6 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username = request.getParameter("username");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
         String email = request.getParameter("email");
@@ -37,14 +36,10 @@ public class RegisterServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
         String role = request.getParameter("role");
+        String avatar = null; 
 
         UserDB userDB = new UserDB();
         String error = "";
-
-        // Check for username existence
-        if (userDB.isUsernameExists(username)) {
-            error += "Username already exists. ";
-        }
 
         // Check for email existence
         if (userDB.isEmailExists(email)) {
@@ -63,7 +58,6 @@ public class RegisterServlet extends HttpServlet {
 
         if (!error.isEmpty()) {
             request.setAttribute("error", error);
-            request.setAttribute("username", username);
             request.setAttribute("email", email);
             request.setAttribute("firstName", firstName);
             request.setAttribute("lastName", lastName);
@@ -75,7 +69,8 @@ public class RegisterServlet extends HttpServlet {
 
         // If no errors, proceed to register the user
         String hashedPassword = Encrypt.toSHA256(password);
-        boolean isRegistered = userDB.registerUser(new User(0, username, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", role));
+        boolean isRegistered = userDB.registerUser(new User(0, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", role, avatar));
+
 
         if (isRegistered) {
             // Generate OTP

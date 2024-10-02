@@ -28,22 +28,22 @@ public class UserDB implements DatabaseInfo {
     }
 
     public boolean registerUser(User user) {
-        if (isUsernameExists(user.getUsername()) || isEmailExists(user.getEmail())) {
-            return false; // Username or email already exists
+        if (isEmailExists(user.getEmail())) {
+            return false; // Email already exists
         }
 
-        String sql = "INSERT INTO [User] (username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO [User] (password, firstName, lastName, phone, email, address, createdAt, userStatus, role, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
-            ps.setString(3, user.getFirstName());
-            ps.setString(4, user.getLastName());
-            ps.setString(5, user.getPhone());
-            ps.setString(6, user.getEmail());
-            ps.setString(7, user.getAddress());
-            ps.setTimestamp(8, new java.sql.Timestamp(user.getCreatedAt().getTime()));
-            ps.setString(9, user.getUserStatus());
-            ps.setString(10, user.getRole());  // Save role
+            ps.setString(1, user.getPassword());
+            ps.setString(2, user.getFirstName());
+            ps.setString(3, user.getLastName());
+            ps.setString(4, user.getPhone());
+            ps.setString(5, user.getEmail());
+            ps.setString(6, user.getAddress());
+            ps.setTimestamp(7, new java.sql.Timestamp(user.getCreatedAt().getTime()));
+            ps.setString(8, user.getUserStatus());
+            ps.setString(9, user.getRole());
+            ps.setString(10, user.getAvatar()); // Set avatar field
 
             ps.executeUpdate();
             return true;
@@ -68,7 +68,6 @@ public class UserDB implements DatabaseInfo {
                 if (storedHashedPassword.equals(hashedInputPassword)) {
                     return new User(
                             rs.getInt("userId"),
-                            rs.getString("username"),
                             rs.getString("password"),
                             rs.getString("firstName"),
                             rs.getString("lastName"),
@@ -77,7 +76,8 @@ public class UserDB implements DatabaseInfo {
                             rs.getString("address"),
                             rs.getTimestamp("createdAt"),
                             rs.getString("userStatus"),
-                            rs.getString("role")
+                            rs.getString("role"),
+                            rs.getString("avatar") // Get avatar field
                     );
                 }
             }
@@ -85,20 +85,6 @@ public class UserDB implements DatabaseInfo {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public boolean isUsernameExists(String username) {
-        String sql = "SELECT COUNT(*) FROM [User] WHERE username = ?";
-        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) {
-                return true; // Username exists
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public boolean isEmailExists(String email) {
@@ -131,7 +117,7 @@ public class UserDB implements DatabaseInfo {
                 rs = ps.executeQuery();
 
                 if (rs.next()) {
-                    exists = true;  // Email co trong database
+                    exists = true;  // Email exists
                 }
             }
         } catch (Exception e) {
@@ -168,32 +154,28 @@ public class UserDB implements DatabaseInfo {
     //Lấy all user ra
     public User getUser(int userId) {
         User user = null;
-        // Fixed: Added space after "createdAt"
-        String query = "SELECT userId, username, password, userStatus, role, "
-                + "firstName, lastName, email, phone, address, createdAt "
+        String query = "SELECT userId, password, userStatus, role, firstName, lastName, email, phone, address, createdAt, avatar "
                 + "FROM [User] WHERE userId = ?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
-
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 int id = rs.getInt(1);
-                String username = rs.getString(2);
-                String password = rs.getString(3);
-                String userStatus = rs.getString(4);
-                String role = rs.getString(5);
-                String firstName = rs.getString(6);
-                String lastName = rs.getString(7);
-                String email = rs.getString(8);
-                String phone = rs.getString(9);
-                String address = rs.getString(10);
-                Date createdAt = rs.getDate(11);
+                String password = rs.getString(2);
+                String userStatus = rs.getString(3);
+                String role = rs.getString(4);
+                String firstName = rs.getString(5);
+                String lastName = rs.getString(6);
+                String email = rs.getString(7);
+                String phone = rs.getString(8);
+                String address = rs.getString(9);
+                Date createdAt = rs.getDate(10);
+                String avatar = rs.getString(11); // Get avatar
 
-                user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
+                user = new User(id, password, firstName, lastName, phone, email, address, createdAt, userStatus, role, avatar);
             }
-
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -202,13 +184,12 @@ public class UserDB implements DatabaseInfo {
 
     //Thêm user mới
     public void insertUser(User user) {
-        String sql = "INSERT INTO [User] (username, password, role, email) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO [User] (password, role, email) VALUES (?, ?, ?)";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(2, user.getUsername());
-            stmt.setString(3, user.getPassword());
-            stmt.setString(4, user.getRole());
-            stmt.setString(5, user.getEmail());
+            stmt.setString(1, user.getPassword());
+            stmt.setString(2, user.getRole());
+            stmt.setString(3, user.getEmail());
             stmt.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -217,7 +198,7 @@ public class UserDB implements DatabaseInfo {
 
     //Change password
     public boolean updatePassword(int userId, String newPassword) {
-        String query = "UPDATE [User] SET password=? WHERE UserId=?";
+        String query = "UPDATE [User] SET password=? WHERE userId=?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
@@ -235,7 +216,7 @@ public class UserDB implements DatabaseInfo {
     }
 
     public boolean updateEmail(int userId, String newEmail) {
-        String query = "UPDATE [User] SET email=? WHERE UserId=?";
+        String query = "UPDATE [User] SET email=? WHERE userId=?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
@@ -248,7 +229,7 @@ public class UserDB implements DatabaseInfo {
             return true;
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
-            return false; // Password update failed
+            return false;
         }
     }
 
@@ -256,21 +237,20 @@ public class UserDB implements DatabaseInfo {
     public boolean updateUser(User user) {
         boolean result = false;
         String sql = "UPDATE [User] SET "
-                + "firstName =?, lastName=?, email=?, phone=?, address=?, username=?"
-                + "from [User] WHERE userId=?";
+                + "firstName =?, lastName=?, email=?, phone=?, address=?, avatar=? "
+                + "WHERE userId=?";
         try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getFirstName());
             stmt.setString(2, user.getLastName());
             stmt.setString(3, user.getEmail());
             stmt.setString(4, user.getPhone());
             stmt.setString(5, user.getAddress());
-            stmt.setString(6, user.getUsername());
+            stmt.setString(6, user.getAvatar()); // Set avatar field
             stmt.setInt(7, user.getUserId());
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 result = true;
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
