@@ -64,10 +64,10 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             // Save user information in session
             HttpSession session = request.getSession();
-            session.setAttribute("currentUser", user);            
+            session.setAttribute("currentUser", user);
             request.getRequestDispatcher("/home").forward(request, response);
             // Redirect to the homepage or user dashboard
-//            response.sendRedirect("/Project_SWP/home");
+//            response.sendRedirect("/Project_SWP/home");   
         }
     }
 

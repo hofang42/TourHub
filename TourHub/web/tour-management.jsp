@@ -21,22 +21,9 @@
         <link rel="stylesheet" href="assests/css/style_profile.css">       
         <link href="assests/css/customer.css" rel="stylesheet" >      
         <link href="assests/css/provider_analysis.css" rel="stylesheet"/>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+        <link href="assests/css/tour-management.css" rel="stylesheet">
 
         <title>Analytic</title>
-        <style>
-            body {
-                background-color: #f4f4f4;
-            }
-            .form-container {
-                margin-top: 50px;
-                background: #fff;
-                padding: 30px;
-                border-radius: 5px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
-        </style>
     </head>
     <body>
 
@@ -69,22 +56,38 @@
 
 
                 <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
-                    <li class="active dropdown-btn">
-
+                    <li class="">
                         <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
-                            <i class='bx bxs-doughnut-chart'></i>
-                            <span class="text">Analytics</span>
+                            <i class='bx bxs-dashboard' ></i>
+                            <span class="text">Dashboard</span>
                         </a>
                     </li>   
+                    <li class="active dropdown-btn">                        
+                        <a href="tour-management.jsp">
+                            <i class='bx bxs-briefcase-alt' ></i>
+                            <span class="text">Tour Management</span>
+                        </a>
+                    </li>   
+                    <!-- Sub-menu -->
+                    <ul class="sub-menu">
+                        <div style="margin-left: 10% ">
+                            <li>
+                                <a href="add-tour.jsp" class="active"><i class='bx bx-location-plus'></i>Add Tour</a>
+                            </li>                    
+                            <li>
+                                <a href="edit-tour.jsp"><i class='bx bxs-edit-location'></i>Edit tour</a>
+                            </li>
+                        </div>
+                    </ul>
+                    <li>
+                        <a href="payment.jsp">
+                            <i class='bx bxs-credit-card'></i>
+                            <span class="text">Payment</span>
+                        </a>
+                    </li> 
                 </c:if>
 
-                </div>
-                <!-- Sub-menu -->
-                <ul class="sub-menu">
-                    <li><a href="#">Tour Management</a></li>
-                    <li><a href="#">Payment</a></li>
-                    <li><a href="#">Feature 3</a></li>
-                </ul>
+
 
             </ul>
             <ul class="side-menu">
@@ -133,56 +136,26 @@
 
             <!-- MAIN -->
             <main>
-
                 <div class="table-data">
                     <div class="order">
-                        <h3 class="head">Add Tour</h3>
-                        <form action="addtour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
-                            <div class="form-group">
-                                <label for="tour_Name">Tour Name:</label>
-                                <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="tour_Description">Tour Description:</label>
-                                <textarea class="form-control" id="tour_Description" name="tour_Description" rows="4" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="start_Date">Start Date:</label>
-                                <input type="date" class="form-control" id="start_Date" name="start_Date" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="end_Date">End Date:</label>
-                                <input type="date" class="form-control" id="end_Date" name="end_Date" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="location">Location:</label>
-                                <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="purchases_Time">Purchases Time (minutes):</label>
-                                <input type="number" class="form-control" id="purchases_Time" name="purchases_Time" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="total_Time">Total Time:</label>
-                                <input type="text" class="form-control" id="total_Time" name="total_Time" maxlength="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="price">Price:</label>
-                                <input type="number" class="form-control" id="price" name="price" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="slot">Slot:</label>
-                                <input type="number" class="form-control" id="slot" name="slot" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="tour_Img">Tour Image:</label>
-                                <input type="file" class="form-control-file" id="tour_Img" name="tour_Img" required>
-                                <small class="form-text text-muted">Upload an image file (JPG, PNG, etc.) not exceeding 2MB.</small>
-                            </div>
+                        <div class="head">
+                            <h3>Tour Management</h3>
+                        </div>
+                        <!-- Enter data here -->
 
-                            <button type="submit" class="btn btn-primary btn-block">Add Tour</button>
-                            <h3>${requestScope.message}</h3>
-                        </form>
+                        <c:choose>
+                            <c:when test="${sessionScope.currentUser == null}">
+                                <c:redirect url="home" />
+                            </c:when>
+                            <c:otherwise>
+                                <div class="custom-btn-toolbar my-custom-margin" role="toolbar" aria-label="Toolbar with buttons">
+                                    <div class="custom-btn-group-vertical full-width row" role="group" aria-label="Vertical button group">
+                                        <button class="custom-btn custom-btn-primary mb-2 col-md-4"><a href="add-tour.jsp" role="button">Add Tour</a></button>                                        
+                                        <button class="custom-btn custom-btn-primary mb-2 col-md-4"><a href="edit-tour.jsp"  role="button">Edit Tour</a></button>
+                                    </div>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </main>
@@ -194,9 +167,6 @@
 
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const burger = document.querySelector('.burger');

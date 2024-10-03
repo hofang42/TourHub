@@ -35,28 +35,44 @@ public class AddTourServlet extends HttpServlet {
         String startDate = request.getParameter("start_Date");
         String endDate = request.getParameter("end_Date");
         String location = request.getParameter("location");
-        int purchasesTime = Integer.parseInt(request.getParameter("purchases_Time"));
-        String totalTime = request.getParameter("total_Time");
+        String dayParam = request.getParameter("day");
+        String nightParam = request.getParameter("night");
+
+        // Default day and night values to avoid null issues
+        String day = (dayParam != null && !dayParam.isEmpty()) ? dayParam : "0";
+        String night = (nightParam != null && !nightParam.isEmpty()) ? nightParam : "0";
+
+        String duration = day + "D" + night + "N";
         double price = Double.parseDouble(request.getParameter("price"));
         int slot = Integer.parseInt(request.getParameter("slot"));
 
-        // Handle file upload
-        Part filePart = request.getPart("tour_Img"); // Retrieves <input type="file" name="tour_Img">
-        String fileName = extractFileName(filePart);
-        fileName = new File(fileName).getName(); // Refine fileName in case of absolute path
-        filePart.write(getFolderUpload().getAbsolutePath() + File.separator + fileName);
+        // Handle multiple file uploads
+        StringBuilder fileNames = new StringBuilder(); // To store the filenames separated by ";"
+        for (Part part : request.getParts()) {
+            if (part.getName().equals("tour_Img") && part.getSize() > 0) {
+                String fileName = extractFileName(part);
+                fileName = new File(fileName).getName(); // Get the file name
+                part.write(getFolderUpload().getAbsolutePath() + File.separator + fileName); // Save file
+                if (fileNames.length() > 0) {
+                    fileNames.append(";"); // Separate filenames with a semicolon
+                }
+                fileNames.append(fileName); // Append the filename to the list
+            }
+        }
+
+        String imageFilenames = fileNames.toString(); // Convert StringBuilder to String
 
         // Save tour information to the database
         try {
             new TourDB().saveTourToDatabase(request, tourName, tourDescription, startDate, endDate, location,
-                    purchasesTime, totalTime, price, slot, fileName);
+                    duration, price, slot, imageFilenames);
             request.setAttribute("message", "Tour added successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("message", "Error adding tour: " + e.getMessage());
         }
 
-        getServletContext().getRequestDispatcher("/tour-management.jsp").forward(request, response);
+        getServletContext().getRequestDispatcher("/add-tour.jsp").forward(request, response);
     }
 
     private String extractFileName(Part part) {

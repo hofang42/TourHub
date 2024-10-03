@@ -204,13 +204,13 @@ public class TourDB {
     }
 
     public void saveTourToDatabase(HttpServletRequest request, String tourName, String tourDescription, String startDate,
-            String endDate, String location, int purchasesTime,
-            String totalTime, double price, int slot, String tourImg) throws SQLException {
+            String endDate, String location,
+            String duration, double price, int slot, String tourImg) throws SQLException {
         int companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUserId());
         String tourId = generateTourId();
         String query = "INSERT INTO Tour (tour_Id, tour_Name, tour_Description, start_Date, end_Date, "
-                + "location, purchases_Time, total_Time, price, slot, tour_Img, company_Id)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "location, total_Time, price, slot, tour_Img, company_Id)"
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, tourId);
@@ -219,12 +219,11 @@ public class TourDB {
             pstmt.setString(4, startDate);
             pstmt.setString(5, endDate);
             pstmt.setString(6, location);
-            pstmt.setInt(7, purchasesTime);
-            pstmt.setString(8, totalTime);
-            pstmt.setDouble(9, price);
-            pstmt.setInt(10, slot);
-            pstmt.setString(11, tourImg);
-            pstmt.setInt(12, companyId);
+            pstmt.setString(7, duration);
+            pstmt.setDouble(8, price);
+            pstmt.setInt(9, slot);
+            pstmt.setString(10, tourImg);
+            pstmt.setInt(11, companyId);
             pstmt.executeUpdate();
         }
 
@@ -235,5 +234,47 @@ public class TourDB {
         Random random = new Random();
         int idNumber = random.nextInt(10000000); // Generate a number between 0-9999999
         return "T" + String.format("%07d", idNumber); // Format the number to be 7 digits long
+    }
+
+    public Tour getTourFromTourID(String tourId, int companyIdInput) {
+        Tour tour = null;
+        String query = "SELECT * FROM Tour WHERE tour_Id = ? and company_Id = ?";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+
+            // Set the parameter for the prepared statement
+            stmt.setString(1, tourId);
+            stmt.setInt(2, companyIdInput);
+            // Execute the query
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String tourName = rs.getString("tour_Name");
+                    String description = rs.getString("tour_Description");
+                    Date startDate = rs.getDate("start_Date");
+                    Date endDate = rs.getDate("end_Date");
+                    float avgRating = rs.getFloat("average_Review_Rating");
+                    int numOfReview = rs.getInt("number_Of_Review");
+                    String totalTime = rs.getString("total_Time");
+                    float price = rs.getFloat("price");
+                    int slot = rs.getInt("slot");
+                    String tourStatus = rs.getString("tour_Status");
+                    int companyId = rs.getInt("company_Id");
+                    Date createdAt = rs.getDate("created_At");
+                    String tourImg = rs.getString("tour_Img");
+
+                    // Create a new Tour object with the retrieved data
+                    tour = new Tour(tourId, tourName, description, totalTime, price, slot, tourStatus, companyId, createdAt, tourImg, startDate, endDate, avgRating, numOfReview);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TourDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return tour; // Return the Tour object, or null if not found
+    }
+
+    public static void main(String[] args) {
+        Tour tour = new TourDB().getTourFromTourID("T0000002", 2);
+        System.out.println(tour.toString());
     }
 }

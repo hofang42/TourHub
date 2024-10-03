@@ -47,13 +47,24 @@
                     </a>
                 </li>    
                 <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
-                    <li>
-
+                    <li class="">
                         <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
-                            <i class='bx bxs-doughnut-chart'></i>
-                            <span class="text">Analytics</span>
+                            <i class='bx bxs-dashboard' ></i>
+                            <span class="text">Dashboard</span>
                         </a>
                     </li>   
+                    <li class="dropdown-btn">
+                        <a href="tour-management.jsp">
+                            <i class='bx bxs-briefcase-alt' ></i>
+                            <span class="text">Tour Management</span>
+                        </a>
+                    </li>   
+                    <li>
+                        <a href="payment.jsp">
+                            <i class='bx bxs-credit-card'></i>
+                            <span class="text">Payment</span>
+                        </a>
+                    </li> 
                 </c:if>
             </ul>
             <ul class="side-menu">

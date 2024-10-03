@@ -56,21 +56,36 @@
 
 
                 <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
-                    <li class="active dropdown-btn">
-
+                    <li class="active">
                         <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
-                            <i class='bx bxs-doughnut-chart'></i>
-                            <span class="text">Analytics</span>
+                            <i class='bx bxs-dashboard' ></i>
+                            <span class="text">Dashboard</span>
                         </a>
                     </li>   
+                    <li class="dropdown-btn">
+                        <a href="tour-management.jsp">
+                            <i class='bx bxs-briefcase-alt' ></i>
+                            <span class="text">Tour Management</span>
+                        </a>
+                    </li>   
+                    <!-- Sub-menu -->
+                    <ul class="sub-menu">
+                        <li><a href="add-tour.jsp" class="active">Add Tour</a></li>                    
+                        <li><a href="#">Feature 3</a></li>
+                    </ul>
+                    <li>
+                        <a href="payment.jsp">
+                            <i class='bx bxs-credit-card'></i>
+                            <span class="text">Payment</span>
+                        </a>
+                    </li> 
                 </c:if>
 
-                </div>
                 <!-- Sub-menu -->
                 <ul class="sub-menu">
-                    <li><a href="tour-management.jsp">Tour Management</a></li>
-                    <li><a href="#">Payment</a></li>
-                    <li><a href="#">Feature 3</a></li>
+                    <li><a href="add-tour.jsp">Add Tour</a></li>
+                    l<i><a href="payment.jsp">Payment</a></li>
+                        <li><a href="#">Feature 3</a></li>
                 </ul>
 
             </ul>
@@ -172,6 +187,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Tour Name</th>
                                 <th>Customer Name</th>
                                 <th>Slot</th>
@@ -182,6 +198,8 @@
                         <tbody id="product_list">
                             <c:forEach items="${sessionScope.bookings}" var="booking">
                                 <tr>
+                                    <c:set var="id" value="${id + 1}" />
+                                    <td>${id}</td>
                                     <td>${booking.tourName}</td>
                                     <td>${booking.customerName}</td>
                                     <td>${booking.slotOrder}</td>
@@ -224,25 +242,6 @@
                                 profileCard.classList.toggle('active'); // Toggle the active class on the profile card
                             });
                         });
-                        // Select all dropdown buttons
-                        var dropdowns = document.getElementsByClassName("dropdown-btn");
-
-                        for (var i = 0; i < dropdowns.length; i++) {
-                            dropdowns[i].addEventListener("click", function (event) {
-                                event.preventDefault(); // Prevent the default action (navigation)
-
-                                this.classList.toggle("active");
-
-                                // Select the next sibling which is the sub-menu
-                                var subMenu = this.nextElementSibling; // Change from querySelector to nextElementSibling
-
-                                if (subMenu.style.display === "block") {
-                                    subMenu.style.display = "none";
-                                } else {
-                                    subMenu.style.display = "block";
-                                }
-                            });
-                        }
 
 
         </script>
