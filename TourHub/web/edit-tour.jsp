@@ -145,43 +145,50 @@
 
             <!-- MAIN -->
             <main>
-                <form action="SearchTourByIdServlet" method="POST">
-                    <div class="form-input-custom">
-                        <input type="search" name="tour-edit" class="search-field-custom tour-edit" placeholder="Enter tourID to find tour want to edit" required>
-                        <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
-                    </div>
-                </form>
-                <div class="table-data">
-                    <div class="order">              
-                        <div class="row row-50">                           
-                            <c:set value="${sessionScope.tourEdit}" var="tour" />
-                            <c:if test="${not empty tour}">
-                                <div class="col-md-6 col-xl-4">
-                                    <article class="event-default-wrap">
-                                        <div class="event-default">
-                                            <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                <img src="./assests/images/provinces/bacninh.png" alt="Tour Name" style="width: 100%; height: auto;">
-                                                <div class="event-default-caption">
-                                                    <a href="edit-tour-page.jsp" class="button button-xs button-secondary button-nina tour-visit-count" data-id="${tour.tourId}" style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                        Edit
-                                                    </a>
+                <c:choose>
+                    <c:when test="${sessionScope.currentUser == null}">
+                        <c:redirect url="home" />
+                    </c:when>
+                    <c:otherwise>
+                        <form action="SearchTourByIdServlet" method="POST">
+                            <div class="form-input-custom">
+                                <input type="search" name="tour-edit" class="search-field-custom tour-edit" placeholder="Enter tourID to find tour want to edit" required>
+                                <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                            </div>
+                        </form>
+                        <div class="table-data">
+                            <div class="order">              
+                                <div class="row row-50">                           
+                                    <c:set value="${requestScope.tourEdit}" var="tour" />
+                                    <c:if test="${not empty tour}">
+                                        <div class="col-md-6 col-xl-4">
+                                            <article class="event-default-wrap">
+                                                <div class="event-default">
+                                                    <figure class="event-default-image" style="max-width: 250px; margin: auto;">
+                                                        <img src="./assests/images/provinces/bacninh.png" alt="Tour Name" style="width: 100%; height: auto;">
+                                                        <div class="event-default-caption">
+                                                            <a href="edit-tour-page.jsp" class="button button-xs button-secondary button-nina tour-visit-count" data-id="${tour.tourId}" style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                Edit
+                                                            </a>
+                                                        </div>
+                                                    </figure>
                                                 </div>
-                                            </figure>
+                                                <div class="event-default-inner">
+                                                    <div>
+                                                        <h5>
+                                                            <a href="#" class="event-default-title">${tour.tourName}</a>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            </article>
                                         </div>
-                                        <div class="event-default-inner">
-                                            <div>
-                                                <h5>
-                                                    <a href="#" class="event-default-title">${tour.tourName}</a>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                    </article>
+                                    </c:if>
+                                    <c:if test="${not empty sessionScope.errorMessage}">
+                                        <div class="error-message">${sessionScope.errorMessage}</div>
+                                    </c:if>                            
                                 </div>
-                            </c:if>
-                            <c:if test="${not empty sessionScope.errorMessage}">
-                                <div class="error-message">${sessionScope.errorMessage}</div>
-                            </c:if>                            
-                        </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
 

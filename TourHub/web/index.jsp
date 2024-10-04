@@ -125,10 +125,10 @@
                                     <a href="user-profile.jsp">Profile</a>
                                     <a href="settings.jsp">Settings</a>
                                     <c:if test="${sessionScope.currentUser.role.equals('Provider')}">
-                                        <a href="provider-analys">Studio</a>
+                                        <a href="provider-analys">Dashboard</a>
                                     </c:if>
                                     <c:if test="${sessionScope.currentUser.role.equals('Admin')}">
-                                        <a href="admin-analysis.jsp">Studio</a>
+                                        <a href="admin-analysis.jsp">Dashboard</a>
                                     </c:if>
                                     <a href="logout">Logout</a>
                                 </div>

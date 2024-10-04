@@ -135,89 +135,103 @@
 
             <!-- MAIN -->
             <main>
-                <h1>Dashboard</h1>
-                <div class="date">
-                    <input type="date" id="date" name="date" onchange="reloadData()"/>
-                </div>
-                <!-- Start Insight -->
-                <div class="insights">
-                    <!-- Start selling  -->
-                    <div class="sales" id="sale_total">
-                        <div class="sales-title"><h3>Profit this month</h3></div>
-                        <div class="sales-content">
-                            <h1 id="totalVisitValue">
-                                ${sessionScope.totalProfitThisMonth != null ? sessionScope.totalProfitThisMonth : 0}
-                            </h1>
+                <div class="table-data">
+                    <div class="order">
+                        <div class="head">
+                            <h3>Dashboard</h3>
                         </div>
-                    </div>
+
+                        <c:choose>
+                            <c:when test="${sessionScope.currentUser == null}">
+                                <c:redirect url="home" />
+                            </c:when>
+                            <c:otherwise>
+                                <div class="date">
+                                    <input type="date" id="date" name="date" onchange="reloadData()"/>
+                                </div>
+                                <!-- Start Insight -->
+                                <div class="insights">
+                                    <!-- Start selling  -->
+                                    <div class="sales" id="sale_total">
+                                        <div class="sales-title"><h3>Profit this month</h3></div>
+                                        <div class="sales-content">
+                                            <h1 id="totalVisitValue">
+                                                ${sessionScope.totalProfitThisMonth != null ? sessionScope.totalProfitThisMonth : 0}
+                                            </h1>
+                                        </div>
+                                    </div>
 
 
-                    <div class="sales" id="sale_total">
-                        <div class="sales-title"><h3>Visit today</h3></div>
-                        <div class="sales-content">
-                            <h1 id="visitTodayValue">
-                                ${sessionScope.visitToday != null ? sessionScope.visitToday : 0}
-                            </h1>
-                        </div>
-                    </div>
-                    <div class="sales" id="sale_total">
-                        <div class="sales-title text">
-                            <h3>
-                                <c:if test="${empty sessionScope.date}">
-                                    Number of bookings this month
-                                </c:if>
-                                <c:if test="${not empty sessionScope.date}">
-                                    Number of bookings month <fmt:formatDate value="${sessionScope.date}" pattern="MM/yyyy"/>
-                                </c:if>
-                            </h3>
-                        </div>
-                        <div class="sales-content text">
-                            <h1 id="bookingThisMonthValue">
-                                ${sessionScope.bookingThisMonth != null ? sessionScope.bookingThisMonth : 0}
-                            </h1>
-                        </div>
-                    </div>
+                                    <div class="sales" id="sale_total">
+                                        <div class="sales-title"><h3>Visit today</h3></div>
+                                        <div class="sales-content">
+                                            <h1 id="visitTodayValue">
+                                                ${sessionScope.visitToday != null ? sessionScope.visitToday : 0}
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <div class="sales" id="sale_total">
+                                        <div class="sales-title text">
+                                            <h3>
+                                                <c:if test="${empty sessionScope.date}">
+                                                    Number of bookings this month
+                                                </c:if>
+                                                <c:if test="${not empty sessionScope.date}">
+                                                    Number of bookings month <fmt:formatDate value="${sessionScope.date}" pattern="MM/yyyy"/>
+                                                </c:if>
+                                            </h3>
+                                        </div>
+                                        <div class="sales-content text">
+                                            <h1 id="bookingThisMonthValue">
+                                                ${sessionScope.bookingThisMonth != null ? sessionScope.bookingThisMonth : 0}
+                                            </h1>
+                                        </div>
+                                    </div>
 
-                    <!-- End Incomes  -->
-                </div>
-                <!-- End Insight -->
-                <!-- Start recent order -->
-                <div class="recent_order">
-                    <h1>Recent Tour Booking</h1>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tour Name</th>
-                                <th>Customer Name</th>
-                                <th>Slot</th>
-                                <th>Status</th>
-                                <th>Total Cost</th>
-                            </tr>
-                        </thead>
-                        <tbody id="product_list">
-                            <c:forEach items="${sessionScope.bookings}" var="booking">
-                                <tr>
-                                    <c:set var="id" value="${id + 1}" />
-                                    <td>${id}</td>
-                                    <td>${booking.tourName}</td>
-                                    <td>${booking.customerName}</td>
-                                    <td>${booking.slotOrder}</td>
-                                    <td style="color:
-                                        <c:choose>
-                                            <c:when test="${booking.bookStatus == 'confirmed'}">green</c:when>
-                                            <c:when test="${booking.bookStatus == 'canceled'}">red</c:when>
-                                            <c:when test="${booking.bookStatus == 'pending'}">#FFCC00</c:when>
-                                            <c:otherwise>black</c:otherwise>
-                                        </c:choose>
-                                        ">
-                                        ${booking.bookStatus}
-                                    </td>
-                                    <td>${booking.totalCost} VND</td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
+                                    <!-- End Incomes  -->
+                                </div>
+                                <!-- End Insight -->
+                                <!-- Start recent order -->
+                                <div class="recent_order">
+                                    <h1>Recent Tour Booking</h1>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Tour Name</th>
+                                                <th>Customer Name</th>
+                                                <th>Slot</th>
+                                                <th>Status</th>
+                                                <th>Total Cost</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="product_list">
+                                            <c:forEach items="${sessionScope.bookings}" var="booking">
+                                                <tr>
+                                                    <c:set var="id" value="${id + 1}" />
+                                                    <td>${id}</td>
+                                                    <td>${booking.tourName}</td>
+                                                    <td>${booking.customerName}</td>
+                                                    <td>${booking.slotOrder}</td>
+                                                    <td style="color:
+                                                        <c:choose>
+                                                            <c:when test="${booking.bookStatus == 'confirmed'}">green</c:when>
+                                                            <c:when test="${booking.bookStatus == 'canceled'}">red</c:when>
+                                                            <c:when test="${booking.bookStatus == 'pending'}">#FFCC00</c:when>
+                                                            <c:otherwise>black</c:otherwise>
+                                                        </c:choose>
+                                                        ">
+                                                        ${booking.bookStatus}
+                                                    </td>
+                                                    <td>${booking.totalCost} VND</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
                 <!-- End recent order -->
             </main>
@@ -230,18 +244,18 @@
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-                        document.addEventListener('DOMContentLoaded', function () {
-                            const burger = document.querySelector('.burger');
-                            const navigation = document.querySelector('.navigation-admin');
-                            const main = document.querySelector('.main-admin');
-                            const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            const burger = document.querySelector('.burger');
+                                            const navigation = document.querySelector('.navigation-admin');
+                                            const main = document.querySelector('.main-admin');
+                                            const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                            burger.addEventListener('click', function () {
-                                navigation.classList.toggle('active');
-                                main.classList.toggle('active');
-                                profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                            });
-                        });
+                                            burger.addEventListener('click', function () {
+                                                navigation.classList.toggle('active');
+                                                main.classList.toggle('active');
+                                                profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                            });
+                                        });
 
 
         </script>

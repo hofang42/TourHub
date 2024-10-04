@@ -5,7 +5,7 @@
 }
 
 .custom-btn-group-vertical {
-    display: flex;    
+    display: flex;
     width: 100%;
     justify-content: space-around;
 }
@@ -19,17 +19,16 @@
     border: none; /* Remove default border */
     border-radius: 0.3rem; /* Custom border radius */
     transition: background-color 0.3s ease; /* Transition effect */
+    cursor: pointer;
 }
-
 .custom-btn-primary {
     background-color: #fd7e14; /* Custom primary button background color */
-    color: white; /* Text color */
+    color: black; /* Text color */
 }
 
 .custom-btn-primary:hover {
     background-color: #007bff; /* Darker background on hover */
 }
-
 .full-width {
     width: 100%; /* Full width for block elements */
 }

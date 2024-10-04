@@ -63,7 +63,7 @@ public class SearchTourByIdServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
     }
 
     /**
@@ -93,8 +93,10 @@ public class SearchTourByIdServlet extends HttpServlet {
             // Fetch the provider Id from user session
             companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUserId());
             System.out.println("GET SUCCESS: Company ID = " + companyId);
+
         } catch (SQLException ex) {
-            Logger.getLogger(SearchTourByIdServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SearchTourByIdServlet.class
+                    .getName()).log(Level.SEVERE, null, ex);
             request.setAttribute("errorMessage", "Database error occurred while fetching the company ID.");
             request.getRequestDispatcher("edit-tour.jsp").forward(request, response);
             return;
@@ -111,7 +113,9 @@ public class SearchTourByIdServlet extends HttpServlet {
         }
 
         // Set the tourEdit object in request scope and forward to the edit page
-        request.getSession().setAttribute("tourEdit", tourEdit);
+        request.setAttribute("tourEdit", tourEdit);
+        Tour tourEditSession = tourEdit;
+        request.getSession().setAttribute("tourEditSession", tourEditSession);
         request.getRequestDispatcher("edit-tour.jsp").forward(request, response);
     }
 

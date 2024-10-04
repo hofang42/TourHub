@@ -20,10 +20,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 }
 
 /* Search Box Styling */
-.search-box {
+/*.search-box {
+    max-height: 0.1vh;
     width: 100%;
     background: #fff;
     margin: 200px auto 0;
+}*/
+.search-box {
+    width: 100%;
+    max-height: 75vh; /* Set a maximum height */
+    background: #fff;
+    overflow-y: hidden; /* Enable scrolling */
+    margin: 20px auto; /* Adjust the margin for proper positioning */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for visual depth */
+    border-radius: 8px; /* Optional: rounded corners for a modern look */
+    position: relative; /* Keep it within its parent container */
+    overflow-x: hidden;
 }
 
 .row {
@@ -58,9 +70,20 @@ button .fa-search {
 }
 
 /* Result Box Styling */
+.result-box {
+    max-height: 75vh; /* Set the height of the scrollable results */
+    overflow-y: scroll; /* Enable scrolling */
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
+}
+
+.result-box::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
 .result-box ul {
     border-top: 1px solid #999;
-    padding: 15px 10px;
+    padding: 15px 10px;    
+
 }
 
 .result-box ul li {

@@ -143,59 +143,66 @@
 
             <!-- MAIN -->
             <main>
-                <h3 style="<c:if test='${requestScope.message.contains("successfully")}'>color: green;</c:if>
-                    <c:if test='${requestScope.message.contains("Error")}'>color: red;</c:if>">
-                    ${requestScope.message}
-                </h3>
-                <c:set value="${sessionScope.tourEdit}" var="tour" />
-                <div class="table-data">
-                    <div class="order">
-                        <h3 class="head">Add Tour</h3>
-                        <form action="EditTour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
-                            <div class="form-group">
-                                <label for="tour_Name">Tour Name:</label>
-                                <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tourName}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="tour_Description">Tour Description:</label>
-                                <textarea class="form-control" id="tour_Description" name="tour_Description" rows="4" required style="width: 100%; resize: vertical;">${tour.description}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="start_Date">Start Date:</label>
-                                <input type="date" class="form-control" id="start_Date" name="start_Date" value="${tour.startDate}" required onchange="calculateDuration()">
-                            </div>
-                            <div class="form-group">
-                                <label for="end_Date">End Date:</label>
-                                <input type="date" class="form-control" id="end_Date" name="end_Date" value="${tour.endDate}" required onchange="calculateDuration()">
-                            </div>
-                            <div class="form-group">
-                                <label for="total_Time">Duration</label>
-                                <div class="d-flex align-items-center">
+                <c:choose>
+                    <c:when test="${sessionScope.currentUser == null}">
+                        <c:redirect url="home" />
+                    </c:when>
+                    <c:otherwise>
+                        <h3 style="<c:if test='${requestScope.message.contains("successfully")}'>color: green;</c:if>
+                            <c:if test='${requestScope.message.contains("Error")}'>color: red;</c:if>">
+                            ${requestScope.message}
+                        </h3>
+                        <c:set value="${sessionScope.tourEditSession}" var="tour" />
+                        <div class="table-data">
+                            <div class="order">
+                                <h3 class="head">Add Tour</h3>
+                                <form action="EditTour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
                                     <div class="form-group">
-                                        <label for="day">Days:</label>
-                                        <input type="number" class="form-control" id="day" name="day" value="0" readonly>
+                                        <label for="tour_Name">Tour Name:</label>
+                                        <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tourName}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="night">Nights:</label>
-                                        <input type="number" class="form-control" id="night" name="night" value="0" readonly>
+                                        <label for="tour_Description">Tour Description:</label>
+                                        <textarea class="form-control" id="tour_Description" name="tour_Description" rows="4" required style="width: 100%; resize: vertical;">${tour.description}</textarea>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="location">Location:</label>
-                                <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
-                            </div>                          
-                            <div class="form-group">
-                                <label for="price">Price:</label>
-                                <input type="number" class="form-control" id="price" name="price" value="${tour.price}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="slot">Slot:</label>
-                                <input type="number" class="form-control" id="slot" name="slot" value="${tour.slot}" required>
-                            </div>                           
-                            <button type="submit" class="btn btn-primary btn-block">Add Tour</button>
+                                    <div class="form-group">
+                                        <label for="start_Date">Start Date:</label>
+                                        <input type="date" class="form-control" id="start_Date" name="start_Date" value="${tour.startDate}" required onchange="calculateDuration()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="end_Date">End Date:</label>
+                                        <input type="date" class="form-control" id="end_Date" name="end_Date" value="${tour.endDate}" required onchange="calculateDuration()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="total_Time">Duration</label>
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-group">
+                                                <label for="day">Days:</label>
+                                                <input type="number" class="form-control" id="day" name="day" value="0" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="night">Nights:</label>
+                                                <input type="number" class="form-control" id="night" name="night" value="0" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="location">Location:</label>
+                                        <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
+                                    </div>                          
+                                    <div class="form-group">
+                                        <label for="price">Price:</label>
+                                        <input type="number" class="form-control" id="price" name="price" value="${tour.price}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="slot">Slot:</label>
+                                        <input type="number" class="form-control" id="slot" name="slot" value="${tour.slot}" required>
+                                    </div>                           
+                                    <button type="submit" class="btn btn-primary btn-block">Add Tour</button>
 
-                        </form>
+                                </form>   
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </main>          
@@ -210,44 +217,44 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const burger = document.querySelector('.burger');
-                                        const navigation = document.querySelector('.navigation-admin');
-                                        const main = document.querySelector('.main-admin');
-                                        const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                const burger = document.querySelector('.burger');
+                                                const navigation = document.querySelector('.navigation-admin');
+                                                const main = document.querySelector('.main-admin');
+                                                const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                        burger.addEventListener('click', function () {
-                                            navigation.classList.toggle('active');
-                                            main.classList.toggle('active');
-                                            profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                        });
-                                    });
-                                    // Select all dropdown buttons
-                                    var dropdowns = document.getElementsByClassName("dropdown-btn");
+                                                burger.addEventListener('click', function () {
+                                                    navigation.classList.toggle('active');
+                                                    main.classList.toggle('active');
+                                                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                                });
+                                            });
+                                            // Select all dropdown buttons
+                                            var dropdowns = document.getElementsByClassName("dropdown-btn");
 
-                                    for (var i = 0; i < dropdowns.length; i++) {
-                                        dropdowns[i].addEventListener("click", function (event) {
-                                            var targetUrl = this.getAttribute("href"); // Get the URL from the href attribute
-                                            var currentUrl = window.location.href; // Get the current page URL
+                                            for (var i = 0; i < dropdowns.length; i++) {
+                                                dropdowns[i].addEventListener("click", function (event) {
+                                                    var targetUrl = this.getAttribute("href"); // Get the URL from the href attribute
+                                                    var currentUrl = window.location.href; // Get the current page URL
 
-                                            // Check if the target URL is the same as the current URL
-                                            if (currentUrl === targetUrl) {
-                                                event.preventDefault(); // Prevent the default action (navigation) only if they match
+                                                    // Check if the target URL is the same as the current URL
+                                                    if (currentUrl === targetUrl) {
+                                                        event.preventDefault(); // Prevent the default action (navigation) only if they match
+                                                    }
+
+                                                    this.classList.toggle("active");
+
+                                                    // Select the next sibling which is the sub-menu
+                                                    var subMenu = this.nextElementSibling; // Get the next sibling element
+
+                                                    // Toggle the display of the sub-menu
+                                                    if (subMenu.style.display === "block") {
+                                                        subMenu.style.display = "none";
+                                                    } else {
+                                                        subMenu.style.display = "block";
+                                                    }
+                                                });
                                             }
-
-                                            this.classList.toggle("active");
-
-                                            // Select the next sibling which is the sub-menu
-                                            var subMenu = this.nextElementSibling; // Get the next sibling element
-
-                                            // Toggle the display of the sub-menu
-                                            if (subMenu.style.display === "block") {
-                                                subMenu.style.display = "none";
-                                            } else {
-                                                subMenu.style.display = "block";
-                                            }
-                                        });
-                                    }
 
 
         </script>
