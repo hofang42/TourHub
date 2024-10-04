@@ -1,5 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@include file="includes/header.jsp" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -83,15 +86,15 @@
                                         <label for="role">Select Role</label>
                                     </div>
                                 </div>
-
                                 <!-- Error Handling (if applicable) -->
                                 <div class="col-12">
                                     <c:if test="${not empty error}">
                                         <div class="alert alert-danger" role="alert">
-                                            ${error}
+                                            ${fn:escapeXml(error)}
                                         </div>
                                     </c:if>
                                 </div>
+
 
                                 <!-- Submit Button -->
                                 <div class="col-12">
