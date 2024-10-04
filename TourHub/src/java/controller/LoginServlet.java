@@ -30,7 +30,6 @@ public class LoginServlet extends HttpServlet {
             GoogleLogin googleLogin = new GoogleLogin();
             String accessToken = googleLogin.getToken(code);
             GoogleAccount googleAccount = googleLogin.getUserInfo(accessToken);
-
             // Check if Google account exists in the User table
             user = userDB.authenticate(googleAccount.getEmail(), null);
 
@@ -38,13 +37,14 @@ public class LoginServlet extends HttpServlet {
                 // Register the Google user if not found in the database
                 user = new User();
                 user.setEmail(googleAccount.getEmail());
-                user.setFirstName(googleAccount.getGiven_name());
-                user.setLastName(googleAccount.getFamily_name());
+                user.setFirst_Name(googleAccount.getGiven_name());
+                user.setLast_Name(googleAccount.getFamily_name());
                 user.setPassword(""); // No password for Google users
-                user.setCreatedAt(new java.util.Date());
-                user.setUserStatus("verified");
+                user.setCreated_At(new java.util.Date());
+                user.setUser_Status("verified");
                 userDB.registerUser(user); // Save user in the DB
-                response.sendRedirect("completeRegistration.jsp");
+                response.sendRedirect("googleregister.jsp");
+                return;  // Important to return after redirect
             }
         } else if (email != null && password != null) {
             // Manual login
@@ -67,7 +67,8 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("currentUser", user);
 
             // Redirect to the homepage or user dashboard
-            response.sendRedirect("welcome.jsp");
+            response.sendRedirect("index.jsp");
+            return;  // Important to return after forward
         }
     }
 

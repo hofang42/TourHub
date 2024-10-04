@@ -33,7 +33,7 @@ public class VerifyServlet extends HttpServlet {
         if (Integer.parseInt(enteredOtp) == sessionOtp) {
             // OTP matches, proceed with verification
             UserDB userDB = new UserDB();
-            userDB.updateUserStatusToVerified(email);  // Update user to "verified"
+            userDB.updateUser_StatusToVerified(email);  // Update user to "verified"
             
             session.removeAttribute("otp");  // Remove OTP from session after verification
             session.removeAttribute("email");

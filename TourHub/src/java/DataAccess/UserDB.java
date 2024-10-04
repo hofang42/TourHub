@@ -32,16 +32,16 @@ public class UserDB implements DatabaseInfo {
             return false; // Email already exists
         }
 
-        String sql = "INSERT INTO [User] (password, firstName, lastName, phone, email, address, createdAt, userStatus, role, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO [User] (password, first_Name, last_Name, phone, email, address, created_At, user_Status, role, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getPassword());
-            ps.setString(2, user.getFirstName());
-            ps.setString(3, user.getLastName());
+            ps.setString(2, user.getFirst_Name());
+            ps.setString(3, user.getLast_Name());
             ps.setString(4, user.getPhone());
             ps.setString(5, user.getEmail());
             ps.setString(6, user.getAddress());
-            ps.setTimestamp(7, new java.sql.Timestamp(user.getCreatedAt().getTime()));
-            ps.setString(8, user.getUserStatus());
+            ps.setTimestamp(7, new java.sql.Timestamp(user.getCreated_At().getTime()));
+            ps.setString(8, user.getUser_Status());
             ps.setString(9, user.getRole());
             ps.setString(10, user.getAvatar()); // Set avatar field
 
@@ -59,25 +59,22 @@ public class UserDB implements DatabaseInfo {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                String storedHashedPassword = rs.getString("password");
+                String storedPassword = rs.getString("password");
 
-                // Use the same static salt method to hash the input password
-                String hashedInputPassword = Encrypt.toSHA256(password);
-
-                // Compare hashed input password with stored hashed password
-                if (storedHashedPassword.equals(hashedInputPassword)) {
+                // If password is null (Google login), bypass password check
+                if (password == null || storedPassword.equals(Encrypt.toSHA256(password))) {
                     return new User(
-                            rs.getInt("userId"),
+                            rs.getInt("user_Id"),
                             rs.getString("password"),
-                            rs.getString("firstName"),
-                            rs.getString("lastName"),
+                            rs.getString("first_Name"),
+                            rs.getString("last_Name"),
                             rs.getString("phone"),
                             rs.getString("email"),
                             rs.getString("address"),
-                            rs.getTimestamp("createdAt"),
-                            rs.getString("userStatus"),
+                            rs.getTimestamp("created_At"),
+                            rs.getString("user_Status"),
                             rs.getString("role"),
-                            rs.getString("avatar") // Get avatar field
+                            rs.getString("avatar")
                     );
                 }
             }
@@ -140,8 +137,8 @@ public class UserDB implements DatabaseInfo {
         return exists;
     }
 
-    public void updateUserStatusToVerified(String email) {
-        String sql = "UPDATE [User] SET userStatus = 'verified' WHERE email = ?";
+    public void updateUser_StatusToVerified(String email) {
+        String sql = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
         try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.executeUpdate();
@@ -152,29 +149,29 @@ public class UserDB implements DatabaseInfo {
 
 //-------------------------------------------------
     //Lấy all user ra
-    public User getUser(int userId) {
+    public User getUser(int user_Id) {
         User user = null;
-        String query = "SELECT userId, password, userStatus, role, firstName, lastName, email, phone, address, createdAt, avatar "
-                + "FROM [User] WHERE userId = ?";
+        String query = "SELECT user_Id, password, user_Status, role, first_Name, last_Name, email, phone, address, created_At, avatar "
+                + "FROM [User] WHERE user_Id = ?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
-            stmt.setInt(1, userId);
+            stmt.setInt(1, user_Id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 int id = rs.getInt(1);
                 String password = rs.getString(2);
-                String userStatus = rs.getString(3);
+                String user_Status = rs.getString(3);
                 String role = rs.getString(4);
-                String firstName = rs.getString(5);
-                String lastName = rs.getString(6);
+                String first_Name = rs.getString(5);
+                String last_Name = rs.getString(6);
                 String email = rs.getString(7);
                 String phone = rs.getString(8);
                 String address = rs.getString(9);
-                Date createdAt = rs.getDate(10);
+                Date created_At = rs.getDate(10);
                 String avatar = rs.getString(11); // Get avatar
 
-                user = new User(id, password, firstName, lastName, phone, email, address, createdAt, userStatus, role, avatar);
+                user = new User(id, password, first_Name, last_Name, phone, email, address, created_At, user_Status, role, avatar);
             }
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -197,13 +194,13 @@ public class UserDB implements DatabaseInfo {
     }
 
     //Change password
-    public boolean updatePassword(int userId, String newPassword) {
-        String query = "UPDATE [User] SET password=? WHERE userId=?";
+    public boolean updatePassword(int user_Id, String newPassword) {
+        String query = "UPDATE [User] SET password=? WHERE user_Id=?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
             stmt.setString(1, newPassword);
-            stmt.setInt(2, userId);
+            stmt.setInt(2, user_Id);
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated == 0) {
                 throw new SQLException("Update failed, no rows affected.");
@@ -215,13 +212,13 @@ public class UserDB implements DatabaseInfo {
         }
     }
 
-    public boolean updateEmail(int userId, String newEmail) {
-        String query = "UPDATE [User] SET email=? WHERE userId=?";
+    public boolean updateEmail(int user_Id, String newEmail) {
+        String query = "UPDATE [User] SET email=? WHERE user_Id=?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
             stmt.setString(1, newEmail);
-            stmt.setInt(2, userId);
+            stmt.setInt(2, user_Id);
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated == 0) {
                 throw new SQLException("Update failed, no rows affected.");
@@ -237,16 +234,16 @@ public class UserDB implements DatabaseInfo {
     public boolean updateUser(User user) {
         boolean result = false;
         String sql = "UPDATE [User] SET "
-                + "firstName =?, lastName=?, email=?, phone=?, address=?, avatar=? "
-                + "WHERE userId=?";
+                + "first_Name =?, last_Name=?, email=?, phone=?, address=?, avatar=? "
+                + "WHERE user_Id=?";
         try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, user.getFirstName());
-            stmt.setString(2, user.getLastName());
+            stmt.setString(1, user.getFirst_Name());
+            stmt.setString(2, user.getLast_Name());
             stmt.setString(3, user.getEmail());
             stmt.setString(4, user.getPhone());
             stmt.setString(5, user.getAddress());
             stmt.setString(6, user.getAvatar()); // Set avatar field
-            stmt.setInt(7, user.getUserId());
+            stmt.setInt(7, user.getUser_Id());
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
