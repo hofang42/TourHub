@@ -6,7 +6,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 public class Encrypt {
 	// SHA-256 encryption
 	public static String toSHA256(String str) {
-		String salt = "a12312398@!!12..9#azxmcnm;!!@"; // Add salt to complicate password
+		String salt = "TruongNguyenTienDatahihi....!"; // Add salt to complicate password
 		String result = null;
 
 		str = str + salt;
