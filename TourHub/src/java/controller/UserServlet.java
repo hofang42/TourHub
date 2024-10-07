@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Message;
@@ -74,6 +74,9 @@ public class UserServlet extends HttpServlet {
             case "checkotp":
                 handleCheckOtp(request, response);
                 break;
+            case "manage":
+                handleManage(request, response);
+                break;
             default:
                 response.sendRedirect("error.jsp");
                 break;
@@ -115,51 +118,51 @@ public class UserServlet extends HttpServlet {
     private void handleUpdatePassword(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Lấy thông tin từ form
-    int userId = Integer.parseInt(request.getParameter("userId"));
-    String currentPassword = request.getParameter("password");
-    String newPassword = request.getParameter("newPassword");
-    String confirmPassword = request.getParameter("confirmPassword");
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        String currentPassword = request.getParameter("password");
+        String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
 
-    // Lấy đối tượng User hiện tại từ cơ sở dữ liệu
-    UserDB userDb = new UserDB();
-    User currentUser = userDb.getUser(userId);
+        // Lấy đối tượng User hiện tại từ cơ sở dữ liệu
+        UserDB userDb = new UserDB();
+        User currentUser = userDb.getUser(userId);
 
-    RequestDispatcher dispatcher;
+        RequestDispatcher dispatcher;
 
-    // Kiểm tra mật khẩu hiện tại có khớp không
-    if (!currentUser.getPassword().equals(currentPassword)) {
-        // Mật khẩu hiện tại không đúng
-        request.setAttribute("error", "UpdateFailed");
-        dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
-        dispatcher.forward(request, response);
-        return;
-    }
+        // Kiểm tra mật khẩu hiện tại có khớp không
+        if (!currentUser.getPassword().equals(currentPassword)) {
+            // Mật khẩu hiện tại không đúng
+            request.setAttribute("error", "UpdateFailed");
+            dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
+            dispatcher.forward(request, response);
+            return;
+        }
 
-    // Kiểm tra mật khẩu mới và mật khẩu xác nhận có khớp không
-    if (!newPassword.equals(confirmPassword)) {
-        // Mật khẩu mới không khớp với mật khẩu xác nhận
-        request.setAttribute("error", "UpdateFailed");
-        dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
-        dispatcher.forward(request, response);
-        return;
-    }
+        // Kiểm tra mật khẩu mới và mật khẩu xác nhận có khớp không
+        if (!newPassword.equals(confirmPassword)) {
+            // Mật khẩu mới không khớp với mật khẩu xác nhận
+            request.setAttribute("error", "UpdateFailed");
+            dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
+            dispatcher.forward(request, response);
+            return;
+        }
 
-    // Cập nhật mật khẩu mới trong cơ sở dữ liệu
-    boolean isUpdated = userDb.updatePassword(userId, newPassword);
+        // Cập nhật mật khẩu mới trong cơ sở dữ liệu
+        boolean isUpdated = userDb.updatePassword(userId, newPassword);
 
-    if (isUpdated) {
-        // Nếu cập nhật thành công, lưu thông tin mới vào session
-        HttpSession session = request.getSession();
-        session.setAttribute("currentUser", userDb.getUser(userId)); // Lấy user mới sau khi update
+        if (isUpdated) {
+            // Nếu cập nhật thành công, lưu thông tin mới vào session
+            HttpSession session = request.getSession();
+            session.setAttribute("currentUser", userDb.getUser(userId)); // Lấy user mới sau khi update
 
-        // Chuyển hướng trở lại trang thông tin người dùng
-        response.sendRedirect("user-profile.jsp");
-    } else {
-        // Xử lý nếu cập nhật thất bại
-        request.setAttribute("error", "UpdateFailed");
-        dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
-        dispatcher.forward(request, response);
-    }
+            // Chuyển hướng trở lại trang thông tin người dùng
+            response.sendRedirect("user-profile.jsp");
+        } else {
+            // Xử lý nếu cập nhật thất bại
+            request.setAttribute("error", "UpdateFailed");
+            dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
+            dispatcher.forward(request, response);
+        }
     }
 
     private void handleUpdateEmail(HttpServletRequest request, HttpServletResponse response)
@@ -254,6 +257,24 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void handleManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int user = -1;
+        HttpSession session = request.getSession();
+        session.setAttribute("currentUser", user);
+        System.out.println(user);
+        UserDB userdb = new UserDB();
+
+        try {
+            List<User> users = userdb.getAllUsers();
+            System.out.println(users);
+            request.setAttribute("users", users);
+            request.getRequestDispatcher("includes/admin/user.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -266,7 +287,12 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        UserDB userdb = new UserDB();
+
+        List<User> users = userdb.getAllUsers();
+        request.setAttribute("users", users);
+        request.getRequestDispatcher("includes/admin/user.jsp").forward(request, response);
+
     }
 
     /**
