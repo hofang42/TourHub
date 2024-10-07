@@ -40,7 +40,7 @@ public class ReportsDB implements DatabaseInfo {
             ps.setDate(1, new java.sql.Date(report.getReportDate().getTime()));
             ps.setString(2, report.getReportDetails());
             ps.setString(3, report.getReportType());
-            ps.setInt(4, report.getUser_Id());
+            ps.setInt(4, report.getUserId());
 
             // Execute the update and return true if a row was inserted
             int rowsInserted = ps.executeUpdate();

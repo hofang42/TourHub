@@ -150,8 +150,6 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        // Cập nhật mật khẩu mới trong cơ sở dữ liệu
-        boolean isUpdated = userDb.updatePassword(userId, newPassword);
         String newHashedPassword = Encrypt.toSHA256(newPassword); // Hash the new password
         boolean isUpdated = userDb.updatePassword(userId, newHashedPassword); // Use the hashed password
 
