@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <jsp:useBean id="currentUser" class="model.User" scope="session" />
+
 <%@include file="includes/header.jsp" %>
 
 <body>
@@ -41,7 +42,7 @@
                         <div class="circle"></div>
                     </div>
                     <div class="circle-clipper right">
-                        <div class="circle"> </div>
+                        <div class="circle"></div>
                     </div>
                 </div>
                 <div class="spinner-layer spinner-green"> 
@@ -94,13 +95,13 @@
                             <!-- RD Navbar Toggle-->
                             <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
                             <!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img class="logo-default" src="assests/images/logo-default-208x46.png" alt="" width="208" height="46"/><img class="logo-inverse" src="assests/images/logo-inverse-208x46.png" alt="" width="208" height="46"/></a></div>
+                            <div class="rd-navbar-brand"><a class="brand-name" href="index.jsp"><img class="logo-default" src="assests/images/logo-default-208x46.png" alt="" width="208" height="46"/><img class="logo-inverse" src="assests/images/logo-inverse-208x46.png" alt="" width="208" height="46"/></a></div>
                         </div>
                         <div class="rd-navbar-aside-center">
                             <div class="rd-navbar-nav-wrap">
                                 <!-- RD Navbar Nav-->
                                 <ul class="rd-navbar-nav">
-                                    <li class="active"><a href="index.jsp">Home</a>
+                                    <li><a href="index.jsp">Home</a>
                                     </li>
                                     <li><a href="about-us.jsp">About Us</a>
                                     </li>
@@ -110,7 +111,7 @@
                                     </li>
                                     <li><a href="faqs.jsp">FAQs</a>
                                     </li>
-                                    <li><a href="reporterror.jsp">Report Error</a>
+                                    <li class="active"><a href="reporterror.jsp">Report Error</a>
                                     </li>
                                 </ul>
                             </div>
@@ -131,11 +132,8 @@
                                         <a href="logout">Logout</a>
                                     </div>
                                 </div>
-
                             </c:otherwise>
                         </c:choose>
-
-
                     </div>
                 </nav>
             </div>
@@ -147,30 +145,38 @@
                     <div class="col-md-10 col-lg-8">
                         <h2 class="text-center">Report an Issue</h2>
                         <hr class="divider divider-decorate">
-                        
-                        <form action="reporterror" method="post">
-                            <div class="form-group">
-                                <label for="reportDetails">Report Details:</label>
-                                <textarea class="form-control" id="reportDetails" name="reportDetails" rows="5" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="reportType">Report Type:</label>
-                                <select class="form-control" id="reportType" name="reportType" required>
-                                    <option value="bug">Bug</option>
-                                    <option value="feedback">Feedback</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="button button-secondary button-nina">Submit Report</button>
-                        </form>
 
-                        <!-- Success/Error Messages -->
-                        <c:if test="${not empty message}">
-                            <div class="alert alert-success">${message}</div>
-                        </c:if>
+                        <%-- Check if the user is logged in before showing the report form --%>
+                        <c:choose>
+                            <c:when test="${currentUser == null}">
+                                <h3>You must <a href='login.jsp'>login</a> to submit a report.</h3>
+                            </c:when>
+                            <c:otherwise>
+                                <form id="reportForm" action="reporterror" method="post">
+                                    <div class="form-group">
+                                        <label for="reportDetails">Report Details:</label>
+                                        <textarea class="form-control" id="reportDetails" name="reportDetails" rows="5" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reportType">Report Type:</label>
+                                        <select class="form-control" id="reportType" name="reportType" required>
+                                            <option value="bug">Bug</option>
+                                            <option value="feedback">Feedback</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="button button-secondary button-nina">Submit Report</button>
+                                </form>
+                            </c:otherwise>
+                        </c:choose>
+
                         <c:if test="${not empty error}">
                             <div class="alert alert-danger">${error}</div>
                         </c:if>
+                        <c:if test="${not empty message}">
+                            <div class="alert alert-success">${message}</div>
+                        </c:if>
+
                     </div>
                 </div>
             </div>

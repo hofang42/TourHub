@@ -26,7 +26,16 @@ public class ReportErrorServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
 
-        if (currentUser != null && reportDetails != null && !reportDetails.isEmpty()) {
+        // Check if the user is logged in
+        if (currentUser == null) {
+            // User is not logged in, set an error attribute and forward to report page
+            request.setAttribute("error", "You must log in before submitting a report.");
+            request.getRequestDispatcher("reporterror.jsp").forward(request, response);
+            return; // Stop further execution
+        }
+
+        // Proceed if the user is logged in and report details are provided
+        if (reportDetails != null && !reportDetails.isEmpty()) {
             // Create a new ReportError object
             ReportError report = new ReportError(new Date(), reportDetails, reportType, currentUser.getUser_Id());
 
