@@ -77,10 +77,6 @@
                                 <input type="hidden" name="email" value="${currentUser.email}" />
                                 <div class="row">
                                     <div class="profile-info">
-                                        <label>Username:</label>
-                                        <input type="text" name="username" value="${currentUser.username}" />
-                                    </div>
-                                    <div class="profile-info">
                                         <label>Phone Number:</label>
                                         <input type="text" name="phone" value="${currentUser.phone}" />
                                     </div>

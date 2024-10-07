@@ -44,14 +44,14 @@
                 </c:if>
                 <c:if test="${sessionScope.currentUser.role == 'Customer'}">
                     <li>
-                        <a href="user-booking.jsp">
+                        <a href="booking">
                             <i class='bx bxs-shopping-bag-alt' ></i>
                             <span class="text">Manage Booking</span>
                         </a>
                     </li>
                 </c:if>
                 <li>
-                    <a href="#">
+                    <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
                     </a>
@@ -76,6 +76,33 @@
                         </a>
                     </li> 
                 </c:if>
+                </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
+                </c:if>
+                <li>
+                    <a href="reviewtour.jsp">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
+                    </a>
+                </li>
+                <%-- <li>
+                    <a href="#">
+                        <i class='bx bxs-doughnut-chart' ></i>
+                        <span class="text">Analytics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class='bx bxs-group' ></i>
+                        <span class="text">Team</span>
+                    </a>
+                </li> --%>
             </ul>
             <ul class="side-menu">
                 <li>
