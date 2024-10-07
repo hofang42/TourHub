@@ -42,7 +42,7 @@ public class ProvinceDB {
 
     public List<Province> getProvinceByVisitCount() {
         List<Province> provinces = new ArrayList<>();
-        String query = "SELECT TOP 15 * from provinces ORDER BY visit_count DESC";
+        String query = "SELECT TOP 15 * from Provinces ORDER BY visit_count DESC";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 
@@ -65,7 +65,7 @@ public class ProvinceDB {
 
     public int updateVisitProvinceCount(int province_id) {
         try (Connection connection = DriverManager.getConnection(DBURL, USERDB, PASSDB)) {
-            String sql = "UPDATE provinces SET visit_count = visit_count + 1 WHERE province_id = ?";
+            String sql = "UPDATE Provinces SET visit_count = visit_count + 1 WHERE province_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, province_id);
                 int rowsUpdated = statement.executeUpdate();
@@ -77,4 +77,11 @@ public class ProvinceDB {
         }
     }
 
+    
+    public static void main(String[] args) {
+        List<Province> provinces = new ProvinceDB().getProvinceByVisitCount();
+        for (Province pro : provinces){
+            System.out.println(pro.toString());
+        }
+    }
 }

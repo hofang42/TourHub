@@ -80,7 +80,7 @@ public class TourDB {
     }
 
     public float getTotalProfit(int companyId) {
-        String query = "SELECT SUM(total_Cost) AS [Total Profit] FROM Booking b JOIN Tour t ON b.tour_Id = t.tour_Id WHERE company_Id = ? AND book_Status = 'confirmed'"
+        String query = "SELECT SUM(total_Cost) AS [Total Profit] FROM Booking b JOIN Tour t ON b.tour_Id = t.tour_Id WHERE company_Id = ? AND book_Status = 'Booked'"
                 + "AND MONTH(b.book_Date) = MONTH(GETDATE()) "
                 + "AND YEAR(b.book_Date) = YEAR(GETDATE())";
         float totalProfit = 0;  // Variable to store the total sum of profit
@@ -157,11 +157,16 @@ public class TourDB {
 
     //With a day input
     public float getTotalProfitAMonth(int companyId, java.util.Date visitDate) {
-        String query = "SELECT SUM(total_Cost) AS [Total Profit] FROM Booking b JOIN Tour t ON b.tour_Id = t.tour_Id WHERE company_Id = ? AND book_Status = 'confirmed' AND MONTH(book_Date) = MONTH(?)";
+        String query = "SELECT SUM(total_Cost) AS [Total Profit] FROM Booking b"
+                + " JOIN Tour t ON b.tour_Id = t.tour_Id WHERE company_Id = ?"
+                + " AND book_Status = 'Booked'"
+                + " AND MONTH(book_Date) = MONTH(?)"
+                + "AND YEAR(book_Date) = YEAR(?)";
         float totalProfitAMonth = 0;  // Variable to store the total profit a month
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setInt(1, companyId);  // Set the companyId parameter
             stmt.setDate(2, new java.sql.Date(visitDate.getTime())); // Set the visitDate parameter
+            stmt.setDate(3, new java.sql.Date(visitDate.getTime())); // Set the visitDate parameter
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -274,7 +279,7 @@ public class TourDB {
     }
 
     public static void main(String[] args) {
-        Tour tour = new TourDB().getTourFromTourID("T0000002", 2);
-        System.out.println(tour.toString());
+
+        System.out.println(new TourDB().getTotalProfit(2));
     }
 }

@@ -41,12 +41,22 @@
                         <span class="text">User Information</span>
                     </a>
                 </li>
-                <li>
-                    <a href="user-booking.jsp">
-                        <i class='bx bxs-shopping-bag-alt' ></i>
-                        <span class="text">My Booking</span>
-                    </a>
-                </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="bookings">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">Manage Booking</span>
+                        </a>
+                    </li>
+                </c:if>
+                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                    <li>
+                        <a href="user-booking.jsp">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">My Booking</span>
+                        </a>
+                    </li>
+                </c:if>
                 <li>
                     <a href="#">
                         <i class='bx bxs-message-dots' ></i>
@@ -155,7 +165,7 @@
                                     <div class="sales" id="sale_total">
                                         <div class="sales-title"><h3>Profit this month</h3></div>
                                         <div class="sales-content">
-                                            <h1 id="totalVisitValue">
+                                            <h1 id="profitAMonthValeu">
                                                 ${sessionScope.totalProfitThisMonth != null ? sessionScope.totalProfitThisMonth : 0}
                                             </h1>
                                         </div>
@@ -191,48 +201,32 @@
                                     <!-- End Incomes  -->
                                 </div>
                                 <!-- End Insight -->
-                                <!-- Start recent order -->
-                                <div class="recent_order">
-                                    <h1>Recent Tour Booking</h1>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Tour Name</th>
-                                                <th>Customer Name</th>
-                                                <th>Slot</th>
-                                                <th>Status</th>
-                                                <th>Total Cost</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="product_list">
-                                            <c:forEach items="${sessionScope.bookings}" var="booking">
-                                                <tr>
-                                                    <c:set var="id" value="${id + 1}" />
-                                                    <td>${id}</td>
-                                                    <td>${booking.tourName}</td>
-                                                    <td>${booking.customerName}</td>
-                                                    <td>${booking.slotOrder}</td>
-                                                    <td style="color:
-                                                        <c:choose>
-                                                            <c:when test="${booking.bookStatus == 'confirmed'}">green</c:when>
-                                                            <c:when test="${booking.bookStatus == 'canceled'}">red</c:when>
-                                                            <c:when test="${booking.bookStatus == 'pending'}">#FFCC00</c:when>
-                                                            <c:otherwise>black</c:otherwise>
-                                                        </c:choose>
-                                                        ">
-                                                        ${booking.bookStatus}
-                                                    </td>
-                                                    <td>${booking.totalCost} VND</td>
-                                                </tr>
-                                            </c:forEach>
-                                        </tbody>
-                                    </table>
+                                <!-- Start chart -->
+                                <div class="charts-container">
+                                    <div class="chart-container">
+                                        <div class="left-chart">
+                                            <canvas id="myChart"></canvas>
+                                            <small class="chart-label">Monthly Tour Booked</small>
+                                        </div>
+                                        <div class="left-chart">
+                                            <canvas id="multiLineChart"></canvas>
+                                            <small class="chart-label">Yearly Profit</small>
+                                        </div>
+
+                                        <div class="right-chart">
+                                            <canvas id="circleChart"></canvas>
+                                            <div>
+                                                <small class="chart-label">Hot Destination</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
                             </c:otherwise>
                         </c:choose>
                     </div>
                 </div>
+
                 <!-- End recent order -->
             </main>
 
@@ -243,6 +237,8 @@
 
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
         <script>
                                         document.addEventListener('DOMContentLoaded', function () {
                                             const burger = document.querySelector('.burger');
@@ -270,14 +266,14 @@
                     },
                     success: function (data) {
                         // Assuming 'data' is a JSON object
-                        document.querySelector("#totalVisitValue").innerHTML = data.totalVisitATour || 0;
+                        document.querySelector("#profitAMonthValeu").innerHTML = data.profitAMonth || 0;
                         document.querySelector("#visitTodayValue").innerHTML = data.visitToday || 0;
                         document.querySelector("#bookingThisMonthValue").innerHTML = data.bookingThisMonth || 0;
                     }
                 });
             }
         </script>
-
+        <script src="assests/js/ProviderChart.js"></script>
         <script src="dist/js/theme.min.js"></script>
     </body>
 </html>

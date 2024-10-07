@@ -55,12 +55,22 @@
                         <span class="text">User Information</span>
                     </a>
                 </li>
-                <li>
-                    <a href="user-booking.jsp">
-                        <i class='bx bxs-shopping-bag-alt' ></i>
-                        <span class="text">My Booking</span>
-                    </a>
-                </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="bookings">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">Manage Booking</span>
+                        </a>
+                    </li>
+                </c:if>
+                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                    <li>
+                        <a href="user-booking.jsp">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">My Booking</span>
+                        </a>
+                    </li>
+                </c:if>
                 <li>
                     <a href="#">
                         <i class='bx bxs-message-dots' ></i>

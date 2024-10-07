@@ -402,3 +402,48 @@ button[type="submit"]:hover {
 .sub-menu.open {
     display: block;
 }
+
+.chart-container {
+    display: grid;
+    grid-template-columns: 50% auto; /* Left side takes 50%, right takes remaining space */
+    grid-template-rows: auto auto; /* Two rows for left charts */
+    gap: 1.6rem; /* Space between elements */
+    height: 100vh; /* Full viewport height */
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.left-chart {
+    display: flex;
+    flex-direction: column; /* Arrange the canvas and label vertically */
+    align-items: center; /* Center the canvas and label horizontally */
+    width: 100%; /* Ensure the div takes full width */
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.right-chart {
+    grid-column: 2; /* Place in the second column */
+    grid-row: 1 / span 2; /* Span across both rows */
+    display: flex;
+    flex-direction: column; /* Arrange the canvas and label vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100%;
+}
+
+canvas {
+    display: block;
+    max-width: 100%; /* Ensure responsiveness */
+    height: auto; /* Automatically adjust height */
+}
+
+.chart-label {
+    display: block;
+    margin-top: 1rem; /* Space between the chart and label */
+    text-align: center; /* Center the label text */
+    color: #333; /* Label text color */
+    font-size: 1rem; /* Adjust label font size */
+}
+
+

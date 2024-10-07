@@ -12,6 +12,7 @@ import java.sql.Date;
  */
 public class BookingDetails {
 
+    private int bookId;
     private String tourName;
     private String customerName;
     private int slotOrder;
@@ -21,12 +22,21 @@ public class BookingDetails {
     public BookingDetails() {
     }
 
-    public BookingDetails(String tourName, String customerName, int slotOrder, String bookStatus, double totalCost) {
+    public BookingDetails(int bookId, String tourName, String customerName, int slotOrder, String bookStatus, double totalCost) {
+        this.bookId = bookId;
         this.tourName = tourName;
         this.customerName = customerName;
         this.slotOrder = slotOrder;
         this.bookStatus = bookStatus;
         this.totalCost = totalCost;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 
     public String getTourName() {
@@ -71,9 +81,6 @@ public class BookingDetails {
 
     @Override
     public String toString() {
-        return "BookingDetails{" + "tourName=" + tourName + ", customerName=" + customerName + ", slotOrder=" + slotOrder + ", bookStatus=" + bookStatus + ", totalCost=" + totalCost + '}';
+        return "BookingDetails{" + "bookId=" + bookId + ", tourName=" + tourName + ", customerName=" + customerName + ", slotOrder=" + slotOrder + ", bookStatus=" + bookStatus + ", totalCost=" + totalCost + '}';
     }
-
-    
-    
 }

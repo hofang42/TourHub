@@ -100,7 +100,7 @@ public class ProviderAnalysServlet extends HttpServlet {
         float totalProfitThisMonth = tourDB.getTotalProfit(companyId);
         int visitToday = tourDB.getTodayVisit(companyId); // Assuming getVisitsByDate accepts a date
         int bookingThisMonth = bookingDB.getTotalBookingThisMonth(companyId); // Use dateInput if available
-        List<BookingDetails> bookings = bookingDB.getBookingDetails(); // Consider if you need to filter this by date as well
+        List<BookingDetails> bookings = bookingDB.getPendingBookingDetails(); // Consider if you need to filter this by date as well
 
         // After parsing the dateString
         if (dateString != null && !dateString.isEmpty()) {
@@ -133,44 +133,6 @@ public class ProviderAnalysServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        HttpSession session = request.getSession();
-//        User user = (User) session.getAttribute("currentUser");
-//
-//        // Check if the user is null
-//        if (user == null) {
-//            response.sendRedirect("login.jsp"); // Redirect to login if not authenticated
-//            return; // Stop further processing
-//        }
-//
-//        System.out.println("USER PROFILE" + user.getUserId());
-//        TourDB tourDB = new TourDB();
-//        CompanyDB companyDB = new CompanyDB();
-//        BookingDB bookingDB = new BookingDB();
-//        int companyId = 0;
-//        try {
-//            companyId = companyDB.getCompanyIdFromUserId(user.getUserId());
-//
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ProviderAnalysServlet.class
-//                    .getName()).log(Level.SEVERE, null, ex);
-//        }
-//        int totalVisitATour = tourDB.getTotalVisitATour(companyId);
-//        int visitToday = tourDB.getTodayVisit(companyId);
-//        int bookingThisMonth = bookingDB.getTotalBookingThisMonth(companyId);
-//        List<BookingDetails> bookings = bookingDB.getBookingDetails();
-//
-//        request.getSession().setAttribute("totalVisitATour", totalVisitATour);
-//        request.getSession().setAttribute("visitToday", visitToday);
-//        request.getSession().setAttribute("bookingThisMonth", bookingThisMonth);
-//        request.getSession().setAttribute("currentUser", user);
-//        request.getSession().setAttribute("bookings", bookings);
-//
-//        request.getRequestDispatcher("provider-analysis.jsp").forward(request, response);
-////        response.sendRedirect("provider-analysis.jsp");
-//    }
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get current user from session
         HttpSession session = request.getSession();
@@ -227,7 +189,7 @@ public class ProviderAnalysServlet extends HttpServlet {
         }
 
         // Fetch data based on the date provided (or lack of it)
-        float totalVisitATour = (dateInput != null)
+        float profitAMonth = (dateInput != null)
                 ? tourDB.getTotalProfitAMonth(companyId, dateInput)
                 : tourDB.getTotalProfit(companyId);
 
@@ -244,7 +206,7 @@ public class ProviderAnalysServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         JsonObject jsonResponse = new JsonObject();
-        jsonResponse.addProperty("totalVisitATour", totalVisitATour);
+        jsonResponse.addProperty("profitAMonth", profitAMonth);
         jsonResponse.addProperty("visitToday", visitToday);
         jsonResponse.addProperty("bookingThisMonth", bookingThisMonth);
 
