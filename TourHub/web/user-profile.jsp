@@ -189,7 +189,11 @@
                                         </div>
                                         <div class="profile-info">
                                             <label>Full Name:</label>
-                                            <p><span>${sessionScope.currentUser.firstName} ${sessionScope.currentUser.lastName}</span></p>
+
+                                            <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
+
+                                            <p><span>${sessionScope.currentUser.first_Name} ${sessionScope.currentUser.last_Name}</span></p>
+
                                         </div>
                                         <div class="profile-info">
                                             <label>Phone Number:</label>
