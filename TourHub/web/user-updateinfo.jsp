@@ -20,7 +20,7 @@
                     <h1>Update Your Information</h1>
                     <c:choose>
                         <c:when test="${currentUser == null}">
-                            <c:redirect url="index.jsp" />
+                            <c:redirect url="home" />
                         </c:when>
                         <c:when test="${param.buttonChange == 'pass'}">
                             <form action="user" method="post" onsubmit="return validatePassword();">
@@ -76,10 +76,6 @@
                                 <input type="hidden" name="password" value="${currentUser.password}" />
                                 <input type="hidden" name="email" value="${currentUser.email}" />
                                 <div class="row">
-                                    <div class="profile-info">
-                                        <label>Username:</label>
-                                        <input type="text" name="username" value="${currentUser.username}" />
-                                    </div>
                                     <div class="profile-info">
                                         <label>Phone Number:</label>
                                         <input type="text" name="phone" value="${currentUser.phone}" />

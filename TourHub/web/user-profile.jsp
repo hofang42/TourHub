@@ -3,7 +3,7 @@
 <%@ page import="DataAccess.UserDB"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<jsp:useBean id="currentUser" class="model.User" scope="session" />
+<%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -23,7 +23,7 @@
 
         <!-- SIDEBAR -->
         <section id="sidebar">
-            <a href="index.jsp" class="brand">
+            <a href="home" class="brand">
                 <i class='bx bxs-smile'></i>
                 <span class="text">TourHub</span>
             </a>
@@ -34,16 +34,61 @@
                         <span class="text">User Information</span>
                     </a>
                 </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="bookings">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">Manage Booking</span>
+                        </a>
+                    </li>
+                </c:if>
+                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                    <li>
+                        <a href="booking">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">Manage Booking</span>
+                        </a>
+                    </li>
+                </c:if>
                 <li>
-                    <a href="user-booking.jsp">
-                        <i class='bx bxs-shopping-bag-alt' ></i>
-                        <span class="text">My Booking</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
+                    <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
+                    </a>
+                </li>    
+                <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
+                    <li class="">
+                        <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
+                            <i class='bx bxs-dashboard' ></i>
+                            <span class="text">Dashboard</span>
+                        </a>
+                    </li>   
+                    <li class="dropdown-btn">
+                        <a href="tour-management.jsp">
+                            <i class='bx bxs-briefcase-alt' ></i>
+                            <span class="text">Tour Management</span>
+                        </a>
+                    </li>   
+                    <li>
+                        <a href="payment.jsp">
+                            <i class='bx bxs-credit-card'></i>
+                            <span class="text">Payment</span>
+                        </a>
+                    </li> 
+                </c:if>
+                </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
+                </c:if>
+                <li>
+                    <a href="reviewtour.jsp">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
                     </a>
                 </li>
                 <%-- <li>
@@ -115,15 +160,15 @@
                         <!-- Enter data here -->
 
                         <c:choose>
-                            <c:when test="${currentUser == null}">
-                                <c:redirect url="index.jsp" />
+                            <c:when test="${sessionScope.currentUser == null}">
+                                <c:redirect url="home" />
                             </c:when>
                             <c:otherwise>
                                 <div class="profile-card">
                                     <div>
                                         <div class="profile-info">
                                             <label>Username:</label>
-                                            <p><span>${currentUser.username}</span></p>
+                                            <p><span>${sessionScope.currentUser.username}</span></p>
                                         </div>
                                         <div class="profile-info">
                                             <label>Password:</label>
@@ -137,22 +182,26 @@
                                         </div>
                                         <div class="profile-info">
                                             <label>Email:</label>
-                                            <p><span>${currentUser.email}</span></p>
+                                            <p><span>${sessionScope.currentUser.email}</span></p>
                                             <form class="changeform" action="user-updateinfo.jsp" method="get">
                                                 <button type="submit" name="buttonChange" value="email">Change email</button>
                                             </form>
                                         </div>
                                         <div class="profile-info">
                                             <label>Full Name:</label>
-                                            <p><span>${currentUser.firstName} ${currentUser.lastName}</span></p>
+
+                                            <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
+
+                                            <p><span>${sessionScope.currentUser.first_Name} ${sessionScope.currentUser.last_Name}</span></p>
+
                                         </div>
                                         <div class="profile-info">
                                             <label>Phone Number:</label>
-                                            <p><span>${currentUser.phone}</span></p>
+                                            <p><span>${sessionScope.currentUser.phone}</span></p>
                                         </div>
                                         <div class="profile-info">
                                             <label>Address:</label>
-                                            <p><span>${currentUser.address}</span></p>
+                                            <p><span>${sessionScope.currentUser.address}</span></p>
                                         </div>
                                     </div>
                                     <div class="change-info-button">
@@ -179,7 +228,7 @@
                                                         var button = event.target;
 
                                                         if (passwordField.innerHTML === "********") {
-                                                            passwordField.innerHTML = "${currentUser.password}";
+                                                            passwordField.innerHTML = "${sessionScope.currentUser.password}";
                                                             button.textContent = "Hide";
                                                         } else {
                                                             passwordField.innerHTML = "********";

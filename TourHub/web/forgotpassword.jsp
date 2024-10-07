@@ -1,4 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@include file="includes/header.jsp" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -23,12 +24,35 @@
                 align-items: center;
                 justify-content: center;
             }
+            .full-height{
+                background-image: url("assests/images/banner/bg3.jpg");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
             .header {
                 background-color: #f8f9fa;
-                padding: 1rem;
+                padding: 0; /* Xóa padding để sát lên trên */
                 position: relative;
-                border-bottom: 1px solid #ddd;
+                display: flex;
+                align-items: flex-start; /* Căn phần tử con theo phía trên */
+                background-color: rgba(248, 249, 250, 0);
+                justify-content: center;
             }
+
+            .header .logo {
+                background-image: url('assests/images/logo-favicon/logo.png'); /* Đảm bảo đường dẫn đúng */
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                width: 15rem;
+                height: 13rem;
+                align-items: start;
+                justify-content: start;
+            }
+
+
             .login-form {
                 position: absolute;
                 top: 0;
@@ -50,7 +74,7 @@
                 background-color: #f8f9fa;
                 padding: 1rem;
                 text-align: center;
-                border-top: 1px solid #ddd;
+                background-color: rgba(248, 249, 250, 0); /* Make the background slightly transparent */
             }
             .forgot-password-box {
                 background: #fff;
@@ -60,6 +84,7 @@
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 max-width: 500px;
                 margin: auto;
+                background-color: rgba(248, 249, 250, 0.7); /* Make the background slightly transparent */
             }
             .form-group {
                 margin-bottom: 1.5rem;
@@ -74,8 +99,13 @@
     </head>
     <body>
         <div class="full-height">
-            
-            
+
+            <!-- Header with logo -->
+            <header class="header">
+                <div class="logo"></div>           
+            </header>
+
+
             <!-- Main Content -->
             <section class="content">
                 <div class="container">
@@ -106,7 +136,7 @@
                     </div>
                 </div>
             </section>
-            
+
             <!-- Footer -->
             <footer class="footer">
                 <div class="container">

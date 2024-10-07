@@ -62,16 +62,16 @@ h1 {
 }
 
 .image-container {
-  width: 60px; /* Set the width of the container */
-  overflow: hidden; /* Hide any part of the image that goes outside the container */
-  border-radius: 50%;
+    width: 60px; /* Set the width of the container */
+    overflow: hidden; /* Hide any part of the image that goes outside the container */
+    border-radius: 50%;
 }
 
 .image-container img {
-  max-width: 100%; /* Ensure the image does not exceed the container's width */
-  max-height: 100%; /* Ensure the image does not exceed the container's height */
-  height: auto; /* Maintain the image's aspect ratio */
-  width: auto; /* Maintain the image's aspect ratio */
+    max-width: 100%; /* Ensure the image does not exceed the container's width */
+    max-height: 100%; /* Ensure the image does not exceed the container's height */
+    height: auto; /* Maintain the image's aspect ratio */
+    width: auto; /* Maintain the image's aspect ratio */
 }
 
 
