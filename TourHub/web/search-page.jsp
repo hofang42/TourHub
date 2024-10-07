@@ -309,8 +309,6 @@
                         </c:forEach>
                     </div>
 
-
-
                     <!-- Pagination Buttons -->
                     <div class="pagination">
                         <button id="prevPage" disabled>Previous</button>
