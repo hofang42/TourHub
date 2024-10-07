@@ -1,9 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@include file="includes/header.jsp" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <body class="search-page">
-    <!-- Page preloader-->
-    <div class="page-loader"> 
+    <!-- Page-->
+        <div class="page-loader"> 
         <div class="page-loader-body"> 
             <div class="preloader-wrapper big active"> 
                 <div class="spinner-layer spinner-blue"> 
@@ -53,7 +54,6 @@
             </div>
         </div>
     </div>
-    <!-- Page-->
     <div class="page">
         <!-- Page Header-->
         <header class="section page-header">
@@ -89,7 +89,7 @@
                             <!-- RD Navbar Toggle-->
                             <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
                             <!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img class="logo-default" src="assests/images/logo-default-208x46.png" alt="" width="208" height="46"/><img class="logo-inverse" src="assests/images/logo-inverse-208x46.png" alt="" width="208" height="46"/></a></div>
+                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img class="logo-default" src="assests/images/logo-favicon/logo.png" alt="" width="208" height="46"/><img class="logo-inverse" src="assests/images/logo-inverse-208x46.png" alt="" width="208" height="46"/></a></div>
                         </div>
                         <div class="rd-navbar-aside-center">
                             <div class="rd-navbar-nav-wrap">
@@ -111,7 +111,7 @@
                 </nav>
             </div>
         </header>
-        
+
         <body>
             <div class="search-bar">
                 <div class="current-place">
@@ -121,7 +121,7 @@
                 <div class="search-container">
                     <button class="pick-location-btn" id="button" onclick="openPopup()">
                         <i class="fa-solid fa-location-dot"></i>
-                        <p>Ho Chi Minh City</p>
+                        <p id="selected-location">All</p>
                         <i class="fa-solid fa-caret-down"></i>
                     </button>
 
@@ -135,70 +135,73 @@
                         <i class="close fa-solid fa-xmark" alt="Close" onclick="closePopup()"></i>
                         <div class="location-container">
                             <div class="row">
-                              <div class="location col-md-6">
-                                <button>Ha Noi</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Ho Chi Minh</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('All')">All</button> <!-- This will show all tours -->
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Ha Noi')">Ha Noi</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Ho Chi Minh')">Ho Chi Minh</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Da Nang</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Hue</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Da Nang')">Da Nang</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Hue')">Hue</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Hoi An</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Quang Ninh</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Hoi An')">Hoi An</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Quang Ninh')">Quang Ninh</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Ha Noi</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Ho Chi Minh</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Can Tho')">Can Tho</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Phan Thiet')">Phan Thiet</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Da Nang</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Hue</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('My Son')">My Son</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Phu Quoc')">Phu Quoc</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Hoi An</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Quang Ninh</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Quang Binh')">Quang Binh</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Da Lat')">Da Lat</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Ha Noi</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Ho Chi Minh</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Ninh Thuan')">Ninh Thuan</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Vung Tau')">Vung Tau</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Da Nang</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Hue</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Nha Trang')">Nha Trang</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Hai Phong')">Hai Phong</button>
+                                </div>
 
-                              <div class="location col-md-6">
-                                <button>Hoi An</button>
-                              </div>
-                              <div class="location col-md-6">
-                                <button>Quang Ninh</button>
-                              </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Bac Ninh')">Bac Ninh</button>
+                                </div>
+                                <div class="location col-md-6">
+                                    <button class="location-btn" onclick="filterByLocation('Buon Ma Thuoc')">Buon Ma Thuot</button>
+                                </div>
                             </div>
-                          </div>
+                        </div>
                     </div>
 
 
@@ -221,16 +224,16 @@
 
                     <div class="price-range">
                         <h3>Price Range</h3>
-                        <select class="price-select">
-                            <option value="0">All</option>
-                            <option value="0">0 VND - 1.000.000 VND+</option>
-                            <option value="0">1.000.000 VND - 3.000.000 VND+</option>
-                            <option value="0">2.000.000 VND - 4.000.000 VND+</option>
-                            <option value="0">3.000.000 VND - 5.000.000 VND+</option>
-                            <option value="0">5.000.000 VND - 8.000.000 VND+</option>
-                            <option value="0">8.000.000 VND - 10.000.000 VND+</option>
-                            <option value="0">10.000.000 VND - 15.000.000 VND+</option>
-                            <option value="0">15.000.000 VND - 20.000.000 VND+</option>
+                        <select class="price-select" id="priceFilter" onchange="filterByPrice()">
+                            <option value="0-0" ${param.priceRange == '0-0' ? 'selected' : ''}>All</option>
+                            <option value="0-1000000" ${param.priceRange == '0-1000000' ? 'selected' : ''}>0 VND - 1.000.000 VND</option>
+                            <option value="1000000-3000000" ${param.priceRange == '1000000-3000000' ? 'selected' : ''}>1.000.000 VND - 3.000.000 VND</option>
+                            <option value="1000000-3000000" ${param.priceRange == '2000000-4000000' ? 'selected' : ''}>2.000.000 VND - 4.000.000 VND</option>
+                            <option value="1000000-3000000" ${param.priceRange == '3000000-5000000' ? 'selected' : ''}>3.000.000 VND - 5.000.000 VND</option>
+                            <option value="1000000-3000000" ${param.priceRange == '5000000-8000000' ? 'selected' : ''}>5.000.000 VND - 8.000.000 VND</option>
+                            <option value="1000000-3000000" ${param.priceRange == '8000000-10000000' ? 'selected' : ''}>8.000.000 VND - 10.000.000 VND</option>
+                            <option value="1000000-3000000" ${param.priceRange == '10000000-15000000' ? 'selected' : ''}>10.000.000 VND - 15.000.000 VND</option>
+                            <option value="1000000-3000000" ${param.priceRange == '15000000-20000000' ? 'selected' : ''}>15.000.000 VND - 20.000.000 VND</option>
                         </select>
                     </div>
 
@@ -257,116 +260,212 @@
                 <!-- Main Content -->
                 <div class="main-content">
                     <div class="main-content-header">
-                        <h4>Showing Tours activities in Ho Chi Minh City</h4>
+                        <h4>
+                            Showing Tours activities in
+                            <span id="location-heading">All</span>
+                        </h4>
                         <div class="sort-options">
-                            <label for="sort">Sort by:</label>
-                            <select class="sort-bar" id="sort">
-                                <option value="popular">Most Popular</option>
-                                <option value="popular">Lowest Price</option>
-                                <option value="popular">Highest Price</option>
-                                <option value="popular">Highest Rating</option>
-                                <option value="popular">Most Relevant</option>
+                            <label for="sortOrder">Sort by:</label>
+                            <select id="sortOrder" name="sortOrder" onchange="sortTours()">
+                                <option value="popularity" ${param.sortOrder == 'popularity' ? 'selected' : ''}>Most Popular</option>
+                                <option value="price-asc" ${param.sortOrder == 'price-asc' ? 'selected' : ''}>Lowest Price</option>
+                                <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected' : ''}>Highest Price</option>
+                                <option value="rating" ${param.sortOrder == 'rating' ? 'selected' : ''}>Rating</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="tour-grid">
+                    <div class="tour-grid" id="tourGrid">
                         <!-- Tour Cards -->
-                        <div class="tour-card">
-                            <img src="Image/88.jpg" alt="Singapore Tour" />
-                            <div class="tour-card-info">
-                                <div class="tour-card-header">
-                                    <p class="tour-location">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                        Singapore
-                                    </p>
-                                    <i class="wishlist-btn fa-regular fa-heart"></i>
+                        <c:forEach items="${requestScope.data}" var="c">
+                            <div class="tour-card" data-price="${c.price}" data-location="${c.location}">
+                                <a href="displayTourDetail?id=${c.tourId}" style="text-decoration: none; color: inherit; cursor: pointer; width: 100%;">
+                                <img src="${c.tourImg[0]}" alt="Tour Image"/>
+                                <div class="tour-card-info">
+                                    <div class="tour-card-header">
+                                        <p class="tour-location">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            ${c.location}
+                                        </p>
+                                        <i class="wishlist-btn fa-regular fa-heart"></i>
+                                    </div>
+
+                                    <p class="tour-name">${c.tourName}</p>
+
+                                    <div class="tour-card-footer">
+                                        <p class="review">
+                                            <i class="fa-solid fa-star"></i>   
+                                            <span class="review-point">
+                                                ${c.averageReviewRating}
+                                            </span> 
+                                            (<span>${c.numberOfReview}</span> reviews)
+                                            <span class="purchases" style="visibility: hidden;">${c.purchasesTime}</span>
+                                        </p>
+                                        <p class="price">${c.price}</p>
+                                    </div>                  
                                 </div>
-
-                                <p class="tour-name">Singapore and Malaysia Full Package Tour</p>
-
-                                <div class="tour-card-footer">
-                                    <p class="review">
-                                        <i class="fa-solid fa-star"></i>   
-                                        <span class="review-point">9.7</span> (6 reviews)
-                                    </p>
-                                    <p class="price">8.390.000 VND</p>
-                                </div>                  
+                                </a>    
                             </div>
-                        </div>
-
-                        <!-- Corrected Second Tour Card -->
-                        <div class="tour-card">
-                            <img src="Image/beste-reistijd-hoi-an-vietnam-2400x1350.jpg" alt="Hoi An Tour" />
-                            <div class="tour-card-info">
-                                <div class="tour-card-header">
-                                    <p class="tour-location">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                        Vietnam
-                                    </p>
-                                    <i class="wishlist-btn fa-regular fa-heart"></i>
-                                </div>
-
-                                <p class="tour-name">Hoi An Full Package Tour</p>
-
-                                <div class="tour-card-footer">
-                                    <p class="review">
-                                        <i class="fa-solid fa-star"></i>   
-                                        <span class="review-point">9.5</span> (15 reviews)
-                                    </p>
-                                    <p class="price">5.390.000 VND</p>
-                                </div>                  
-                            </div>
-                        </div>
-
-                        <div class="tour-card">
-                            <img src="Image/KTG04873.jpg" alt="joi An Tour" />
-                            <div class="tour-card-info">
-                                <div class="tour-card-header">
-                                    <p class="tour-location">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                        Vietnam
-                                    </p>
-                                    <i class="wishlist-btn fa-regular fa-heart"></i>
-                                </div>
-
-                                <p class="tour-name">Hoi An Full Package Tour</p>
-
-                                <div class="tour-card-footer">
-                                    <p class="review">
-                                        <i class="fa-solid fa-star"></i>   
-                                        <span class="review-point">9.5</span> (15 reviews)
-                                    </p>
-                                    <p class="price">5.390.000 VND</p>
-                                </div>                  
-                            </div>
-                        </div>
+                        </c:forEach>
                     </div>
 
+
+
+                    <!-- Pagination Buttons -->
+                    <div class="pagination">
+                        <button id="prevPage" disabled>Previous</button>
+                        <span id="pageNumbers"></span>
+                        <button id="nextPage">Next</button>
+                    </div>
                 </div>
             </div>
-
-            <script>
-                // document.getElementById('button').addEventListener("click", function() {
-                //     document.querySelector(".location-popup").style.display = "flex";
-                // });
-
-                // document.querySelector(".close").addEventListener("click", function() {
-                //     document.querySelector(".location-popup").style.display = "none";
-                // })
-
-                let popup = document.getElementById("popup");
-
-                function openPopup() {
-                    popup.classList.add("location-popup-open");
-                    document.body.style.overflow = 'hidden';
-                }
-
-                function closePopup() {
-                    popup.classList.remove("location-popup-open");
-                    document.body.style.overflow = 'auto';
-                }
-            </script>
         </body>
+        <script>
+            let popup = document.getElementById("popup");
 
-        <%@include file="includes/footer.jsp" %>
+            function openPopup() {
+                popup.classList.add("location-popup-open");
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closePopup() {
+                popup.classList.remove("location-popup-open");
+                document.body.style.overflow = 'auto';
+            }
+
+            // Function to update the location in the button
+//                document.querySelectorAll(".location-btn").forEach(button => {
+//                    button.addEventListener("click", function() {
+//                        // Get the button's text content (the location name)
+//                        const selectedLocation = this.textContent;
+//
+//                        // Update the <p> tag inside the main button with the selected location
+//                        document.getElementById("selected-location").textContent = selectedLocation;
+//
+//                        // Also update the location heading if needed
+//                        document.getElementById("location-heading").textContent = selectedLocation;
+//
+//                        // Close the popup after selection
+//                        closePopup();
+//                    });
+//                });
+
+            document.querySelectorAll(".location-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    // Get the button's text content (the location name)
+                    const selectedLocation = this.textContent;
+
+                    // Store the selected location in localStorage
+                    localStorage.setItem('selectedLocation', selectedLocation);
+
+                    // Update the <p> tag inside the main button with the selected location
+                    document.getElementById("selected-location").textContent = selectedLocation;
+
+                    // Also update the location heading
+                    document.getElementById("location-heading").textContent = selectedLocation;
+
+                    // Close the popup after selection
+                    closePopup();
+                });
+            });
+
+            window.addEventListener('load', function () {
+                // Check if there is a saved location in localStorage
+                const savedLocation = localStorage.getItem('selectedLocation');
+
+                if (savedLocation) {
+                    // Update the location heading with the saved location
+                    document.getElementById("location-heading").textContent = savedLocation;
+                    document.getElementById("selected-location").textContent = savedLocation; // If needed for other elements
+                }
+            });
+
+
+
+            function filterByLocation(location) {
+                const sortOrder = document.getElementById('sortOrder') ? document.getElementById('sortOrder').value : 'popularity';
+                window.location.href = 'allTour?location=' + location + '&sortOrder=' + sortOrder;
+            }
+
+            function sortTours() {
+                const sortOrder = document.getElementById('sortOrder').value;
+                const location = new URLSearchParams(window.location.search).get('location') || 'All'; // Retain the current location filter if present
+                window.location.href = 'allTour?sortOrder=' + sortOrder + '&location=' + location;
+            }
+
+            function filterByPrice() {
+                const priceRange = document.getElementById('priceFilter').value;
+                const sortOrder = document.getElementById('sortOrder').value;
+                const location = new URLSearchParams(window.location.search).get('location') || 'All';  // Retain the current location filter if present
+                window.location.href = 'allTour?priceRange=' + priceRange + '&sortOrder=' + sortOrder + '&location=' + location;
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                let tourCards = document.querySelectorAll('.tour-card');
+                const toursPerPage = 9; // Number of tours to display per page
+                let currentPage = 1;
+                let totalPages = Math.ceil(tourCards.length / toursPerPage);
+
+                // Function to show tours based on the current page
+                function showTours(page) {
+                    // Recalculate the total pages in case the number of cards changes dynamically
+                    totalPages = Math.ceil(tourCards.length / toursPerPage);
+
+                    // Hide all tours first
+                    tourCards.forEach((card, index) => {
+                        card.style.display = 'none';
+                    });
+
+                    // Calculate start and end index for the current page
+                    const start = (page - 1) * toursPerPage;
+                    const end = page * toursPerPage;
+
+                    // Show tours within the range of start and end index
+                    tourCards.forEach((card, index) => {
+                        if (index >= start && index < end) {
+                            card.style.display = 'block';
+                        }
+                    });
+
+                    // Update pagination buttons
+                    document.getElementById('prevPage').disabled = (page === 1);
+                    document.getElementById('nextPage').disabled = (page === totalPages);
+
+                    // Update page numbers display
+                    updatePageNumbers(page);
+
+                    // Scroll to the top of the page
+                    window.scrollTo(0, 0);
+                }
+
+                // Function to update page numbers display
+                function updatePageNumbers(currentPage) {
+                    const pageNumbersContainer = document.getElementById('pageNumbers');
+                    pageNumbersContainer.innerHTML = `Page ${currentPage} of ${totalPages}`;
+                }
+
+                // Event listeners for pagination buttons
+                document.getElementById('prevPage').addEventListener('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showTours(currentPage);
+                    }
+                });
+
+                document.getElementById('nextPage').addEventListener('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        showTours(currentPage);
+                    }
+                });
+
+                // Initially show the first page of tours
+                showTours(currentPage);
+            });
+
+
+
+        </script>
+</body>
+
+<%@include file="includes/footer.jsp" %>
