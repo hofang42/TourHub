@@ -37,13 +37,12 @@ public class LoginServlet extends HttpServlet {
             if (user == null) {
                 // Register the Google user if not found in the database
                 user = new User();
-                user.setUsername(googleAccount.getName());
                 user.setEmail(googleAccount.getEmail());
-                user.setFirstName(googleAccount.getGiven_name());
-                user.setLastName(googleAccount.getFamily_name());
+                user.setFirst_Name(googleAccount.getGiven_name());
+                user.setLast_Name(googleAccount.getFamily_name());
                 user.setPassword(""); // No password for Google users
-                user.setCreatedAt(new java.util.Date());
-                user.setUserStatus("verified");
+                user.setCreated_At(new java.util.Date());
+                user.setUser_Status("verified");
                 user.setRole("customer");
                 userDB.registerUser(user); // Save user in the DB
             }
@@ -66,9 +65,9 @@ public class LoginServlet extends HttpServlet {
             // Save user information in session
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
             // Redirect to the homepage or user dashboard
-            response.sendRedirect("welcome.jsp");
+//            response.sendRedirect("/Project_SWP/home");   
         }
     }
 

@@ -46,6 +46,20 @@
                         <span class="text">Message</span>
                     </a>
                 </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
+                </c:if>
+                <li>
+                    <a href="reviewtour.jsp">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
+                    </a>
+                </li>
                 <%-- <li>
                     <a href="#">
                         <i class='bx bxs-doughnut-chart' ></i>
@@ -144,7 +158,7 @@
                                         </div>
                                         <div class="profile-info">
                                             <label>Full Name:</label>
-                                            <p><span>${currentUser.firstName} ${currentUser.lastName}</span></p>
+                                            <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
                                         </div>
                                         <div class="profile-info">
                                             <label>Phone Number:</label>
