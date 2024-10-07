@@ -88,16 +88,16 @@ public class ReportServlet extends HttpServlet {
             if ("add".equals(action)) {
                 String userId = null;
                 ReportError report = new ReportError();
-                report.setReport_Date(new java.sql.Date(System.currentTimeMillis()));
-                report.setReport_Details(request.getParameter("reportDetails"));
-                report.setReport_Type(request.getParameter("reportType"));
+                report.setReportDate(new java.sql.Date(System.currentTimeMillis()));
+                report.setReportDetails(request.getParameter("reportDetails"));
+                report.setReportType(request.getParameter("reportType"));
                 reportErrorDB.addReport(report, userId);
             } else if ("update".equals(action)) {
                 ReportError report = new ReportError();
-                report.setReport_Id(Integer.parseInt(request.getParameter("id")));
-                report.setReport_Date(java.sql.Date.valueOf(request.getParameter("reportDate")));
-                report.setReport_Details(request.getParameter("reportDetails"));
-                report.setReport_Type(request.getParameter("reportType"));
+                report.setReportId(Integer.parseInt(request.getParameter("id")));
+                report.setReportDate(java.sql.Date.valueOf(request.getParameter("reportDate")));
+                report.setReportDetails(request.getParameter("reportDetails"));
+                report.setReportType(request.getParameter("reportType"));
                 reportErrorDB.updateReport(report);
             } else if ("delete".equals(action)) {
                 int reportId = Integer.parseInt(request.getParameter("id"));

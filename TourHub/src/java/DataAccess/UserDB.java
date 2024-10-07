@@ -1,5 +1,8 @@
 package DataAccess;
 
+import static controller.newPassword.conn;
+import static controller.newPassword.ps;
+import static controller.newPassword.rs;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -114,7 +117,7 @@ public class UserDB implements DatabaseInfo {
                 rs = ps.executeQuery();
 
                 if (rs.next()) {
-                    exists = true;  // Email exists
+                    boolean exists = true; // Email exists
                 }
             }
         } catch (Exception e) {
@@ -123,8 +126,7 @@ public class UserDB implements DatabaseInfo {
         return false;
     }
 
-
-    public void updateUser_StatusToVerified(String email) {
+    public boolean updateUser_StatusToVerified(String email) {
         String sql = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
         try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -137,7 +139,7 @@ public class UserDB implements DatabaseInfo {
 
 //-------------------------------------------------
     //Lấy all user ra
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [User]";
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -206,7 +208,6 @@ public class UserDB implements DatabaseInfo {
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
     }
 
     //Change password
@@ -267,6 +268,30 @@ public class UserDB implements DatabaseInfo {
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 result = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static List<Discount> getAllDiscounts() {
+        List<Discount> discounts = new ArrayList<>();
+        String sql = "SELECT * FROM [Discount]";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                int discountId = rs.getInt("discount_Id");
+                String code = rs.getString("code");
+                int quantity = rs.getInt("quantity");
+                double percentDiscount = rs.getDouble("percent_Discount");
+                Date startDay = rs.getDate("start_Day");
+                Date endDay = rs.getDate("end_Day");
+                String require = rs.getString("require");
+                String tourId = rs.getString("tour_Id");
+
+                Discount discount = new Discount(discountId, code, quantity, percentDiscount, startDay, endDay, require, tourId);
+                discounts.add(discount);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -405,22 +430,21 @@ public class UserDB implements DatabaseInfo {
         }
     }
 
-public static boolean hasCustomerBookedTour(int customerId, String tourId) {
-    String sql = "SELECT COUNT(*) FROM Booking WHERE tour_Id = ? AND cus_Id = ?";
-    try (Connection conn = getConnect(); PreparedStatement statement = conn.prepareStatement(sql)) {
-        statement.setString(1, tourId);
-        statement.setInt(2, customerId);
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
-            return resultSet.getInt(1) > 0;  // Return true if the count is greater than 0
+    public static boolean hasCustomerBookedTour(int customerId, String tourId) {
+        String sql = "SELECT COUNT(*) FROM Booking WHERE tour_Id = ? AND cus_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, tourId);
+            statement.setInt(2, customerId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;  // Return true if the count is greater than 0
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
     }
-}
-
 
     public List<Booking> getBookedToursWithoutReview(int userId) {
         List<Booking> bookings = new ArrayList<>();
@@ -436,11 +460,11 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Booking booking = new Booking();
-                    booking.setBookId(rs.getInt("book_Id"));
-                    booking.setBookDate(rs.getDate("book_Date"));
-                    booking.setSlotOrder(rs.getInt("slot_Order"));
-                    booking.setTotalCost(rs.getFloat("total_Cost"));
-                    booking.setTourId(rs.getString("tour_Id"));
+                    booking.setBook_Id(rs.getInt("book_Id"));
+                    booking.setBook_Date(rs.getDate("book_Date"));
+                    booking.setSlot_Order(rs.getInt("slot_Order"));
+                    booking.setTotal_Cost(rs.getBigDecimal("total_Cost"));
+                    booking.setTour_Id(rs.getString("tour_Id"));
                     bookings.add(booking);
                 }
             }
@@ -477,8 +501,8 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     tour = new Tour();
-                    tour.setTourId(rs.getString("tour_Id"));
-                    tour.setTourName(rs.getString("tour_Name"));
+                    tour.setTour_Id(rs.getString("tour_Id"));
+                    tour.setTour_Name(rs.getString("tour_Name"));
                 }
             }
         } catch (SQLException e) {
@@ -486,11 +510,12 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
         }
         return tour;
     }
+
     public String getTourImageUrl(String tourId) {
         String imageUrl = null;
         String sql = "SELECT tour_Img FROM Tour WHERE tour_Id = ?";
 
-            try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)){
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, tourId);
             ResultSet rs = ps.executeQuery();
@@ -514,6 +539,7 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
             System.out.println("User not found.");
         }
     }
+
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
         User user = (User) session.getAttribute("currentUser");
         return user; // or throw an exception if user not found

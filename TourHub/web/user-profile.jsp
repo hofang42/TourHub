@@ -154,7 +154,7 @@
                                         </div>
                                         <div class="profile-info">
                                             <label>Full Name:</label>
-                                            <p><span>${currentUser.firstName} ${currentUser.lastName}</span></p>
+                                            <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
                                         </div>
                                         <div class="profile-info">
                                             <label>Phone Number:</label>
