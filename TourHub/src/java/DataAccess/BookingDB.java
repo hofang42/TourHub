@@ -286,11 +286,11 @@ public class BookingDB implements DatabaseInfo {
             try (PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     User user = new User();
-                    user.setUserId(rs.getInt("user_Id"));
-                    user.setFirstName(rs.getString("first_Name"));
-                    user.setLastName(rs.getString("last_Name"));
+                    user.setUser_Id(rs.getInt("user_Id"));
+                    user.setFirst_Name(rs.getString("first_Name"));
+                    user.setLast_Name(rs.getString("last_Name"));
                     user.setEmail(rs.getString("email"));
-                    user.setCreatedAt(rs.getDate("created_At"));
+                    user.setCreated_At(rs.getDate("created_At"));
                     user.setRole(rs.getString("role"));
                     recentUsers.add(user);
                 }

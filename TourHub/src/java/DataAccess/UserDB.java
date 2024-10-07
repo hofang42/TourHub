@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Booking;
+import model.Discount;
+import model.Review;
+import model.Tour;
 import utils.Encrypt;
 
 public class UserDB implements DatabaseInfo {
@@ -101,11 +105,6 @@ public class UserDB implements DatabaseInfo {
 
     //Kiem tra email co trong database hay la khong
     public boolean checkEmailExists(String email) {
-        boolean exists = false;
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         String query = "SELECT email FROM [User] WHERE email = ?";
         try {
             conn = getConnect();
@@ -120,22 +119,8 @@ public class UserDB implements DatabaseInfo {
             }
         } catch (Exception e) {
             System.out.println(e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                System.out.println(e);
-            }
         }
-        return exists;
+        return false;
     }
 
 
@@ -147,6 +132,7 @@ public class UserDB implements DatabaseInfo {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 //-------------------------------------------------
@@ -220,6 +206,7 @@ public class UserDB implements DatabaseInfo {
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     //Change password
@@ -232,12 +219,12 @@ public class UserDB implements DatabaseInfo {
             stmt.setInt(2, user_Id);
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated == 0) {
-                throw new SQLException("Update failed, no rows affected.");
+                throw new SQLException("Update failed, no rows affected. Email might not exist.");
             }
             return true;
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
-            return false; // Password update failed
+            return false;
         }
     }
 
@@ -246,13 +233,16 @@ public class UserDB implements DatabaseInfo {
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
+            // Set new email and user_Id
             stmt.setString(1, newEmail);
             stmt.setInt(2, user_Id);
             int rowsUpdated = stmt.executeUpdate();
+
+            // Check if the update was successful
             if (rowsUpdated == 0) {
                 throw new SQLException("Update failed, no rows affected.");
             }
-            return true;
+            return true;  // Update successful
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -281,9 +271,249 @@ public class UserDB implements DatabaseInfo {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+
+        return discounts;
     }
 
+    // Get discount by ID
+    public Discount getDiscountById(int discountId) {
+        String sql = "SELECT * FROM [Discount] WHERE discount_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, discountId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Discount(
+                        rs.getInt("discount_Id"),
+                        rs.getString("code"),
+                        rs.getInt("quantity"),
+                        rs.getDouble("percent_Discount"),
+                        rs.getDate("start_Day"),
+                        rs.getDate("end_Day"),
+                        rs.getString("require"),
+                        rs.getString("tour_Id")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Insert a new discount
+    public boolean insertDiscount(Discount discount) {
+        if (isDiscountCodeExists(discount.getCode())) {
+            System.out.println("Lỗi: Mã giảm giá đã tồn tại.");
+            return false;
+        }
+        if (!isTourIdExists(discount.getTourId())) {
+            System.out.println("Lỗi: tourId không tồn tại.");
+            return false;
+        }
+
+        String sql = "INSERT INTO [Discount] (code, quantity, percent_Discount, start_Day, end_Day, require, tour_Id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, discount.getCode());
+            ps.setInt(2, discount.getQuantity());
+            ps.setDouble(3, discount.getPercentDiscount());
+            ps.setDate(4, new java.sql.Date(discount.getStartDay().getTime()));
+            ps.setDate(5, new java.sql.Date(discount.getEndDay().getTime()));
+            ps.setString(6, discount.getRequire());
+            ps.setString(7, discount.getTourId());
+
+            int rowsInserted = ps.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Update a discount
+    public boolean updateDiscount(Discount discount) {
+        String sql = "UPDATE [Discount] SET code=?, quantity=?, percent_Discount=?, start_Day=?, end_Day=?, require=?, tour_Id=? WHERE discount_Id=?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, discount.getCode());
+            ps.setInt(2, discount.getQuantity());
+            ps.setDouble(3, discount.getPercentDiscount());
+            ps.setDate(4, new java.sql.Date(discount.getStartDay().getTime()));
+            ps.setDate(5, new java.sql.Date(discount.getEndDay().getTime()));
+            ps.setString(6, discount.getRequire());
+            ps.setString(7, discount.getTourId());
+            ps.setInt(8, discount.getDiscountId());
+
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Delete a discount
+    public boolean deleteDiscount(int discountId) {
+        String sql = "DELETE FROM [Discount] WHERE discount_Id=?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, discountId);
+            int rowsDeleted = ps.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isDiscountCodeExists(String code) {
+        String sql = "SELECT COUNT(*) FROM [Discount] WHERE code = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, code);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isTourIdExists(String tourId) {
+        String sql = "SELECT COUNT(*) FROM [Tour] WHERE tour_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tourId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean addReview(String comment, int ratingStar, int cusID, String tourId) {
+        String sql = "INSERT INTO Review (comment, rating_Star, cus_Id, tour_Id) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnect(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, comment);
+            statement.setInt(2, ratingStar);
+            statement.setInt(3, cusID);
+            statement.setString(4, tourId);
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+public static boolean hasCustomerBookedTour(int customerId, String tourId) {
+    String sql = "SELECT COUNT(*) FROM Booking WHERE tour_Id = ? AND cus_Id = ?";
+    try (Connection conn = getConnect(); PreparedStatement statement = conn.prepareStatement(sql)) {
+        statement.setString(1, tourId);
+        statement.setInt(2, customerId);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getInt(1) > 0;  // Return true if the count is greater than 0
+        }
+        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+
+    public List<Booking> getBookedToursWithoutReview(int userId) {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT book_Id, book_Date, slot_Order, total_Cost, tour_Id "
+                + "FROM Booking "
+                + "WHERE cus_Id = ? AND book_Status = 'Booked' "
+                + "AND NOT EXISTS (SELECT 1 FROM Review WHERE tour_Id = Booking.tour_Id AND user_Id = ?)";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Booking booking = new Booking();
+                    booking.setBookId(rs.getInt("book_Id"));
+                    booking.setBookDate(rs.getDate("book_Date"));
+                    booking.setSlotOrder(rs.getInt("slot_Order"));
+                    booking.setTotalCost(rs.getFloat("total_Cost"));
+                    booking.setTourId(rs.getString("tour_Id"));
+                    bookings.add(booking);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
+
+    public boolean submitReview(Review review) {
+        String sql = "INSERT INTO Review (comment, rating_Star, user_Id, tour_Id) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, review.getComment());
+            stmt.setInt(2, review.getRating_Star());
+            stmt.setInt(3, review.getUser_Id());
+            stmt.setString(4, review.getTour_Id());
+
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0; // Trả về true nếu lưu thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi
+        }
+    }
+
+    public Tour getTourById(String tourId) {
+        Tour tour = null;
+        String sql = "SELECT tour_Id, tour_Name FROM Tour WHERE tour_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tourId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    tour = new Tour();
+                    tour.setTourId(rs.getString("tour_Id"));
+                    tour.setTourName(rs.getString("tour_Name"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tour;
+    }
+    public String getTourImageUrl(String tourId) {
+        String imageUrl = null;
+        String sql = "SELECT tour_Img FROM Tour WHERE tour_Id = ?";
+
+            try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)){
+
+            ps.setString(1, tourId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                imageUrl = rs.getString("tour_Img");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return imageUrl != null ? imageUrl : "assests/images/default-tour.jpg";
+    }
+
+    public static void main(String[] args) {
+        UserDB userDB = new UserDB();
+        User user = userDB.getUser(1);
+        if (user != null) {
+            System.out.println(user.toString());
+        } else {
+            System.out.println("User not found.");
+        }
+    }
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
         User user = (User) session.getAttribute("currentUser");
         return user; // or throw an exception if user not found

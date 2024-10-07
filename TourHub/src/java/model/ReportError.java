@@ -11,6 +11,9 @@ public class ReportError {
     private int userId;
 
     // Constructor
+    public ReportError(){
+        
+    }
     public ReportError(Date reportDate, String reportDetails, String reportType, int userId) {
         this.reportDate = reportDate;
         this.reportDetails = reportDetails;
