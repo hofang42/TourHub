@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Properties;
@@ -75,6 +76,9 @@ public class UserServlet extends HttpServlet {
                 break;
             case "checkotp":
                 handleCheckOtp(request, response);
+                break;
+            case "manage":
+                handleManage(request, response);
                 break;
             default:
                 response.sendRedirect("error.jsp");
@@ -147,6 +151,7 @@ public class UserServlet extends HttpServlet {
         }
 
         // Cập nhật mật khẩu mới trong cơ sở dữ liệu
+        boolean isUpdated = userDb.updatePassword(userId, newPassword);
         String newHashedPassword = Encrypt.toSHA256(newPassword); // Hash the new password
         boolean isUpdated = userDb.updatePassword(userId, newHashedPassword); // Use the hashed password
 
@@ -257,6 +262,24 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    private void handleManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int user = -1;
+        HttpSession session = request.getSession();
+        session.setAttribute("currentUser", user);
+        System.out.println(user);
+        UserDB userdb = new UserDB();
+
+        try {
+            List<User> users = userdb.getAllUsers();
+            System.out.println(users);
+            request.setAttribute("users", users);
+            request.getRequestDispatcher("includes/admin/user.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -269,7 +292,12 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        UserDB userdb = new UserDB();
+
+        List<User> users = userdb.getAllUsers();
+        request.setAttribute("users", users);
+        request.getRequestDispatcher("includes/admin/user.jsp").forward(request, response);
+
     }
 
     /**

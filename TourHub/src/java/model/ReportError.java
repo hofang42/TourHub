@@ -1,3 +1,4 @@
+
 package model;
 
 import java.util.Date;
@@ -7,14 +8,14 @@ public class ReportError {
     private Date reportDate;
     private String reportDetails;
     private String reportType;
-    private int user_Id;
+    private int userId;
 
     // Constructor
     public ReportError(Date reportDate, String reportDetails, String reportType, int userId) {
         this.reportDate = reportDate;
         this.reportDetails = reportDetails;
         this.reportType = reportType;
-        this.user_Id = user_Id;
+        this.userId = userId;
     }
 
     // Getters and setters
@@ -50,11 +51,11 @@ public class ReportError {
         this.reportType = reportType;
     }
 
-    public int getUser_Id() {
-        return user_Id;
+    public int getUserId() {
+        return userId;
     }
 
     public void setUser_Id(int user_Id) {
-        this.user_Id = user_Id;
+        this.userId = userId;
     }
 }

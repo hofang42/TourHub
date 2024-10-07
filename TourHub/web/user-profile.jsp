@@ -35,29 +35,17 @@
                     </a>
                 </li>
                 <li>
-                    <a href="user-booking.jsp">
+                    <a href="booking">
                         <i class='bx bxs-shopping-bag-alt' ></i>
                         <span class="text">My Booking</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
                     </a>
                 </li>
-                <%-- <li>
-                    <a href="#">
-                        <i class='bx bxs-doughnut-chart' ></i>
-                        <span class="text">Analytics</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-group' ></i>
-                        <span class="text">Team</span>
-                    </a>
-                </li> --%>
             </ul>
             <ul class="side-menu">
                 <li>

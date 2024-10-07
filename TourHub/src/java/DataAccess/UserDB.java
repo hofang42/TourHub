@@ -4,8 +4,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.sql.*;
+import java.util.ArrayList;
 import model.User;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.Encrypt;
@@ -31,7 +33,6 @@ public class UserDB implements DatabaseInfo {
         if (isEmailExists(user.getEmail())) {
             return false; // Email already exists
         }
-
         String sql = "INSERT INTO [User] (password, first_Name, last_Name, phone, email, address, created_At, user_Status, role, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getPassword());
@@ -137,6 +138,7 @@ public class UserDB implements DatabaseInfo {
         return exists;
     }
 
+
     public void updateUser_StatusToVerified(String email) {
         String sql = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
         try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -149,6 +151,65 @@ public class UserDB implements DatabaseInfo {
 
 //-------------------------------------------------
     //Lấy all user ra
+    public List<User> getAllUsers(){
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [User]";
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                user.setUserId(resultSet.getInt("user_Id"));
+                user.setUsername(resultSet.getString("username"));
+                user.setPassword(resultSet.getString("password"));
+                user.setFirstName(resultSet.getString("first_Name"));
+                user.setLastName(resultSet.getString("last_Name"));
+                user.setPhone(resultSet.getString("phone"));
+                user.setEmail(resultSet.getString("email"));
+                user.setAddress(resultSet.getString("address"));
+                user.setCreatedAt(resultSet.getDate("created_At"));
+                user.setUserStatus(resultSet.getString("user_Status"));
+                user.setRole(resultSet.getString("role"));
+                users.add(user);
+            }
+            System.out.println(users);
+            return users;
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public User getUserOld(int userId) {
+        User user = null;
+        // Fixed: Added space after "createdAt"
+        String query = "SELECT userId, username, password, userStatus, role, "
+                + "firstName, lastName, email, phone, address, createdAt "
+                + "FROM [User] WHERE userId = ?";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                String username = rs.getString(2);
+                String password = rs.getString(3);
+                String userStatus = rs.getString(4);
+                String role = rs.getString(5);
+                String firstName = rs.getString(6);
+                String lastName = rs.getString(7);
+                String email = rs.getString(8);
+                String phone = rs.getString(9);
+                String address = rs.getString(10);
+                Date createdAt = rs.getDate(11);
+
+                user = new User(id, username, password, firstName, lastName, phone, email, address, createdAt, userStatus, role);
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
     public User getUser(int user_Id) {
         User user = null;
         String query = "SELECT user_Id, password, user_Status, role, first_Name, last_Name, email, phone, address, created_At, avatar "
@@ -212,8 +273,8 @@ public class UserDB implements DatabaseInfo {
         }
     }
 
-    public boolean updateEmail(int user_Id, String newEmail) {
-        String query = "UPDATE [User] SET email=? WHERE user_Id=?";
+    public boolean updateEmail(int userId, String newEmail) {
+        String query = "UPDATE [User] SET email=? WHERE UserId=?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
