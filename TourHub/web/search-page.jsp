@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@include file="includes/header.jsp" %>
 
-<body>
+<body class="search-page">
     <!-- Page preloader-->
     <div class="page-loader"> 
         <div class="page-loader-body"> 
