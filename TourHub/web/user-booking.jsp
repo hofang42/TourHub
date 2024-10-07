@@ -46,7 +46,6 @@
                         <span class="text">Message</span>
                     </a>
                 </li>
-<<<<<<< HEAD
                 <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                     <li>
                         <a href="discount">
@@ -73,8 +72,6 @@
                         <span class="text">Team</span>
                     </a>
                 </li> --%>
-=======
->>>>>>> cc617e82804f204a506718bbac93d77ab200404b
             </ul>
             <ul class="side-menu">
                 <li>
