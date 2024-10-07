@@ -4,16 +4,16 @@ import java.util.Date;
 
 public class User {
 
-    private int user_Id;
+    private int userId;
     private String username;
     private String password;
-    private String first_Name;
-    private String last_Name;
+    private String firstName;
+    private String lastName;
     private String phone;
     private String email;
     private String address;
-    private Date created_At;
-    private String user_Status;
+    private Date createdAt;
+    private String userStatus;
     private String role;
     private String avatar;
 
@@ -22,51 +22,51 @@ public class User {
     }
 
     // Parameterized constructor
-    public User(int user_Id, String username, String password, String first_Name, String last_Name, String phone, String email, String address, Date created_At, String user_Status, String role) {
-        this.user_Id = user_Id;
+    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, String address, Date createdAt, String userStatus, String role) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
-        this.first_Name = first_Name;
-        this.last_Name = last_Name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.created_At = created_At;
-        this.user_Status = user_Status;
+        this.createdAt = createdAt;
+        this.userStatus = userStatus;
         this.role = role;
     }
 
-    public User(int user_Id, String username, String password, String first_Name, String last_Name, String phone, String email, String address) {
-        this.user_Id = user_Id;
+    public User(int userId, String username, String password, String firstName, String lastName, String phone, String email, String address) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
-        this.first_Name = first_Name;
-        this.last_Name = last_Name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phone = phone;
         this.email = email;
         this.address = address;
     }
 
-    public User(int user_Id, String password, String first_Name, String last_Name, String phone, String email, String address, Date created_At, String user_Status, String role, String avatar) {
-        this.user_Id = user_Id;
+    public User(int userId, String password, String firstName, String lastName, String phone, String email, String address, Date createdAt, String userStatus, String role, String avatar) {
+        this.userId = userId;
         this.password = password;
-        this.first_Name = first_Name;
-        this.last_Name = last_Name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.created_At = created_At;
-        this.user_Status = user_Status;
+        this.createdAt = createdAt;
+        this.userStatus = userStatus;
         this.role = role;
         this.avatar = avatar;
     }
 
-    public int getUser_Id() {
-        return user_Id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_Id(int userId) {
-        this.user_Id = userId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -85,20 +85,20 @@ public class User {
         this.password = password;
     }
 
-    public String getFirst_Name() {
-        return first_Name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_Name(String first_Name) {
-        this.first_Name = first_Name;
+    public void setFirstName(String first_Name) {
+        this.firstName = first_Name;
     }
 
-    public String getLast_Name() {
-        return last_Name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_Name(String last_Name) {
-        this.last_Name = last_Name;
+    public void setLastName(String last_Name) {
+        this.lastName = last_Name;
     }
 
     public String getPhone() {
@@ -125,20 +125,20 @@ public class User {
         this.address = address;
     }
 
-    public Date getCreated_At() {
-        return created_At;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_At(Date created_At) {
-        this.created_At = created_At;
+    public void setCreatedAt(Date created_At) {
+        this.createdAt = created_At;
     }
 
     public String getUser_Status() {
-        return user_Status;
+        return userStatus;
     }
 
     public void setUser_Status(String user_Status) {
-        this.user_Status = user_Status;
+        this.userStatus = user_Status;
     }
 
     public String getRole() {
@@ -161,9 +161,9 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [userId=" + user_Id + ", username=" + username + ", password=" + password
-                + ", firstName=" + first_Name + ", lastName=" + last_Name + ", phone=" + phone
-                + ", email=" + email + ", address=" + address + ", createdAt=" + created_At
-                + ", userStatus=" + user_Status + ", role=" + role + "]";
+        return "User [userId=" + userId + ", username=" + username + ", password=" + password
+                + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone
+                + ", email=" + email + ", address=" + address + ", createdAt=" + createdAt
+                + ", userStatus=" + userStatus + ", role=" + role + "]";
     }
 }

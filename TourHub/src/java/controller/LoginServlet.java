@@ -38,10 +38,10 @@ public class LoginServlet extends HttpServlet {
                 // Register the Google user if not found in the database
                 user = new User();
                 user.setEmail(googleAccount.getEmail());
-                user.setFirst_Name(googleAccount.getGiven_name());
-                user.setLast_Name(googleAccount.getFamily_name());
+                user.setFirstName(googleAccount.getGiven_name());
+                user.setLastName(googleAccount.getFamily_name());
                 user.setPassword(""); // No password for Google users
-                user.setCreated_At(new java.util.Date());
+                user.setCreatedAt(new java.util.Date());
                 user.setUser_Status("verified");
                 user.setRole("customer");
                 userDB.registerUser(user); // Save user in the DB

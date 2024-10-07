@@ -116,7 +116,7 @@ f<%@ page import="java.util.List" %>
                         out.println("<p class='alert alert-danger'>You need to log in to see your booked tours.</p>");
                     } else {
                         UserDB userDB = new UserDB();
-                        List<Booking> bookedTours = userDB.getBookedToursWithoutReview(currentUser.getUser_Id());
+                        List<Booking> bookedTours = userDB.getBookedToursWithoutReview(currentUser.getUserId());
 
                         if (bookedTours == null || bookedTours.isEmpty()) {
                             out.println("<p class='alert alert-info'>You have no tours to review.</p>");

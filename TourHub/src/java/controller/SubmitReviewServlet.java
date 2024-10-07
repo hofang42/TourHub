@@ -35,7 +35,7 @@ public class SubmitReviewServlet extends HttpServlet {
 
         // Tạo đối tượng review và lưu vào database
         Review review = new Review();
-        review.setUser_Id(currentUser.getUser_Id());
+        review.setUser_Id(currentUser.getUserId());
         review.setTour_Id(tourId);
         review.setRating_Star(ratingStar);
         review.setComment(comment);

@@ -40,12 +40,12 @@ public class UserDB implements DatabaseInfo {
         String sql = "INSERT INTO [User] (password, first_Name, last_Name, phone, email, address, created_At, user_Status, role, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getPassword());
-            ps.setString(2, user.getFirst_Name());
-            ps.setString(3, user.getLast_Name());
+            ps.setString(2, user.getFirstName());
+            ps.setString(3, user.getLastName());
             ps.setString(4, user.getPhone());
             ps.setString(5, user.getEmail());
             ps.setString(6, user.getAddress());
-            ps.setTimestamp(7, new java.sql.Timestamp(user.getCreated_At().getTime()));
+            ps.setTimestamp(7, new java.sql.Timestamp(user.getCreatedAt().getTime()));
             ps.setString(8, user.getUser_Status());
             ps.setString(9, user.getRole());
             ps.setString(10, user.getAvatar());
@@ -150,13 +150,13 @@ public class UserDB implements DatabaseInfo {
     public boolean updateUser(User user) {
         String sql = "UPDATE [User] SET first_Name = ?, last_Name = ?, email = ?, phone = ?, address = ?, avatar = ? WHERE user_Id = ?";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, user.getFirst_Name());
-            ps.setString(2, user.getLast_Name());
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPhone());
             ps.setString(5, user.getAddress());
             ps.setString(6, user.getAvatar());
-            ps.setInt(7, user.getUser_Id());
+            ps.setInt(7, user.getUserId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
