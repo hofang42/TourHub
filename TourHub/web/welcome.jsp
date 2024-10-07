@@ -16,8 +16,6 @@
             return;
         }
     %>
-    
-    <h1>Welcome, ${currentUser.username}!</h1>
     <p>Your email:${currentUser.email}</p>
     <a href="logout">Logout</a>
 

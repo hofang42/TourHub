@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Message;
@@ -24,6 +25,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import model.User;
+import utils.Encrypt;
 
 /**
  *
@@ -84,16 +86,16 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
         // Lấy thông tin từ form
         int userId = Integer.parseInt(request.getParameter("userId"));
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String rawPassword = request.getParameter("password");
         String email = request.getParameter("email");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
-
+        String role = request.getParameter("role");
         // Tạo một đối tượng User
-        User user = new User(userId, username, password, firstName, lastName, phone, email, address);
+        String hashedPassword = Encrypt.toSHA256(rawPassword);
+        User user = new User(userId, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", role, null);
 
         // Cập nhật thông tin người dùng trong cơ sở dữ liệu
         UserDB userDB = new UserDB();
@@ -115,51 +117,52 @@ public class UserServlet extends HttpServlet {
     private void handleUpdatePassword(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Lấy thông tin từ form
-    int userId = Integer.parseInt(request.getParameter("userId"));
-    String currentPassword = request.getParameter("password");
-    String newPassword = request.getParameter("newPassword");
-    String confirmPassword = request.getParameter("confirmPassword");
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        String currentPassword = request.getParameter("password");
+        String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
 
-    // Lấy đối tượng User hiện tại từ cơ sở dữ liệu
-    UserDB userDb = new UserDB();
-    User currentUser = userDb.getUser(userId);
+        // Lấy đối tượng User hiện tại từ cơ sở dữ liệu
+        UserDB userDb = new UserDB();
+        User currentUser = userDb.getUser(userId);
 
-    RequestDispatcher dispatcher;
+        RequestDispatcher dispatcher;
 
-    // Kiểm tra mật khẩu hiện tại có khớp không
-    if (!currentUser.getPassword().equals(currentPassword)) {
-        // Mật khẩu hiện tại không đúng
-        request.setAttribute("error", "UpdateFailed");
-        dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
-        dispatcher.forward(request, response);
-        return;
-    }
+        // Kiểm tra mật khẩu hiện tại có khớp không
+        if (!currentUser.getPassword().equals(currentPassword)) {
+            // Mật khẩu hiện tại không đúng
+            request.setAttribute("error", "UpdateFailed");
+            dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
+            dispatcher.forward(request, response);
+            return;
+        }
 
-    // Kiểm tra mật khẩu mới và mật khẩu xác nhận có khớp không
-    if (!newPassword.equals(confirmPassword)) {
-        // Mật khẩu mới không khớp với mật khẩu xác nhận
-        request.setAttribute("error", "UpdateFailed");
-        dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
-        dispatcher.forward(request, response);
-        return;
-    }
+        // Kiểm tra mật khẩu mới và mật khẩu xác nhận có khớp không
+        if (!newPassword.equals(confirmPassword)) {
+            // Mật khẩu mới không khớp với mật khẩu xác nhận
+            request.setAttribute("error", "UpdateFailed");
+            dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
+            dispatcher.forward(request, response);
+            return;
+        }
 
-    // Cập nhật mật khẩu mới trong cơ sở dữ liệu
-    boolean isUpdated = userDb.updatePassword(userId, newPassword);
+        // Cập nhật mật khẩu mới trong cơ sở dữ liệu
+        String newHashedPassword = Encrypt.toSHA256(newPassword); // Hash the new password
+        boolean isUpdated = userDb.updatePassword(userId, newHashedPassword); // Use the hashed password
 
-    if (isUpdated) {
-        // Nếu cập nhật thành công, lưu thông tin mới vào session
-        HttpSession session = request.getSession();
-        session.setAttribute("currentUser", userDb.getUser(userId)); // Lấy user mới sau khi update
+        if (isUpdated) {
+            // Nếu cập nhật thành công, lưu thông tin mới vào session
+            HttpSession session = request.getSession();
+            session.setAttribute("currentUser", userDb.getUser(userId)); // Lấy user mới sau khi update
 
-        // Chuyển hướng trở lại trang thông tin người dùng
-        response.sendRedirect("user-profile.jsp");
-    } else {
-        // Xử lý nếu cập nhật thất bại
-        request.setAttribute("error", "UpdateFailed");
-        dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
-        dispatcher.forward(request, response);
-    }
+            // Chuyển hướng trở lại trang thông tin người dùng
+            response.sendRedirect("user-profile.jsp");
+        } else {
+            // Xử lý nếu cập nhật thất bại
+            request.setAttribute("error", "UpdateFailed");
+            dispatcher = request.getRequestDispatcher("user-updateinfo.jsp?buttonChange=pass&error=UpdateFailed");
+            dispatcher.forward(request, response);
+        }
     }
 
     private void handleUpdateEmail(HttpServletRequest request, HttpServletResponse response)

@@ -122,10 +122,6 @@
                                 <div class="profile-card">
                                     <div>
                                         <div class="profile-info">
-                                            <label>Username:</label>
-                                            <p><span>${currentUser.username}</span></p>
-                                        </div>
-                                        <div class="profile-info">
                                             <label>Password:</label>
                                             <p>
                                                 <span id="passwordDisplay">********</span>

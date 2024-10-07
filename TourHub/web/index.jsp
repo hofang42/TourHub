@@ -110,6 +110,8 @@
                                     </li>
                                     <li><a href="faqs.jsp">FAQs</a>
                                     </li>
+                                    <li><a href="reporterror.jsp">Report Error</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
