@@ -4,78 +4,110 @@
  */
 package model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  *
- * @author TRONG DUC
+ * @author NOMNOM
  */
 public class Booking {
-    private int bookId;     
-    private Date bookDate;
-    private int slotOrder;
-    private float totalCost;
-    private String bookStatus;
-    private int cusId;
-    private String tourId; 
+
+    private int book_Id;
+    private Date book_Date;
+    private int slot_Order;
+    private BigDecimal total_Cost;
+    private String book_Status;
+    private int cus_Id;
+    private String tour_Id;
+    private String tour_Name;
+
+    public Booking(int book_Id, Date book_Date, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id) {
+        this.book_Id = book_Id;
+        this.book_Date = book_Date;
+        this.slot_Order = slot_Order;
+        this.total_Cost = total_Cost;
+        this.book_Status = book_Status;
+        this.cus_Id = cus_Id;
+        this.tour_Id = tour_Id;
+    }
+
+    public Booking(int book_Id, Date book_Date, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name) {
+        this.book_Id = book_Id;
+        this.book_Date = book_Date;
+        this.slot_Order = slot_Order;
+        this.total_Cost = total_Cost;
+        this.book_Status = book_Status;
+        this.cus_Id = cus_Id;
+        this.tour_Id = tour_Id;
+        this.tour_Name = tour_Name;
+    }
 
     public Booking() {
     }
 
-    public int getBookId() {
-        return bookId;
+    public int getBook_Id() {
+        return book_Id;
     }
 
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
+    public void setBook_Id(int book_Id) {
+        this.book_Id = book_Id;
     }
 
-    public Date getBookDate() {
-        return bookDate;
+    public Date getBook_Date() {
+        return book_Date;
     }
 
-    public void setBookDate(Date bookDate) {
-        this.bookDate = bookDate;
+    public void setBook_Date(Date book_Date) {
+        this.book_Date = book_Date;
     }
 
-    public int getSlotOrder() {
-        return slotOrder;
+    public int getSlot_Order() {
+        return slot_Order;
     }
 
-    public void setSlotOrder(int slotOrder) {
-        this.slotOrder = slotOrder;
+    public void setSlot_Order(int slot_Order) {
+        this.slot_Order = slot_Order;
     }
 
-    public float getTotalCost() {
-        return totalCost;
+    public BigDecimal getTotal_Cost() {
+        return total_Cost;
     }
 
-    public void setTotalCost(float totalCost) {
-        this.totalCost = totalCost;
+    public void setTotal_Cost(BigDecimal total_Cost) {
+        this.total_Cost = total_Cost;
     }
 
-    public String getBookStatus() {
-        return bookStatus;
+    public String getBook_Status() {
+        return book_Status;
     }
 
-    public void setBookStatus(String bookStatus) {
-        this.bookStatus = bookStatus;
+    public void setBook_Status(String book_Status) {
+        this.book_Status = book_Status;
     }
 
-    public int getCusId() {
-        return cusId;
+    public int getCus_Id() {
+        return cus_Id;
     }
 
-    public void setCusId(int cusId) {
-        this.cusId = cusId;
+    public void setCus_Id(int cus_Id) {
+        this.cus_Id = cus_Id;
     }
 
-    public String getTourId() {
-        return tourId;
+    public String getTour_Id() {
+        return tour_Id;
     }
 
-    public void setTourId(String tourId) {
-        this.tourId = tourId;
+    public void setTour_Id(String tour_Id) {
+        this.tour_Id = tour_Id;
     }
-    
+
+    public String getTour_Name() {
+        return tour_Name;
+    }
+
+    public void setTour_Name(String tour_Name) {
+        this.tour_Name = tour_Name;
+    }
+
 }

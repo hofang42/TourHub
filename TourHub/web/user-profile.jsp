@@ -35,17 +35,18 @@
                     </a>
                 </li>
                 <li>
-                    <a href="user-booking.jsp">
+                    <a href="booking">
                         <i class='bx bxs-shopping-bag-alt' ></i>
                         <span class="text">My Booking</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
                     </a>
                 </li>
+<<<<<<< HEAD
                 <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                     <li>
                         <a href="discount">
@@ -72,6 +73,8 @@
                         <span class="text">Team</span>
                     </a>
                 </li> --%>
+=======
+>>>>>>> cc617e82804f204a506718bbac93d77ab200404b
             </ul>
             <ul class="side-menu">
                 <li>
@@ -135,10 +138,6 @@
                             <c:otherwise>
                                 <div class="profile-card">
                                     <div>
-                                        <div class="profile-info">
-                                            <label>Username:</label>
-                                            <p><span>${currentUser.username}</span></p>
-                                        </div>
                                         <div class="profile-info">
                                             <label>Password:</label>
                                             <p>
