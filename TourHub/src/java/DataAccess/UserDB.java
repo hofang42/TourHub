@@ -1,14 +1,20 @@
 package DataAccess;
 
+<<<<<<< HEAD
+=======
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
 import jakarta.servlet.http.HttpSession;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import model.User;
+<<<<<<< HEAD
+=======
 import java.util.Date;
 import java.util.List;
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Tour;
@@ -39,6 +45,21 @@ public class UserDB implements DatabaseInfo {
         if (isEmailExists(user.getEmail())) {
             return false; // Email already exists
         }
+<<<<<<< HEAD
+
+        String sql = "INSERT INTO [User] (password, first_Name, last_Name, phone, email, address, created_At, user_Status, role, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getPassword());
+            ps.setString(2, user.getFirstName());
+            ps.setString(3, user.getLastName());
+            ps.setString(4, user.getPhone());
+            ps.setString(5, user.getEmail());
+            ps.setString(6, user.getAddress());
+            ps.setTimestamp(7, new java.sql.Timestamp(user.getCreatedAt().getTime()));
+            ps.setString(8, user.getUserStatus());
+            ps.setString(9, user.getRole());
+            ps.setString(10, user.getAvatar());
+=======
         String sql = "INSERT INTO [User] (password, first_Name, last_Name, phone, email, address, created_At, user_Status, role, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getPassword());
@@ -51,6 +72,7 @@ public class UserDB implements DatabaseInfo {
             ps.setString(8, user.getUser_Status());
             ps.setString(9, user.getRole());
             ps.setString(10, user.getAvatar()); // Set avatar field
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
 
             ps.executeUpdate();
             return true;
@@ -60,10 +82,41 @@ public class UserDB implements DatabaseInfo {
         return false;
     }
 
+<<<<<<< HEAD
+    public void verifyUser(String email) {
+        String sql = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+=======
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
     public User authenticate(String email, String password) {
         String sql = "SELECT * FROM [User] WHERE email = ?";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
+<<<<<<< HEAD
+            ps.setString(2, password != null ? password : "");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("user_Id"),
+                        rs.getString("password"),
+                        rs.getString("first_Name"),
+                        rs.getString("last_Name"),
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getTimestamp("created_At"),
+                        rs.getString("user_Status"),
+                        rs.getString("role"),
+                        rs.getString("avatar")
+                );
+=======
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 String storedPassword = rs.getString("password");
@@ -84,6 +137,7 @@ public class UserDB implements DatabaseInfo {
                             rs.getString("avatar")
                     );
                 }
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,6 +159,14 @@ public class UserDB implements DatabaseInfo {
         return false;
     }
 
+<<<<<<< HEAD
+    public boolean checkEmailExists(String email) {
+        String query = "SELECT email FROM [User] WHERE email = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+=======
     //Kiem tra email co trong database hay la khong
     public boolean checkEmailExists(String email) {
         String query = "SELECT email FROM [User] WHERE email = ?";
@@ -119,24 +181,74 @@ public class UserDB implements DatabaseInfo {
                     exists = true;  // Email exists
                 }
             }
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
         } catch (Exception e) {
             System.out.println(e);
         }
         return false;
     }
 
+<<<<<<< HEAD
+    public boolean updatePassword(int userId, String newPassword) {
+        String query = "UPDATE [User] SET password=? WHERE user_Id=?";
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public boolean updateUser(User user) {
+        String sql = "UPDATE [User] SET first_Name = ?, last_Name = ?, email = ?, phone = ?, address = ?, avatar = ? WHERE user_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhone());
+            ps.setString(5, user.getAddress());
+            ps.setString(6, user.getAvatar());
+            ps.setInt(7, user.getUserId());
+            return ps.executeUpdate() > 0;
+=======
 
     public void updateUser_StatusToVerified(String email) {
         String sql = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
         try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.executeUpdate();
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
+<<<<<<< HEAD
+    public User getUser(int userId) {
+        String query = "SELECT user_Id, password, user_Status, role, first_Name, last_Name, email, phone, address, created_At, avatar FROM [User] WHERE user_Id = ?";
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("user_Id"),
+                        rs.getString("password"),
+                        rs.getString("first_Name"),
+                        rs.getString("last_Name"),
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getTimestamp("created_At"),
+                        rs.getString("user_Status"),
+                        rs.getString("role"),
+                        rs.getString("avatar")
+                );
+            }
+        } catch (SQLException ex) {
+=======
 //-------------------------------------------------
     //Lấy all user ra
     public List<User> getAllUsers(){
@@ -206,11 +318,19 @@ public class UserDB implements DatabaseInfo {
             stmt.setString(3, user.getEmail());
             stmt.executeUpdate();
         } catch (Exception ex) {
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
+<<<<<<< HEAD
+    public boolean updateUserStatusToVerified(String email) {
+        String query = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, email);
+            int rowsUpdated = ps.executeUpdate();
+=======
     //Change password
     public boolean updatePassword(int user_Id, String newPassword) {
         String query = "UPDATE [User] SET password=? WHERE user_Id=?";
@@ -220,6 +340,7 @@ public class UserDB implements DatabaseInfo {
             stmt.setString(1, newPassword);
             stmt.setInt(2, user_Id);
             int rowsUpdated = stmt.executeUpdate();
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
             if (rowsUpdated == 0) {
                 throw new SQLException("Update failed, no rows affected. Email might not exist.");
             }
@@ -230,14 +351,25 @@ public class UserDB implements DatabaseInfo {
         }
     }
 
+<<<<<<< HEAD
+    public boolean updateEmail(int userId, String newEmail) {
+        String query = "UPDATE [User] SET email = ? WHERE user_Id = ?";
+=======
     public boolean updateEmail(int user_Id, String newEmail) {
         String query = "UPDATE [User] SET email=? WHERE UserId=?";
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
 
             // Set new email and user_Id
             stmt.setString(1, newEmail);
+<<<<<<< HEAD
+            stmt.setInt(2, userId);
+
+            // Execute the update query
+=======
             stmt.setInt(2, user_Id);
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
             int rowsUpdated = stmt.executeUpdate();
 
             // Check if the update was successful
@@ -247,6 +379,27 @@ public class UserDB implements DatabaseInfo {
             return true;  // Update successful
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+<<<<<<< HEAD
+            return false;  // Update failed
+        }
+    }
+
+    public User getUserFromSession(HttpSession session) {
+        return (User) session.getAttribute("currentUser");
+    }
+
+    public Integer getProviderIdFromUserId(int userId) throws SQLException {
+        String query = "SELECT c.company_Id FROM [User] u JOIN Company c ON u.user_Id = c.user_Id WHERE u.user_Id = ?";
+        Integer providerId = null;
+
+        try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    providerId = rs.getInt("company_Id");
+                }
+=======
             return false;
         }
     }
@@ -269,11 +422,18 @@ public class UserDB implements DatabaseInfo {
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 result = true;
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e; // or handle exception as needed
         }
 
+<<<<<<< HEAD
+        return providerId; // This will return null if no providerId is found
+    }
+
+=======
         return discounts;
     }
 
@@ -507,6 +667,7 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
         return imageUrl != null ? imageUrl : "assests/images/default-tour.jpg";
     }
 
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
     public static void main(String[] args) {
         UserDB userDB = new UserDB();
         User user = userDB.getUser(1);
@@ -515,6 +676,10 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
         } else {
             System.out.println("User not found.");
         }
+<<<<<<< HEAD
+    }
+
+=======
     }
 
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
@@ -694,4 +859,5 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
             System.out.println("Tour not found for ID: " + tourId);
         }
     }
+>>>>>>> f53463c917de58d651173d4da6a6a708c348d28d
 }
