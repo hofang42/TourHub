@@ -83,9 +83,9 @@
                         </a>
                     </li>   
                     <li class="active dropdown-btn">
-                        <a href="tour-management.jsp">
+                        <a href="my-tour">
                             <i class='bx bxs-briefcase-alt' ></i>
-                            <span class="text">Tour Management</span>
+                            <span class="text">My Tour</span>
                         </a>
                     </li> 
                     <!-- Sub-menu -->
@@ -162,11 +162,14 @@
                             <c:if test='${requestScope.message.contains("Error")}'>color: red;</c:if>">
                             ${requestScope.message}
                         </h3>
-                        <c:set value="${sessionScope.tourEditSession}" var="tour" />
+                        <c:set value="${requestScope.tourEdit}" var="tour" />
+                        <div>
+                            DEBUG: ${tour.location}
+                        </div>
                         <div class="table-data">
                             <div class="order">
                                 <h3 class="head">Add Tour</h3>
-                                <form action="EditTour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
+                                <form action="tour-edit" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
                                     <div class="form-group">
                                         <label for="tour_Name">Tour Name:</label>
                                         <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tourName}" required>
@@ -198,7 +201,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="location">Location:</label>
-                                        <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
+                                        <input type="text" class="form-control" id="location" name="location" value="${tour.location}" maxlength="50" required>
                                     </div>                          
                                     <div class="form-group">
                                         <label for="price">Price:</label>
@@ -239,32 +242,6 @@
                                                     profileCard.classList.toggle('active'); // Toggle the active class on the profile card
                                                 });
                                             });
-                                            // Select all dropdown buttons
-                                            var dropdowns = document.getElementsByClassName("dropdown-btn");
-
-                                            for (var i = 0; i < dropdowns.length; i++) {
-                                                dropdowns[i].addEventListener("click", function (event) {
-                                                    var targetUrl = this.getAttribute("href"); // Get the URL from the href attribute
-                                                    var currentUrl = window.location.href; // Get the current page URL
-
-                                                    // Check if the target URL is the same as the current URL
-                                                    if (currentUrl === targetUrl) {
-                                                        event.preventDefault(); // Prevent the default action (navigation) only if they match
-                                                    }
-
-                                                    this.classList.toggle("active");
-
-                                                    // Select the next sibling which is the sub-menu
-                                                    var subMenu = this.nextElementSibling; // Get the next sibling element
-
-                                                    // Toggle the display of the sub-menu
-                                                    if (subMenu.style.display === "block") {
-                                                        subMenu.style.display = "none";
-                                                    } else {
-                                                        subMenu.style.display = "block";
-                                                    }
-                                                });
-                                            }
 
 
         </script>

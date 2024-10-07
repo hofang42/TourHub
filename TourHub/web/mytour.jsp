@@ -3,11 +3,11 @@
     Created on : Sep 24, 2024, 9:35:52 PM
     Author     : hoang
 --%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,18 +26,6 @@
         <link rel="stylesheet" href="assests/css/style.css" />
 
         <title>Analytic</title>
-        <style>
-            body {
-                background-color: #f4f4f4;
-            }
-            .form-container {
-                margin-top: 50px;
-                background: #fff;
-                padding: 30px;
-                border-radius: 5px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
-        </style>
     </head>
     <body>
 
@@ -70,13 +58,15 @@
                             <span class="text">My Booking</span>
                         </a>
                     </li>
-                </c:if>
+                </c:if>      
                 <li>
                     <a href="#">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
                     </a>
                 </li>
+
+
                 <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
                     <li class="">
                         <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
@@ -84,17 +74,12 @@
                             <span class="text">Dashboard</span>
                         </a>
                     </li>   
-                    <li class="active dropdown-btn">
+                    <li class="active dropdown-btn">                        
                         <a href="my-tour">
                             <i class='bx bxs-briefcase-alt' ></i>
                             <span class="text">My Tour</span>
                         </a>
-                    </li> 
-                    <!-- Sub-menu -->
-                    <ul class="sub-menu">
-                        <li><a href="add-tour.jsp" class="active">Add Tour</a></li>                    
-                        <li><a href="#">Feature 3</a></li>
-                    </ul>
+                    </li>                       
                     <li>
                         <a href="payment.jsp">
                             <i class='bx bxs-credit-card'></i>
@@ -103,12 +88,6 @@
                     </li> 
                 </c:if>
 
-                <!-- Sub-menu -->
-                <ul class="sub-menu">
-                    <li><a href="add-tour.jsp">Add Tour</a></li>
-                    <li><a href="payment.jsp">Payment</a></li>
-                    <li><a href="#">Feature 3</a></li>
-                </ul>
             </ul>
             <ul class="side-menu">
                 <li>
@@ -150,6 +129,7 @@
                 <div class="image-container">
                     <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
                 </div>
+
             </nav>
             <!-- NAVBAR -->
 
@@ -160,24 +140,42 @@
                         <c:redirect url="home" />
                     </c:when>
                     <c:otherwise>
+                        <!-- Search Form -->
                         <form action="SearchTourByIdServlet" method="POST">
                             <div class="form-input-custom">
-                                <input type="search" name="tour-edit" class="search-field-custom tour-edit" placeholder="Enter tourID to find tour want to edit" required>
+                                <input type="search" name="tour-edit" class="search-field-custom tour-edit" 
+                                       placeholder="Enter tourID to find tour you want to edit">
                                 <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                             </div>
                         </form>
-                        <div class="table-data">
-                            <div class="order">              
-                                <div class="row row-50">                           
-                                    <c:set value="${requestScope.tourEdit}" var="tour" />
-                                    <c:if test="${not empty tour}">
+                        <!-- Add New Tour Button -->
+                        <div style="margin-top: 10px;">
+                            <form action="add-tour.jsp" method="GET">
+                                <button type="submit" class="button button-primary">Add New Tour</button>
+                            </form>
+                        </div>
+                        <!-- Error Message Display -->
+                        <c:if test="${not empty errorMessage}">
+                            <div class="alert alert-danger">
+                                ${errorMessage}
+                            </div>
+                        </c:if>
+
+                        <!-- Display a Single Tour to Edit if tourEdit is available -->
+                        <c:if test="${not empty tourEdit}">
+                            <div class="table-data">
+                                <div class="order">              
+                                    <div class="row row-50"> 
                                         <div class="col-md-6 col-xl-4">
                                             <article class="event-default-wrap">
                                                 <div class="event-default">
                                                     <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                        <img src="./assests/images/provinces/bacninh.png" alt="Tour Name" style="width: 100%; height: auto;">
+                                                        <img src="./assests/images/provinces/danang.jpg" alt="${tourEdit.tourName}" style="width: 100%; height: auto;">
                                                         <div class="event-default-caption">
-                                                            <a href="edit-tour-page.jsp" class="button button-xs button-secondary button-nina tour-visit-count" data-id="${tour.tourId}" style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                            <!-- Ensure tourId is valid -->
+                                                            <a href="edit-tour?tourId=${tourEdit.tourId}" 
+                                                               class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                               style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                 Edit
                                                             </a>
                                                         </div>
@@ -186,32 +184,64 @@
                                                 <div class="event-default-inner">
                                                     <div>
                                                         <h5>
-                                                            <a href="#" class="event-default-title">${tour.tourName}</a>
+                                                            <a href="#" class="event-default-title">${tourEdit.tourName}</a>
                                                         </h5>
                                                     </div>
                                                 </div>
                                             </article>
                                         </div>
-                                    </c:if>
-                                    <c:if test="${not empty sessionScope.errorMessage}">
-                                        <div class="error-message">${sessionScope.errorMessage}</div>
-                                    </c:if>                            
+                                    </div>
                                 </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
+                            </div>
+                        </c:if>
+                        <!-- Display All Tours if providerTours is available -->
+                        <c:if test="${not empty providerTours}">
+                            <div class="table-data">
+                                <div class="order">              
+                                    <div class="row row-50"> 
+                                        <c:forEach var="tour" items="${providerTours}">
+                                            <div class="col-md-6 col-xl-4">
+                                                <article class="event-default-wrap">
+                                                    <div class="event-default">
+                                                        <figure class="event-default-image" style="max-width: 250px; margin: auto;">
+                                                            <img src="./assests/images/provinces/danang.jpg" alt="${tour.tourName}" style="width: 100%; height: auto;">
+                                                            <div class="event-default-caption">
+                                                                <!-- Ensure tourId is valid -->
+                                                                <a href="edit-tour?tourId=${tour.tourId}" 
+                                                                   class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                   style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                    Edit
+                                                                </a>
+                                                            </div>
+                                                        </figure>
+                                                    </div>
+                                                    <div class="event-default-inner">
+                                                        <div>
+                                                            <h5>
+                                                                <a href="#" class="event-default-title">${tour.tourName}</a>
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:if>
+                    </c:otherwise>
+                </c:choose>
+                </div>
                 </div>
 
-            </main>          
+            </main> 
             <!-- MAIN -->
         </section>
         <!-- CONTENT -->
-        <script src="assests/js/script_profile.js"></script>  
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+
+        <script src="assests/js/script_profile.js"></script>     
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const burger = document.querySelector('.burger');
@@ -245,45 +275,8 @@
                     }
                 });
             }
-            function calculateDuration() {
-                // Get the values of the start and end dates
-                var startDate = document.getElementById("start_Date").value;
-                var endDate = document.getElementById("end_Date").value;
-
-                if (startDate && endDate) {
-                    // Parse the dates into Date objects
-                    var start = new Date(startDate);
-                    var end = new Date(endDate);
-
-                    // Calculate the difference in time (milliseconds)
-                    var diffTime = end - start;
-
-                    // Convert the time difference to days (1 day = 24*60*60*1000 milliseconds)
-                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    if (diffDays > 0) {
-                        // Set the day value
-                        document.getElementById("day").value = diffDays;
-
-                        // Set the night value (days - 1)
-                        document.getElementById("night").value = diffDays - 1;
-                    } else {
-                        // If the end date is before the start date, reset the fields
-                        document.getElementById("day").value = 0;
-                        document.getElementById("night").value = 0;
-                    }
-                } else {
-                    // Reset the fields if either date is missing
-                    document.getElementById("day").value = 0;
-                    document.getElementById("night").value = 0;
-                }
-            }
         </script>
 
         <script src="dist/js/theme.min.js"></script>
-        <script src="assests/js/core.min.js"></script>
-        <script src="assests/js/script.js"></script>
-
-
     </body>
 </html>

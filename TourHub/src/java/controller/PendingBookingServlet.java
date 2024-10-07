@@ -12,14 +12,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.BookingDetails;
 
 /**
  *
  * @author hoang
  */
-@WebServlet(name = "BookingServlet", urlPatterns = {"/bookings"})
+@WebServlet(name = "BookingServlet", urlPatterns = {"/pending-bookings"})
 public class PendingBookingServlet extends HttpServlet {
 
     /**
@@ -64,20 +67,41 @@ public class PendingBookingServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String bookId = request.getParameter("bookId"); // Get the bookId from the request
-        int bookIdInt = 0;
+        String action = request.getParameter("action");
+        String bookingIdStr = request.getParameter("bookingId"); // Get the booking ID from the request
+        BookingDB bookingDB = new BookingDB();
+
         try {
-            bookIdInt = Integer.parseInt(bookId);
+            // Parse the bookingId from String to int
+            int bookingId = Integer.parseInt(bookingIdStr); // Parse the String to int
+
+            // Check the action and update booking status accordingly
+            switch (action) {
+                case "accept":
+                    bookingDB.updateBookingStatus(bookingId, "Booked");
+                    request.setAttribute("successMessage", "Booking accepted successfully.");
+                    break;
+                case "reject":
+                    bookingDB.updateBookingStatus(bookingId, "Cancelled");
+                    request.setAttribute("successMessage", "Booking rejected successfully.");
+                    break;
+                default:
+                    request.setAttribute("errorMessage", "Invalid action.");
+                    break;
+            }
+
+            // Forward to the booking page to display the messages
+            request.getRequestDispatcher("user-booking.jsp").forward(request, response);
+
         } catch (NumberFormatException e) {
+            // Handle invalid booking ID format
+            request.setAttribute("errorMessage", "Invalid booking ID format.");
+            request.getRequestDispatcher("user-booking.jsp").forward(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(PendingBookingServlet.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("errorMessage", "Database error occurred. Please try again later.");
+            request.getRequestDispatcher("user-booking.jsp").forward(request, response);
         }
-        BookingDB bookingManager = new BookingDB();
-
-        // Call your method to accept the booking based on bookId
-        bookingManager.acceptABooking(bookIdInt); // Update this method to accept bookId
-
-        List<BookingDetails> bookings = new BookingDB().getPendingBookingDetails();
-        request.getSession().setAttribute("bookings", bookings);
-        request.getRequestDispatcher("user-booking.jsp").forward(request, response);
     }
 
     /**

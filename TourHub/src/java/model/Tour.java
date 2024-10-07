@@ -18,6 +18,7 @@ public class Tour {
     private String totalTime;
     private float price;
     private int slot;
+    private String location;
     private String tourStatus;
     private int companyId;
     private Date createdAt;
@@ -38,13 +39,14 @@ public class Tour {
         this.tourImg = tourImg;
     }
 
-    public Tour(String tourId, String tourName, String description, String totalTime, float price, int slot, String tourStatus, int companyId, Date createdAt, String tourImg, Date startDate, Date endDate, float avgRating, int numOfReview) {
+    public Tour(String tourId, String tourName, String description, String totalTime, float price, int slot, String location, String tourStatus, int companyId, Date createdAt, String tourImg, Date startDate, Date endDate, float avgRating, int numOfReview) {
         this.tourId = tourId;
         this.tourName = tourName;
         this.description = description;
         this.totalTime = totalTime;
         this.price = price;
         this.slot = slot;
+        this.location = location;
         this.tourStatus = tourStatus;
         this.companyId = companyId;
         this.createdAt = createdAt;
@@ -53,6 +55,14 @@ public class Tour {
         this.endDate = endDate;
         this.avgRating = avgRating;
         this.numOfReview = numOfReview;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getTourId() {

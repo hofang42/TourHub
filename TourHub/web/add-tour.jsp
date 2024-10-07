@@ -55,7 +55,7 @@
                 </li>
                 <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                     <li>
-                        <a href="bookings">
+                        <a href="pending-bookings">
                             <i class='bx bxs-shopping-bag-alt' ></i>
                             <span class="text">Manage Booking</span>
                         </a>
@@ -83,9 +83,9 @@
                         </a>
                     </li>   
                     <li class="active dropdown-btn">
-                        <a href="tour-management.jsp">
+                        <a href="my-tour">
                             <i class='bx bxs-briefcase-alt' ></i>
-                            <span class="text">Tour Management</span>
+                            <span class="text">My Tour</span>
                         </a>
                     </li> 
                     <!-- Sub-menu -->
@@ -237,33 +237,6 @@
                                             profileCard.classList.toggle('active'); // Toggle the active class on the profile card
                                         });
                                     });
-                                    // Select all dropdown buttons
-                                    var dropdowns = document.getElementsByClassName("dropdown-btn");
-
-                                    for (var i = 0; i < dropdowns.length; i++) {
-                                        dropdowns[i].addEventListener("click", function (event) {
-                                            var targetUrl = this.getAttribute("href"); // Get the URL from the href attribute
-                                            var currentUrl = window.location.href; // Get the current page URL
-
-                                            // Check if the target URL is the same as the current URL
-                                            if (currentUrl === targetUrl) {
-                                                event.preventDefault(); // Prevent the default action (navigation) only if they match
-                                            }
-
-                                            this.classList.toggle("active");
-
-                                            // Select the next sibling which is the sub-menu
-                                            var subMenu = this.nextElementSibling; // Get the next sibling element
-
-                                            // Toggle the display of the sub-menu
-                                            if (subMenu.style.display === "block") {
-                                                subMenu.style.display = "none";
-                                            } else {
-                                                subMenu.style.display = "block";
-                                            }
-                                        });
-                                    }
-
 
         </script>
         <script>

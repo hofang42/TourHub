@@ -149,7 +149,7 @@
             </li>
             <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                 <li  class="active">
-                    <a href="bookings">
+                    <a href="pending-bookings">
                         <i class='bx bxs-shopping-bag-alt' ></i>
                         <span class="text">Manage Booking</span>
                     </a>
@@ -177,9 +177,9 @@
                     </a>
                 </li>   
                 <li class="dropdown-btn">
-                    <a href="tour-management.jsp">
+                    <a href="my-tour">
                         <i class='bx bxs-briefcase-alt' ></i>
-                        <span class="text">Tour Management</span>
+                        <span class="text">My Tour</span>
                     </a>
                 </li>   
                 <li>
@@ -241,8 +241,18 @@
                     <div class="head">
                         <h3>Pending Booking</h3>
                         <input type="text" id="searchInput" placeholder="Search bookings...">
-
                     </div>
+                    <!-- Message Display -->
+                    <c:if test="${not empty requestScope.successMessage}">
+                        <div class="alert alert-success">
+                            ${requestScope.successMessage}
+                        </div>
+                    </c:if>
+                    <c:if test="${not empty requestScope.errorMessage}">
+                        <div class="alert alert-danger">
+                            ${requestScope.errorMessage}
+                        </div>
+                    </c:if>
                     <div class="recent_order">                           
                         <table id="bookingTable">
                             <thead>
@@ -258,9 +268,8 @@
                             </thead>
                             <tbody id="product_list">
                                 <c:forEach items="${sessionScope.bookings}" var="booking">
-                                    <tr>
-                                        <c:set var="id" value="${id + 1}" />
-                                        <td>${id}</td>
+                                    <tr>                                        
+                                        <td>${booking.bookId}</td>
                                         <td>${booking.tourName}</td>
                                         <td>${booking.customerName}</td>
                                         <td>${booking.slotOrder}</td>
@@ -273,8 +282,12 @@
                                         </td>
                                         <td>${booking.totalCost} VND</td>
                                         <td>
-                                            <button class="btn-accept" onclick="acceptBooking(${booking.bookId})">Accept</button>
-                                            <button class="btn-reject" onclick="acceptBooking(${booking.bookId})">Reject</button>
+                                        <td>
+                                            <form action="pending-bookings" method="POST" style="display: inline;">
+                                                <input type="hidden" name="bookingId" value="${booking.bookId}">
+                                                <button type="submit" name="action" value="accept" class="btn-accept">Accept</button>
+                                                <button type="submit" name="action" value="reject" class="btn-reject">Reject</button>
+                                            </form>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -292,129 +305,133 @@
 
     <script src="assests/js/script_profile.js"></script>
     <script>
-                                                document.addEventListener('DOMContentLoaded', function () {
-                                                    const burger = document.querySelector('.burger');
-                                                    const navigation = document.querySelector('.navigation-admin');
-                                                    const main = document.querySelector('.main-admin');
-                                                    const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            const burger = document.querySelector('.burger');
+                                            const navigation = document.querySelector('.navigation-admin');
+                                            const main = document.querySelector('.main-admin');
+                                            const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                                    burger.addEventListener('click', function () {
-                                                        navigation.classList.toggle('active');
-                                                        main.classList.toggle('active');
-                                                        profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                                    });
-                                                });
-                                                // Store the current sort direction for each column
-                                                let sortDirection = [true, true, true, true, true, true];
+                                            burger.addEventListener('click', function () {
+                                                navigation.classList.toggle('active');
+                                                main.classList.toggle('active');
+                                                profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                            });
+                                        });
+                                        // Store the current sort direction for each column
+                                        let sortDirection = [true, true, true, true, true, true];
 
 // Search Functionality
 // Function to remove diacritics from a string
-                                                function removeDiacritics(str) {
-                                                    const diacriticsMap = {
-                                                        'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
-                                                        'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
-                                                        'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
-                                                        'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
-                                                        'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
-                                                        'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
-                                                        'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
-                                                        'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
-                                                        'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
-                                                        'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
-                                                        'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
-                                                        'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
-                                                        'Đ': 'D', 'đ': 'd'
-                                                    };
+                                        function removeDiacritics(str) {
+                                            const diacriticsMap = {
+                                                'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
+                                                'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
+                                                'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
+                                                'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
+                                                'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
+                                                'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
+                                                'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
+                                                'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
+                                                'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
+                                                'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
+                                                'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
+                                                'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
+                                                'Đ': 'D', 'đ': 'd'
+                                            };
 
-                                                    return str.split('').map(char => diacriticsMap[char] || char).join('');
-                                                }
+                                            return str.split('').map(char => diacriticsMap[char] || char).join('');
+                                        }
 
 // Search Functionality with Diacritics Removal
-                                                document.getElementById('searchInput').addEventListener('keyup', function () {
-                                                    let input = removeDiacritics(document.getElementById('searchInput').value.toLowerCase());
-                                                    let rows = document.getElementById('product_list').getElementsByTagName('tr');
+                                        document.getElementById('searchInput').addEventListener('keyup', function () {
+                                            let input = removeDiacritics(document.getElementById('searchInput').value.toLowerCase());
+                                            let rows = document.getElementById('product_list').getElementsByTagName('tr');
 
-                                                    for (let i = 0; i < rows.length; i++) {
-                                                        let tourName = removeDiacritics(rows[i].getElementsByTagName('td')[1].textContent.toLowerCase());
-                                                        let customerName = removeDiacritics(rows[i].getElementsByTagName('td')[2].textContent.toLowerCase());
-                                                        let status = removeDiacritics(rows[i].getElementsByTagName('td')[4].textContent.toLowerCase());
-                                                        let totalCost = rows[i].getElementsByTagName('td')[5].textContent.replace(/[^\d.-]/g, ''); // Extract numbers for cost search
+                                            for (let i = 0; i < rows.length; i++) {
+                                                let tourName = removeDiacritics(rows[i].getElementsByTagName('td')[1].textContent.toLowerCase());
+                                                let customerName = removeDiacritics(rows[i].getElementsByTagName('td')[2].textContent.toLowerCase());
+                                                let status = removeDiacritics(rows[i].getElementsByTagName('td')[4].textContent.toLowerCase());
+                                                let totalCost = rows[i].getElementsByTagName('td')[5].textContent.replace(/[^\d.-]/g, ''); // Extract numbers for cost search
 
-                                                        // Check if input matches tour name, customer name, status, or total cost
-                                                        if (tourName.includes(input) || customerName.includes(input) || status.includes(input) || totalCost.includes(input)) {
-                                                            rows[i].style.display = '';
-                                                        } else {
-                                                            rows[i].style.display = 'none';
-                                                        }
-                                                    }
-                                                });
+                                                // Check if input matches tour name, customer name, status, or total cost
+                                                if (tourName.includes(input) || customerName.includes(input) || status.includes(input) || totalCost.includes(input)) {
+                                                    rows[i].style.display = '';
+                                                } else {
+                                                    rows[i].style.display = 'none';
+                                                }
+                                            }
+                                        });
 
 // Sorting Functionality
-                                                function sortTable(columnIndex) {
-                                                    let table = document.getElementById("bookingTable");
-                                                    let rows = Array.from(table.getElementsByTagName("tr")).slice(1); // Get all rows except the header
-                                                    let isAscending = sortDirection[columnIndex]; // Check current sort direction for this column
+                                        function sortTable(columnIndex) {
+                                            let table = document.getElementById("bookingTable");
+                                            let rows = Array.from(table.getElementsByTagName("tr")).slice(1); // Get all rows except the header
+                                            let isAscending = sortDirection[columnIndex]; // Check current sort direction for this column
 
-                                                    let sortedRows = rows.sort((a, b) => {
-                                                        let valA = a.getElementsByTagName("td")[columnIndex].textContent.trim();
-                                                        let valB = b.getElementsByTagName("td")[columnIndex].textContent.trim();
+                                            let sortedRows = rows.sort((a, b) => {
+                                                let valA = a.getElementsByTagName("td")[columnIndex].textContent.trim();
+                                                let valB = b.getElementsByTagName("td")[columnIndex].textContent.trim();
 
-                                                        // If sorting by numbers (like total cost or slot order)
-                                                        if (columnIndex === 3 || columnIndex === 5) {
-                                                            valA = parseFloat(valA.replace(/[^\d.-]/g, '')) || 0; // Remove non-numeric characters
-                                                            valB = parseFloat(valB.replace(/[^\d.-]/g, '')) || 0;
-                                                        }
-
-                                                        // Compare values
-                                                        if (valA < valB) {
-                                                            return isAscending ? -1 : 1;
-                                                        }
-                                                        if (valA > valB) {
-                                                            return isAscending ? 1 : -1;
-                                                        }
-                                                        return 0;
-                                                    });
-
-                                                    // Append sorted rows back into the table
-                                                    let tbody = table.getElementsByTagName("tbody")[0];
-                                                    for (let row of sortedRows) {
-                                                        tbody.appendChild(row);
-                                                    }
-
-                                                    // Toggle the sort direction for the next click
-                                                    sortDirection[columnIndex] = !isAscending;
+                                                // If sorting by numbers (like total cost or slot order)
+                                                if (columnIndex === 3 || columnIndex === 5) {
+                                                    valA = parseFloat(valA.replace(/[^\d.-]/g, '')) || 0; // Remove non-numeric characters
+                                                    valB = parseFloat(valB.replace(/[^\d.-]/g, '')) || 0;
                                                 }
 
-                                                function acceptBooking(bookId) {
-                                                    console.log("Accepting booking ID:", bookId); // Debugging line
+                                                // Compare values
+                                                if (valA < valB) {
+                                                    return isAscending ? -1 : 1;
+                                                }
+                                                if (valA > valB) {
+                                                    return isAscending ? 1 : -1;
+                                                }
+                                                return 0;
+                                            });
 
-                                                    if (!bookId) {
-                                                        console.error('No booking ID provided');
-                                                        return;
-                                                    }
+                                            // Append sorted rows back into the table
+                                            let tbody = table.getElementsByTagName("tbody")[0];
+                                            for (let row of sortedRows) {
+                                                tbody.appendChild(row);
+                                            }
 
-                                                    fetch(`/Project_SWP/bookings?bookId=${bookId}`, {
-                                                        method: 'POST',
-                                                        headers: {
-                                                            'Content-Type': 'application/json'
+                                            // Toggle the sort direction for the next click
+                                            sortDirection[columnIndex] = !isAscending;
+                                        }
+
+                                        function acceptBooking(bookId) {
+                                            console.log("Accepting booking ID:", bookId); // Debugging line
+
+                                            if (!bookId) {
+                                                console.error('No booking ID provided');
+                                                return;
+                                            }
+
+                                            fetch(`/Project_SWP/bookings?bookId=${bookId}`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            })
+                                                    .then(response => {
+                                                        if (!response.ok) {
+                                                            throw new Error('Network response was not ok. Status: ' + response.status);
                                                         }
+                                                        return response.json();
                                                     })
-                                                            .then(response => {
-                                                                if (!response.ok) {
-                                                                    throw new Error('Network response was not ok. Status: ' + response.status);
-                                                                }
-                                                                return response.json();
-                                                            })
-                                                            .then(data => {
-                                                                console.log(data.message);
-                                                                // Optionally refresh the table or update the UI
-                                                            })
-                                                            .catch(error => {
-                                                                console.error('There was a problem with the fetch operation:', error);
-                                                            });
-                                                }
+                                                    .then(data => {
+                                                        console.log(data.message);
+                                                        // Optionally refresh the table or update the UI
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('There was a problem with the fetch operation:', error);
+                                                    });
+                                        }
 
 
+                                        function refreshPage() {
+                                            // Reload the current page
+                                            window.location.reload();
+                                        }
 
     </script>
 </body>

@@ -122,6 +122,7 @@ public class BookingDB {
                 + "JOIN [User] u ON c.user_Id = u.user_Id "
                 + "JOIN Tour t ON b.tour_Id = t.tour_Id "
                 + "WHERE t.company_Id = ? "
+                + "AND book_Status = 'Booked'"
                 + "AND MONTH(b.book_Date) = MONTH(?) "
                 + "AND YEAR(b.book_Date) = YEAR(?)";
 
@@ -163,8 +164,9 @@ public class BookingDB {
                 + "FROM Booking b "
                 + "JOIN Tour t ON b.tour_Id = t.tour_Id "
                 + "WHERE t.company_Id = ? "
-                + "AND b.book_Status = 'Booked' " // Filter for only booked status
-                + "GROUP BY MONTH(b.book_Date) "
+                + "AND b.book_Status = 'Booked' "
+                + "AND YEAR(book_Date) = YEAR(GETDATE())" // Filter for only booked status
+                + "GROUP BY MONTH(b.book_Date)"
                 + "ORDER BY MONTH(b.book_Date)";
 
         try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -262,6 +264,32 @@ public class BookingDB {
 
         // Return the list of hot destinations
         return hotDestinations;
+    }
+
+    public void updateBookingStatus(int bookingId, String newStatus) throws SQLException {
+        // Ensure the new status is valid
+        if (!newStatus.equals("Booked") && !newStatus.equals("Cancelled")) {
+            throw new IllegalArgumentException("Invalid status. Status must be either 'Booked' or 'Cancelled'.");
+        }
+
+        String sql = "UPDATE booking SET book_Status = ? WHERE book_Id = ?"; // Adjust the table name as needed
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, bookingId);
+
+            // Execute the update statement
+            int rowsAffected = stmt.executeUpdate();
+
+            // Optionally, check if the update was successful
+            if (rowsAffected == 0) {
+                throw new SQLException("No booking found with the specified ID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;  // Rethrow or handle the exception as needed
+        }
     }
 
     public static void main(String[] args) {

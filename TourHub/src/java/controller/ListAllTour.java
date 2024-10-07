@@ -42,7 +42,7 @@ public class ListAllTour extends HttpServlet {
             String toursJson = new Gson().toJson(tours);
             request.setAttribute("toursJson", toursJson);
             request.setAttribute("tours", tours);
-
+            
             ProvinceDB provinceDB = new ProvinceDB();
             List<Province> provinces = provinceDB.getProvinceByVisitCount();
             request.getSession().setAttribute("provinces", provinces);

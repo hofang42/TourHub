@@ -58,7 +58,7 @@
                 </li>
                 <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                     <li>
-                        <a href="bookings">
+                        <a href="pending-bookings">
                             <i class='bx bxs-shopping-bag-alt' ></i>
                             <span class="text">Manage Booking</span>
                         </a>
@@ -86,9 +86,9 @@
                         </a>
                     </li>   
                     <li class="dropdown-btn">
-                        <a href="tour-management.jsp">
+                        <a href="my-tour">
                             <i class='bx bxs-briefcase-alt' ></i>
-                            <span class="text">Tour Management</span>
+                            <span class="text">My Tour</span>
                         </a>
                     </li>   
                     <!-- Sub-menu -->
