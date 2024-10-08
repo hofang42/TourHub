@@ -85,7 +85,7 @@ public class ProviderChartServlet extends HttpServlet {
 
         try {
             // Get company ID based on the user ID
-            companyId = companyDB.getCompanyIdFromUserId(user.getUserId());
+            companyId = companyDB.getCompanyIdFromUserId(user.getUser_Id());
         } catch (SQLException ex) {
             Logger.getLogger(ProviderAnalysServlet.class.getName()).log(Level.SEVERE, null, ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error occurred");

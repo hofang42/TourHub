@@ -22,7 +22,7 @@ public class LogoutServlet extends HttpServlet {
             throws ServletException, IOException {
         request.getSession().removeAttribute("currentUser");
         request.getSession().invalidate(); // End the session
-        response.sendRedirect("login.jsp"); // Redirect to login page
+        response.sendRedirect("index.jsp"); // Redirect to index
     }
 
     @Override

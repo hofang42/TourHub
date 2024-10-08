@@ -22,14 +22,15 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.*;
 import model.Tour;
 
 /**
  *
- * @author hoang
+ * @author NOMNOM
  */
-public class TourDB {
-
+public class TourDB implements DatabaseInfo {
+    
     public static Connection getConnect() {
         try {
             Class.forName(DRIVERNAME);
@@ -69,8 +70,8 @@ public class TourDB {
                 Date createdAt = rs.getDate("created_At");
                 String tourImg = rs.getString("tour_Img");
 
-                Tour tour = new Tour(tourId, tourName, description, totalTime, price, slot, location, tourStatus, companyId, createdAt, tourImg, startDate, endDate, avgRating, numOfReview);
-                tours.add(tour);
+                //Tour tour = new Tour(tourId, tourName, description, totalTime, price, slot, location, tourStatus, companyId, createdAt, tourImg, startDate, endDate, avgRating, numOfReview);
+                //tours.add(tour);
             }
 
         } catch (SQLException ex) {
@@ -212,7 +213,7 @@ public class TourDB {
     public void saveTourToDatabase(HttpServletRequest request, String tourName, String tourDescription, String startDate,
             String endDate, String location,
             String duration, double price, int slot, String tourImg) throws SQLException {
-        int companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUserId());
+        int companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
         String tourId = generateTourId();
         String query = "INSERT INTO Tour (tour_Id, tour_Name, tour_Description, start_Date, end_Date, "
                 + "location, total_Time, price, slot, tour_Status , tour_Img, company_Id)"
@@ -271,7 +272,7 @@ public class TourDB {
                     String tourImg = rs.getString("tour_Img");
 
                     // Create a new Tour object with the retrieved data
-                    tour = new Tour(tourId, tourName, description, totalTime, price, slot, location, tourStatus, companyId, createdAt, tourImg, startDate, endDate, avgRating, numOfReview);
+                    //tour = new Tour(tourId, tourName, description, totalTime, price, slot, location, tourStatus, companyId, createdAt, tourImg, startDate, endDate, avgRating, numOfReview);
                 }
             }
         } catch (SQLException ex) {
@@ -308,8 +309,8 @@ public class TourDB {
                     Date createdAt = rs.getDate("created_At");
                     String tourImg = rs.getString("tour_Img");
 
-                    Tour tour = new Tour(tourId, tourName, description, totalTime, price, slot, location, tourStatus, companyId, createdAt, tourImg, startDate, endDate, avgRating, numOfReview);
-                    tours.add(tour);
+                    //Tour tour = new Tour(tourId, tourName, description, totalTime, price, slot, location, tourStatus, companyId, createdAt, tourImg, startDate, endDate, avgRating, numOfReview);
+                    //tours.add(tour);
                 }
             }
 
@@ -341,4 +342,62 @@ public class TourDB {
 
         System.out.println(new TourDB().getTotalProfit(2));
     }
+    
+    //get a tour
+    //get all tour
+    public static List<Tour> getAllTours() {
+        List<Tour> tourList = new ArrayList<>();
+        Connection con = getConnect();  // Kết nối tới database
+        if (con == null) {
+            System.out.println("Failed to make connection!");
+            return tourList;
+        }
+
+        String sql = "SELECT * FROM Tour";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                // Tạo đối tượng Tour từ kết quả truy vấn
+                Tour tour = new Tour();
+                tour.setTour_Id(rs.getString("tour_Id"));
+                tour.setTour_Name(rs.getString("tour_Name"));
+                tour.setTour_Description(rs.getString("tour_Description"));
+                tour.setStart_Date(rs.getDate("start_Date"));
+                tour.setEnd_Date(rs.getDate("end_Date"));
+                tour.setLocation(rs.getString("location"));
+                tour.setPurchases_Time(rs.getInt("purchases_Time"));
+                tour.setAverage_Review_Rating(rs.getDouble("average_Review_Rating"));
+                tour.setNumber_Of_Review(rs.getInt("number_Of_Review"));
+                tour.setTotal_Time(rs.getString("total_Time"));
+                tour.setPrice(rs.getBigDecimal("price"));
+                tour.setSlot(rs.getInt("slot"));
+                tour.setTour_Status(rs.getString("tour_Status"));
+                tour.setCreated_At(rs.getDate("created_At"));
+                //tour.setTour_Img(rs.getString("tour_Img"));
+                tour.setCompany_Id(rs.getInt("company_Id"));
+                
+                // Thêm đối tượng Tour vào danh sách
+                tourList.add(tour);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while fetching tours: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close(); // Đóng kết nối sau khi sử dụng
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+
+        return tourList;
+    }
+    //insert a tour
+    //delete a tour
+    //update a tour
+    
+    
 }
