@@ -143,6 +143,7 @@ public class UserDB implements DatabaseInfo {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 //-------------------------------------------------
@@ -219,6 +220,7 @@ public class UserDB implements DatabaseInfo {
         } catch (Exception ex) {
             Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     //Change password
@@ -248,6 +250,8 @@ public class UserDB implements DatabaseInfo {
             // Set new email and user_Id
             stmt.setString(1, newEmail);
             stmt.setInt(2, userId);
+
+            // Execute the update query
             int rowsUpdated = stmt.executeUpdate();
 
             // Check if the update was successful
@@ -335,6 +339,7 @@ public class UserDB implements DatabaseInfo {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e; // or handle exception as needed
         }
 
         return false;
