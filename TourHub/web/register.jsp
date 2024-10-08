@@ -80,8 +80,8 @@
                                 <div class="col-12">
                                     <div class="form-floating">
                                         <select class="form-select" name="role" id="role" required>
-                                            <option value="customer" selected>Customer</option>
-                                            <option value="provider">Provider</option>
+                                            <option value="Customer" selected>Customer</option>
+                                            <option value="Provider">Provider</option>
                                         </select>
                                         <label for="role">Select Role</label>
                                     </div>

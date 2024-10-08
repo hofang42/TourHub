@@ -39,12 +39,12 @@ public class LoginServlet extends HttpServlet {
             GoogleLogin googleLogin = new GoogleLogin();
             String accessToken = googleLogin.getToken(code);
             GoogleAccount googleAccount = googleLogin.getUserInfo(accessToken);
-            
+
             // Check if Google account exists in the User table
             user = userDB.authenticate(googleAccount.getEmail(), null);
 
             if (user == null) {
-                // If Google user not found, redirect to googleregister
+                // If Google user not found, create a new user and redirect to googleregister.jsp
                 user = new User();
                 user.setEmail(googleAccount.getEmail());
                 user.setFirst_Name(googleAccount.getGiven_name());
@@ -53,10 +53,18 @@ public class LoginServlet extends HttpServlet {
                 user.setCreated_At(new java.util.Date());
                 user.setUser_Status("verified");
                 userDB.registerUser(user); // Save user in the DB
+
+                // Set user in session before redirecting
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", user);
+
+                // Redirect to the Google registration page
                 response.sendRedirect("googleregister.jsp");
                 return;  // Important to return after redirect
             } else if (user.getPassword().equals("")) {
                 // If the user exists but has an empty password, redirect to Google register
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", user);  // Make sure to keep the session
                 response.sendRedirect("googleregister.jsp");
                 return;
             }

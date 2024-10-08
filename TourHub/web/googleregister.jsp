@@ -1,9 +1,18 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="model.User" %>
 <%@include file="includes/header.jsp" %> <!-- Reuse common header and styles -->
 <html>
 <head>
     <title>Complete Your Registration</title>
 </head>
+<%
+    User currentUser = (User) session.getAttribute("currentUser");
+    if (currentUser == null) {
+        // If session doesn't have the user, redirect to login
+        response.sendRedirect("login.jsp");
+        return;  // Stop further processing
+    }
+%>
 <body>
     <!-- Page Content -->
     <section class="section section-lg bg-default novi-background bg-cover">
