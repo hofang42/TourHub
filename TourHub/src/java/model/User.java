@@ -1,5 +1,6 @@
 package model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class User {
@@ -15,12 +16,20 @@ public class User {
     private String user_Status;
     private String role;
     private String avatar;
+    //
+    private int cus_Id;
+    private Date cus_Birth;
+    //
+    private int company_Id;
+    private String tax_Code;
+    private BigDecimal balance;
+    private String bank_Information;
 
     // Default constructor
     public User() {
     }
 
-    // Parameterized constructor
+    // User
 
     public User(int user_Id, String password, String first_Name, String last_Name, String phone, String email, String address, Date created_At, String user_Status, String role, String avatar) {
         this.user_Id = user_Id;
@@ -35,6 +44,44 @@ public class User {
         this.role = role;
         this.avatar = avatar;
     }
+
+    // Customer
+    public User(int user_Id, String password, String first_Name, String last_Name, String phone, String email, String address, Date created_At, String user_Status, String role, String avatar, int cus_Id, Date cus_Birth) {
+        this.user_Id = user_Id;
+        this.password = password;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.created_At = created_At;
+        this.user_Status = user_Status;
+        this.role = role;
+        this.avatar = avatar;
+        this.cus_Id = cus_Id;
+        this.cus_Birth = cus_Birth;
+    }
+    
+    //Company
+
+    public User(int user_Id, String password, String first_Name, String last_Name, String phone, String email, String address, Date created_At, String user_Status, String role, String avatar, int company_Id, String tax_Code, BigDecimal balance, String bank_Information) {
+        this.user_Id = user_Id;
+        this.password = password;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.created_At = created_At;
+        this.user_Status = user_Status;
+        this.role = role;
+        this.avatar = avatar;
+        this.company_Id = company_Id;
+        this.tax_Code = tax_Code;
+        this.balance = balance;
+        this.bank_Information = bank_Information;
+    }
+    
 
     public int getUser_Id() {
         return user_Id;
@@ -124,9 +171,58 @@ public class User {
         this.avatar = avatar;
     }
 
+    public int getCus_Id() {
+        return cus_Id;
+    }
+
+    public void setCus_Id(int cus_Id) {
+        this.cus_Id = cus_Id;
+    }
+
+    public Date getCus_Birth() {
+        return cus_Birth;
+    }
+
+    public void setCus_Birth(Date cus_Birth) {
+        this.cus_Birth = cus_Birth;
+    }
+
+    public int getCompany_Id() {
+        return company_Id;
+    }
+
+    public void setCompany_Id(int company_Id) {
+        this.company_Id = company_Id;
+    }
+
+    public String getTax_Code() {
+        return tax_Code;
+    }
+
+    public void setTax_Code(String tax_Code) {
+        this.tax_Code = tax_Code;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public String getBank_Information() {
+        return bank_Information;
+    }
+
+    public void setBank_Information(String bank_Information) {
+        this.bank_Information = bank_Information;
+    }
+    
+    
+
     @Override
     public String toString() {
         return "User{" + "user_Id=" + user_Id + ", password=" + password + ", first_Name=" + first_Name + ", last_Name=" + last_Name + ", phone=" + phone + ", email=" + email + ", address=" + address + ", created_At=" + created_At + ", user_Status=" + user_Status + ", role=" + role + ", avatar=" + avatar + '}';
     }
-
 }

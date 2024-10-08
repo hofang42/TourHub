@@ -14,33 +14,27 @@ import java.util.Date;
 public class Booking {
 
     private int book_Id;
-    private Date book_Date;
+    private Date created_At;
     private int slot_Order;
     private BigDecimal total_Cost;
     private String book_Status;
     private int cus_Id;
     private String tour_Id;
     private String tour_Name;
+    private Date tour_Date;
+    private Date cancel_Date;
 
-    public Booking(int book_Id, Date book_Date, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id) {
+    public Booking(int book_Id, Date created_At, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name, Date tour_Date, Date cancel_Date) {
         this.book_Id = book_Id;
-        this.book_Date = book_Date;
-        this.slot_Order = slot_Order;
-        this.total_Cost = total_Cost;
-        this.book_Status = book_Status;
-        this.cus_Id = cus_Id;
-        this.tour_Id = tour_Id;
-    }
-
-    public Booking(int book_Id, Date book_Date, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name) {
-        this.book_Id = book_Id;
-        this.book_Date = book_Date;
+        this.created_At = created_At;
         this.slot_Order = slot_Order;
         this.total_Cost = total_Cost;
         this.book_Status = book_Status;
         this.cus_Id = cus_Id;
         this.tour_Id = tour_Id;
         this.tour_Name = tour_Name;
+        this.tour_Date = tour_Date;
+        this.cancel_Date = cancel_Date;
     }
 
     public Booking() {
@@ -54,13 +48,31 @@ public class Booking {
         this.book_Id = book_Id;
     }
 
-    public Date getBook_Date() {
-        return book_Date;
+    public Date getCreated_At() {
+        return created_At;
     }
 
-    public void setBook_Date(Date book_Date) {
-        this.book_Date = book_Date;
+    public void setCreated_At(Date created_At) {
+        this.created_At = created_At;
     }
+
+    public Date getTour_Date() {
+        return tour_Date;
+    }
+
+    public void setTour_Date(Date tour_Date) {
+        this.tour_Date = tour_Date;
+    }
+
+    public Date getCancel_Date() {
+        return cancel_Date;
+    }
+
+    public void setCancel_Date(Date cancel_Date) {
+        this.cancel_Date = cancel_Date;
+    }
+
+    
 
     public int getSlot_Order() {
         return slot_Order;

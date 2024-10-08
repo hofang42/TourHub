@@ -23,7 +23,6 @@ import model.TourOption;
 
 import utils.Encrypt;
 
-
 public class UserDB implements DatabaseInfo {
 
     public static Connection getConnect() {
@@ -147,8 +146,7 @@ public class UserDB implements DatabaseInfo {
 
 //-------------------------------------------------
     //Lấy all user ra
-
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [User]";
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -248,6 +246,8 @@ public class UserDB implements DatabaseInfo {
             // Set new email and user_Id
             stmt.setString(1, newEmail);
             stmt.setInt(2, userId);
+
+            // Execute the update query
             int rowsUpdated = stmt.executeUpdate();
 
             // Check if the update was successful
@@ -256,11 +256,10 @@ public class UserDB implements DatabaseInfo {
             }
             return true;  // Update successful
         } catch (Exception ex) {
-            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);  
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
-
 
     public User getUserFromSession(HttpSession session) {
         return (User) session.getAttribute("currentUser");
@@ -311,7 +310,6 @@ public class UserDB implements DatabaseInfo {
 
         return discounts;
     }
-            
 
     //Edit profile function
     public boolean updateUser(User user) {
@@ -470,22 +468,21 @@ public class UserDB implements DatabaseInfo {
         }
     }
 
-public static boolean hasCustomerBookedTour(int customerId, String tourId) {
-    String sql = "SELECT COUNT(*) FROM Booking WHERE tour_Id = ? AND cus_Id = ?";
-    try (Connection conn = getConnect(); PreparedStatement statement = conn.prepareStatement(sql)) {
-        statement.setString(1, tourId);
-        statement.setInt(2, customerId);
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
-            return resultSet.getInt(1) > 0;  // Return true if the count is greater than 0
+    public static boolean hasCustomerBookedTour(int customerId, String tourId) {
+        String sql = "SELECT COUNT(*) FROM Booking WHERE tour_Id = ? AND cus_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, tourId);
+            statement.setInt(2, customerId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;  // Return true if the count is greater than 0
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
     }
-}
-
 
     public List<Booking> getBookedToursWithoutReview(int userId) {
         List<Booking> bookings = new ArrayList<>();
@@ -551,11 +548,12 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
         }
         return tour;
     }
+
     public String getTourImageUrl(String tourId) {
         String imageUrl = null;
         String sql = "SELECT tour_Img FROM Tour WHERE tour_Id = ?";
 
-            try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)){
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, tourId);
             ResultSet rs = ps.executeQuery();
@@ -569,7 +567,6 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
 
         return imageUrl != null ? imageUrl : "assests/images/default-tour.jpg";
     }
-
 
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
         User user = (User) session.getAttribute("currentUser");
@@ -693,7 +690,6 @@ public static boolean hasCustomerBookedTour(int customerId, String tourId) {
 //        }
 //        return tour; // Return the Tour object or null if not found
 //    }
-
     public List<TourOption> getTourOptionsByTourId(String tourId) {
         List<TourOption> options = new ArrayList<>();
         String sql = "SELECT tourOpt.option_Id, tourOpt.tour_Id, tourOpt.option_Name, tourOpt.option_Price, tourOpt.option_Description, "

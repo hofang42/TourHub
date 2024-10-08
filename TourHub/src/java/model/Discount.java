@@ -12,32 +12,35 @@ import java.util.Date;
  */
 public class Discount {
 
-    private int discountId;
+    private int discount_Id;
     private String code;
     private int quantity;
-    private double percentDiscount;
-    private Date startDay;
-    private Date endDay;
+    private double percent_Discount;
+    private Date start_Day;
+    private Date end_Day;
     private String require;
-    private String tourId;
+    private String tour_Id;
 
-    public Discount(int discountId, String code, int quantity, double percentDiscount, Date startDay, Date endDay, String require, String tourId) {
-        this.discountId = discountId;
+    public Discount(int discount_Id, String code, int quantity, double percent_Discount, Date start_Day, Date end_Day, String require, String tour_Id) {
+        this.discount_Id = discount_Id;
         this.code = code;
         this.quantity = quantity;
-        this.percentDiscount = percentDiscount;
-        this.startDay = startDay;
-        this.endDay = endDay;
+        this.percent_Discount = percent_Discount;
+        this.start_Day = start_Day;
+        this.end_Day = end_Day;
         this.require = require;
-        this.tourId = tourId;
+        this.tour_Id = tour_Id;
     }
 
-    public int getDiscountId() {
-        return discountId;
+    public Discount() {
     }
 
-    public void setDiscountId(int discountId) {
-        this.discountId = discountId;
+    public int getDiscount_Id() {
+        return discount_Id;
+    }
+
+    public void setDiscount_Id(int discount_Id) {
+        this.discount_Id = discount_Id;
     }
 
     public String getCode() {
@@ -56,28 +59,28 @@ public class Discount {
         this.quantity = quantity;
     }
 
-    public double getPercentDiscount() {
-        return percentDiscount;
+    public double getPercent_Discount() {
+        return percent_Discount;
     }
 
-    public void setPercentDiscount(double percentDiscount) {
-        this.percentDiscount = percentDiscount;
+    public void setPercent_Discount(double percent_Discount) {
+        this.percent_Discount = percent_Discount;
     }
 
-    public Date getStartDay() {
-        return startDay;
+    public Date getStart_Day() {
+        return start_Day;
     }
 
-    public void setStartDay(Date startDay) {
-        this.startDay = startDay;
+    public void setStart_Day(Date start_Day) {
+        this.start_Day = start_Day;
     }
 
-    public Date getEndDay() {
-        return endDay;
+    public Date getEnd_Day() {
+        return end_Day;
     }
 
-    public void setEndDay(Date endDay) {
-        this.endDay = endDay;
+    public void setEnd_Day(Date end_Day) {
+        this.end_Day = end_Day;
     }
 
     public String getRequire() {
@@ -88,13 +91,13 @@ public class Discount {
         this.require = require;
     }
 
-    public String getTourId() {
-        return tourId;
+    public String getTour_Id() {
+        return tour_Id;
     }
 
-    public void setTourId(String tourId) {
-        this.tourId = tourId;
+    public void setTour_Id(String tour_Id) {
+        this.tour_Id = tour_Id;
     }
 
-   
+    
 }

@@ -20,7 +20,7 @@
                     <h1>Update Your Information</h1>
                     <c:choose>
                         <c:when test="${currentUser == null}">
-                            <c:redirect url="index.jsp" />
+                            <c:redirect url="home" />
                         </c:when>
                         <c:when test="${param.buttonChange == 'pass'}">
                             <form action="user" method="post" onsubmit="return validatePassword();">
