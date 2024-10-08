@@ -4,6 +4,8 @@
  */
 package model;
 
+
+import java.math.BigDecimal;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -27,13 +29,15 @@ public class Tour {
     private int slot;
     private String tour_Status;
     private Date created_At; //DATE DEFAULT GETDATE()
-    private String tour_Img;
+    private List<String> tour_Img;
     private int company_Id;
+
 
     public Tour() {
     }
 
-    public Tour(String tour_Id, String tour_Name, String tour_Description, Date start_Date, Date end_Date, String location, int purchases_Time, double average_Review_Rating, int number_Of_Review, String total_Time, BigDecimal price, int slot, String tour_Status, Date created_At, String tour_Img, int company_Id) {
+
+    public Tour(String tour_Id, String tour_Name, String tour_Description, Date start_Date, Date end_Date, String location, int purchases_Time, double average_Review_Rating, int number_Of_Review, String total_Time, BigDecimal price, int slot, String tour_Status, Date created_At, List<String> tour_Img, int company_Id) {
         this.tour_Id = tour_Id;
         this.tour_Name = tour_Name;
         this.tour_Description = tour_Description;
@@ -90,6 +94,7 @@ public class Tour {
 
     public void setEnd_Date(Date end_Date) {
         this.end_Date = end_Date;
+
     }
 
     public String getLocation() {
@@ -99,6 +104,7 @@ public class Tour {
     public void setLocation(String location) {
         this.location = location;
     }
+
 
     public int getPurchases_Time() {
         return purchases_Time;
@@ -164,11 +170,11 @@ public class Tour {
         this.created_At = created_At;
     }
 
-    public String getTour_Img() {
+    public List<String> getTour_Img() {
         return tour_Img;
     }
 
-    public void setTour_Img(String tour_Img) {
+    public void setTour_Img(List<String> tour_Img) {
         this.tour_Img = tour_Img;
     }
 
@@ -180,6 +186,4 @@ public class Tour {
         this.company_Id = company_Id;
     }
     
-    
-
 }
