@@ -6,6 +6,7 @@ package controller;
 
 import DataAccess.TourDB;
 import DataAccess.UserDB;
+import DataAccess.hoang_UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -64,12 +65,6 @@ public class HiddenTourServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String tourId = request.getParameter("tourId");
-        int companyId = 0;
-        try {
-            companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
-        } catch (SQLException ex) {
-            Logger.getLogger(ProviderTourServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
         TourDB tourDB = new TourDB();
         String errorMessage = tourDB.setTourStatusToHidden(tourId) ? "Hidden Successfully" : "Hidden Fail";
         request.setAttribute("errorMessage", errorMessage);

@@ -6,6 +6,7 @@ package controller;
 
 import DataAccess.TourDB;
 import DataAccess.UserDB;
+import DataAccess.hoang_UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -70,11 +71,11 @@ public class ProviderTourServlet extends HttpServlet {
             throws ServletException, IOException {
         int companyId = 0;
         try {
-            companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
         } catch (SQLException ex) {
             Logger.getLogger(ProviderTourServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         TourDB tourDB = new TourDB();
         List<Tour> providerTours = tourDB.getToursByProviderID(companyId);
         request.setAttribute("providerTours", providerTours);

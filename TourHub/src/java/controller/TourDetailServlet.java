@@ -5,7 +5,7 @@
 
 package controller;
 
-import DataAccess.UserDB;
+import DataAccess.KhanhDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -60,7 +60,7 @@ public class TourDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String rawTourId = request.getParameter("id");
-        UserDB u = new UserDB();
+        KhanhDB u = new KhanhDB();
 
         // Lấy thông tin tour
         Tour tour = u.getTourById(rawTourId);

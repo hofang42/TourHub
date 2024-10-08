@@ -7,6 +7,7 @@ package controller;
 import DataAccess.BookingDB;
 import DataAccess.CompanyDB;
 import DataAccess.UserDB;
+import DataAccess.hoang_UserDB;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -93,7 +94,7 @@ public class ProviderChartServlet extends HttpServlet {
         }
 
 // Fetch monthly bookings for the company
-        BookingDB bookDB = new BookingDB();
+        hoang_UserDB bookDB = new hoang_UserDB();
         Map<Integer, Integer> monthlyBookings = bookDB.getBookingMonthly(companyId);
 
 // Fetch monthly profits for the current year
@@ -224,7 +225,7 @@ public class ProviderChartServlet extends HttpServlet {
         int companyId = 2; // Example company ID
 
         // Create an instance of BookingDB
-        BookingDB bookingDB = new BookingDB();
+        hoang_UserDB bookingDB = new hoang_UserDB();
 
         // Call the method to get monthly bookings
         Map<Integer, Integer> monthlyBookings = bookingDB.getBookingMonthly(companyId);
