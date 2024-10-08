@@ -4,7 +4,7 @@
  */
 package controller;
 
-import DataAccess.UserDB;
+import DataAccess.KhanhDB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -60,7 +60,7 @@ public class DisplayAllServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UserDB u = new UserDB();
+        KhanhDB u = new KhanhDB();
 
         // Get the sort order from the request
         String sortOrder = request.getParameter("sortOrder");
@@ -87,7 +87,7 @@ public class DisplayAllServlet extends HttpServlet {
         }
 
         // Call the getAll method with the sorting, location, and price filters
-        List<Tour> list = u.getAll(sortOrder, location, minPrice, maxPrice);
+        List<Tour> list = u.getAllTour(sortOrder, location, minPrice, maxPrice);
         request.setAttribute("data", list);
 
         // Pass the sortOrder, location, and priceRange back to the JSP
