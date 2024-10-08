@@ -37,7 +37,7 @@ public class ReportsDB implements DatabaseInfo {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             // Set the values from the ReportError object
-            ps.setDate(1, new java.sql.Date(report.getReportDate().getTime()));
+            ps.setDate(1, new java.sql.Date(report.getReport_Date().getTime()));
             ps.setString(2, report.getReportDetails());
             ps.setString(3, report.getReportType());
             ps.setInt(4, report.getUserId());

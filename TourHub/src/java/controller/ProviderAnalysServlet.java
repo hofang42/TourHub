@@ -7,6 +7,7 @@ package controller;
 import DataAccess.BookingDB;
 import DataAccess.CompanyDB;
 import DataAccess.TourDB;
+import DataAccess.hoang_UserDB;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -88,7 +89,7 @@ public class ProviderAnalysServlet extends HttpServlet {
         System.out.println("USER PROFILE: " + user.getUser_Id());
         TourDB tourDB = new TourDB();
         CompanyDB companyDB = new CompanyDB();
-        BookingDB bookingDB = new BookingDB();
+        hoang_UserDB bookingDB = new hoang_UserDB();
         int companyId = 0;
 
         try {
@@ -178,7 +179,7 @@ public class ProviderAnalysServlet extends HttpServlet {
         // Create instances of your databases
         TourDB tourDB = new TourDB();
         CompanyDB companyDB = new CompanyDB();
-        BookingDB bookingDB = new BookingDB();
+        hoang_UserDB bookingDB = new hoang_UserDB();
         int companyId = 0;
 
         // Get company ID associated with the current user

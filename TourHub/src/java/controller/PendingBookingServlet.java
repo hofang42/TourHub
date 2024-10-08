@@ -5,6 +5,7 @@
 package controller;
 
 import DataAccess.BookingDB;
+import DataAccess.hoang_UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -51,10 +52,10 @@ public class PendingBookingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BookingDB bookingManager = new BookingDB();
+        hoang_UserDB bookingManager = new hoang_UserDB();
         List<BookingDetails> bookings = bookingManager.getPendingBookingDetails();
         request.getSession().setAttribute("bookings", bookings);
-        request.getRequestDispatcher("user-booking.jsp").forward(request, response);
+        request.getRequestDispatcher("provider-booking.jsp").forward(request, response);
     }
 
     /**
@@ -69,7 +70,7 @@ public class PendingBookingServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String bookingIdStr = request.getParameter("bookingId"); // Get the booking ID from the request
-        BookingDB bookingDB = new BookingDB();
+        hoang_UserDB bookingDB = new hoang_UserDB();
 
         try {
             // Parse the bookingId from String to int
@@ -91,16 +92,16 @@ public class PendingBookingServlet extends HttpServlet {
             }
 
             // Forward to the booking page to display the messages
-            request.getRequestDispatcher("user-booking.jsp").forward(request, response);
+            request.getRequestDispatcher("provider-booking.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             // Handle invalid booking ID format
             request.setAttribute("errorMessage", "Invalid booking ID format.");
-            request.getRequestDispatcher("user-booking.jsp").forward(request, response);
+            request.getRequestDispatcher("provider-booking.jsp").forward(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(PendingBookingServlet.class.getName()).log(Level.SEVERE, null, ex);
             request.setAttribute("errorMessage", "Database error occurred. Please try again later.");
-            request.getRequestDispatcher("user-booking.jsp").forward(request, response);
+            request.getRequestDispatcher("provider-booking.jsp").forward(request, response);
         }
     }
 

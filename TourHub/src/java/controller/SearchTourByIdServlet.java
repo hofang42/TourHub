@@ -6,6 +6,7 @@ package controller;
 
 import DataAccess.TourDB;
 import DataAccess.UserDB;
+import DataAccess.hoang_UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -85,7 +86,7 @@ public class SearchTourByIdServlet extends HttpServlet {
 
         try {
             // Fetch the provider Id from user session
-            companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
             System.out.println("GET SUCCESS: Company ID = " + companyId);
         } catch (SQLException ex) {
             Logger.getLogger(SearchTourByIdServlet.class.getName()).log(Level.SEVERE, null, ex);

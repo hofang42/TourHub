@@ -163,28 +163,26 @@
                             ${requestScope.message}
                         </h3>
                         <c:set value="${requestScope.tourEdit}" var="tour" />
-                        <div>
-                            DEBUG: ${tour.location}
-                        </div>
+
                         <div class="table-data">
                             <div class="order">
                                 <h3 class="head">Add Tour</h3>
                                 <form action="tour-edit" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
                                     <div class="form-group">
                                         <label for="tour_Name">Tour Name:</label>
-                                        <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tourName}" required>
+                                        <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tour_Name}" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="tour_Description">Tour Description:</label>
-                                        <textarea class="form-control" id="tour_Description" name="tour_Description" rows="4" required style="width: 100%; resize: vertical;">${tour.description}</textarea>
+                                        <textarea class="form-control" id="tour_Description" name="tour_Description" rows="4" required style="width: 100%; resize: vertical;">${tour.tour_Description}</textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="start_Date">Start Date:</label>
-                                        <input type="date" class="form-control" id="start_Date" name="start_Date" value="${tour.startDate}" required onchange="calculateDuration()">
+                                        <input type="date" class="form-control" id="start_Date" name="start_Date" value="${tour.start_Date}" required onchange="calculateDuration()">
                                     </div>
                                     <div class="form-group">
                                         <label for="end_Date">End Date:</label>
-                                        <input type="date" class="form-control" id="end_Date" name="end_Date" value="${tour.endDate}" required onchange="calculateDuration()">
+                                        <input type="date" class="form-control" id="end_Date" name="end_Date" value="${tour.end_Date}" required onchange="calculateDuration()">
                                     </div>
                                     <div class="form-group">
                                         <label for="total_Time">Duration</label>
@@ -210,9 +208,12 @@
                                     <div class="form-group">
                                         <label for="slot">Slot:</label>
                                         <input type="number" class="form-control" id="slot" name="slot" value="${tour.slot}" required>
-                                    </div>                           
-                                    <button type="submit" class="btn btn-primary btn-block">Add Tour</button>
-
+                                    </div>    
+                                    <div class="form-group">
+                                        <label for="day">Status:</label>
+                                        <input type="text" class="form-control" id="status" name="status" value="${tour.tour_Status}" readonly>
+                                    </div>  
+                                    <button type="submit" class="btn btn-primary btn-block">Save</button>  
                                 </form>   
                             </c:otherwise>
                         </c:choose>
