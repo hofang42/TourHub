@@ -37,10 +37,10 @@ public class ReportsDB implements DatabaseInfo {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             // Set the values from the ReportError object
-            ps.setDate(1, new java.sql.Date(report.getReportDate().getTime()));
-            ps.setString(2, report.getReportDetails());
-            ps.setString(3, report.getReportType());
-            ps.setInt(4, report.getUserId());
+            ps.setDate(1, new java.sql.Date(report.getReport_Date().getTime()));
+            ps.setString(2, report.getReport_Details());
+            ps.setString(3, report.getReport_Type());
+            ps.setInt(4, report.getUser_Id());
 
             // Execute the update and return true if a row was inserted
             int rowsInserted = ps.executeUpdate();

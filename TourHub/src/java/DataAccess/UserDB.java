@@ -99,6 +99,29 @@ public class UserDB implements DatabaseInfo {
         return null;
     }
 
+    public boolean updateGoogleAccount(User user) {
+        boolean result = false;
+        String sql = "UPDATE [User] SET phone = ?, address = ?, password = ?, role = ? WHERE user_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getPhone());
+            stmt.setString(2, user.getAddress());
+            stmt.setString(3, user.getPassword()); // Update password
+            stmt.setString(4, user.getRole());     // Update role
+            stmt.setInt(5, user.getUser_Id());
+
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                result = true; // Update successful
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating user account: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return result; // Return true if update was successful
+    }
+
     public boolean isEmailExists(String email) {
         String sql = "SELECT COUNT(*) FROM [User] WHERE email = ?";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {

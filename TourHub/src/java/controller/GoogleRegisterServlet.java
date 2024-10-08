@@ -39,7 +39,7 @@ public class GoogleRegisterServlet extends HttpServlet {
 
         // Lưu thông tin cập nhật vào database
         UserDB userDB = new UserDB();
-        userDB.updateUser(user);
+        userDB.updateGoogleAccount(user);
 
         // Cập nhật session
         session.setAttribute("currentUser", user);

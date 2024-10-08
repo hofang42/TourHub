@@ -12,6 +12,13 @@ public class ReportError {
 
     public ReportError() {
     }
+
+    public ReportError(Date report_Date, String report_Details, String report_Type, int user_Id) {
+        this.report_Date = report_Date;
+        this.report_Details = report_Details;
+        this.report_Type = report_Type;
+        this.user_Id = user_Id;
+    }
     
     // Constructor
 
