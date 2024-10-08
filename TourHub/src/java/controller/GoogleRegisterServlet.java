@@ -45,6 +45,6 @@ public class GoogleRegisterServlet extends HttpServlet {
         session.setAttribute("currentUser", user);
 
         // Redirect tới trang chính sau khi hoàn thành
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("home");
     }
 }

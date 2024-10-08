@@ -50,77 +50,103 @@ public class BookingDB implements DatabaseInfo {
     public List<Booking> getUserBooking(int customer_Id) {
         List<Booking> list = new ArrayList<>();
 
-        try (Connection con = getConnect()) {
-            PreparedStatement stmt = con.prepareStatement("SELECT book_Id, book_Date,"
-                    + "slot_Order, total_Cost, book_Status, cus_Id, tour_Id FROM Booking where cus_Id = ?");
-            stmt.setInt(1, customer_Id);
+        String query = "SELECT book_Id, created_At, slot_Order, total_Cost, book_Status, cus_Id, tour_Id, "
+                + "(SELECT tour_Name FROM Tour WHERE Tour.tour_Id = Booking.tour_Id) AS tour_Name, "
+                + "tour_Date, cancel_Date "
+                + "FROM Booking WHERE cus_Id = ?";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setInt(1, customer_Id);  // Bind the customer_Id
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                list.add(new Booking(rs.getInt(1), rs.getDate(2), rs.getInt(3), rs.getBigDecimal(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+                Booking booking = new Booking(
+                        rs.getInt("book_Id"),
+                        rs.getDate("created_At"),
+                        rs.getInt("slot_Order"),
+                        rs.getBigDecimal("total_Cost"),
+                        rs.getString("book_Status"),
+                        rs.getInt("cus_Id"),
+                        rs.getString("tour_Id"),
+                        rs.getString("tour_Name"),
+                        rs.getDate("tour_Date"),
+                        rs.getDate("cancel_Date")
+                );
+                list.add(booking);  // Add the booking to the list
             }
-            con.close();
-            return list;
         } catch (Exception ex) {
             Logger.getLogger(BookingDB.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
 
+        return list;  // Return the list of bookings
     }
 
     public List<Booking> getUser2Booking(int customer_Id) {
         List<Booking> list = new ArrayList<>();
 
-        // Sử dụng try-with-resources để tự động đóng kết nối và tài nguyên
-        String query = "SELECT book_Id, book_Date, slot_Order, total_Cost, book_Status, Tour.tour_Id, Tour.tour_Name "
-                + "FROM Booking "
-                + "INNER JOIN Tour ON Booking.tour_Id = Tour.tour_Id "
-                + "INNER JOIN [User] ON Booking.cus_Id = [User].user_Id "
-                + "WHERE Booking.cus_Id = ?";
+        String query = "SELECT b.book_Id, b.created_At, b.slot_Order, b.total_Cost, b.book_Status, "
+                + "b.cus_Id, t.tour_Id, t.tour_Name, b.tour_Date, b.cancel_Date "
+                + "FROM Booking b "
+                + "INNER JOIN Tour t ON b.tour_Id = t.tour_Id "
+                + "WHERE b.cus_Id = ?";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
-
-            stmt.setInt(1, customer_Id); // Đặt tham số vào PreparedStatement
-            ResultSet rs = stmt.executeQuery(); // Thực thi truy vấn
+            stmt.setInt(1, customer_Id);
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                // Tạo một đối tượng Booking từ dữ liệu trong ResultSet
                 Booking booking = new Booking(
                         rs.getInt("book_Id"),
-                        rs.getDate("book_Date"),
+                        rs.getDate("created_At"),
                         rs.getInt("slot_Order"),
                         rs.getBigDecimal("total_Cost"),
                         rs.getString("book_Status"),
-                        customer_Id, // Sử dụng customer_Id từ tham số đầu vào
+                        rs.getInt("cus_Id"),
                         rs.getString("tour_Id"),
-                        rs.getString("tour_Name") // Chắc chắn rằng lớp Booking có trường tour_Name
+                        rs.getString("tour_Name"),
+                        rs.getDate("tour_Date"),
+                        rs.getDate("cancel_Date")
                 );
                 list.add(booking);
             }
         } catch (Exception ex) {
-            // Ghi lại lỗi nếu có
-            Logger.getLogger(BookingDB.class.getName()).log(Level.SEVERE, "Error retrieving user bookings", ex);
+            Logger.getLogger(BookingDB.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return list; // Trả về danh sách booking, nếu không có booking thì danh sách sẽ rỗng
+        return list;
     }
 
     public List<Booking> getAllBookings() {
         List<Booking> list = new ArrayList<>();
 
-        try (Connection con = getConnect()) {
-            PreparedStatement stmt = con.prepareStatement("SELECT book_Id, book_Date,"
-                    + "slot_Order, total_Cost, book_Status, cus_Id, tour_Id FROM Booking");
+        String query = "SELECT b.book_Id, b.created_At, b.slot_Order, b.total_Cost, b.book_Status, "
+                + "b.cus_Id, t.tour_Id, t.tour_Name, b.tour_Date, b.cancel_Date "
+                + "FROM Booking b "
+                + "INNER JOIN Tour t ON b.tour_Id = t.tour_Id";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                list.add(new Booking(rs.getInt(1), rs.getDate(2), rs.getInt(3), rs.getBigDecimal(4), rs.getString(5), rs.getInt(6), rs.getString(7)));
+                Booking booking = new Booking(
+                        rs.getInt("book_Id"),
+                        rs.getDate("created_At"),
+                        rs.getInt("slot_Order"),
+                        rs.getBigDecimal("total_Cost"),
+                        rs.getString("book_Status"),
+                        rs.getInt("cus_Id"),
+                        rs.getString("tour_Id"),
+                        rs.getString("tour_Name"),
+                        rs.getDate("tour_Date"),
+                        rs.getDate("cancel_Date")
+                );
+                list.add(booking);
             }
-            con.close();
-            return list;
         } catch (Exception ex) {
             Logger.getLogger(BookingDB.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
 
+        return list;
     }
 
     //----------------------------------------------------------

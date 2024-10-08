@@ -162,9 +162,9 @@
                                                 <c:if test="${not empty recentUsers}">
                                                     <c:forEach var="user" items="${recentUsers}">
                                                         <tr>
-                                                            <td>${user.firstName} ${user.lastName}</td>
+                                                            <td>${user.first_Name} ${user.last_Name}</td>
                                                             <td>${user.role}</td>
-                                                            <td>${user.createdAt}</td>
+                                                            <td>${user.created_At}</td>
                                                         </tr>
                                                     </c:forEach>
                                                 </c:if>

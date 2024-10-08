@@ -38,8 +38,8 @@
                         <div class="form-group">
                             <label for="role">Select Role:</label>
                             <select name="role" id="role" class="form-control" required>
-                                <option value="provider">Provider</option>
-                                <option value="customer">Customer</option>
+                                <option value="Provider">Provider</option>
+                                <option value="Customer">Customer</option>
                             </select>
                         </div>
                         <div class="form-group text-center">

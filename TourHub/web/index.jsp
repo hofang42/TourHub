@@ -117,7 +117,7 @@
                         </div>
                         <c:if test="${sessionScope.currentUser == null}">
                             <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="login">Login</a></div>
-                            <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="register">Register</a></div>
+                            <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="register.jsp">Register</a></div>
                         </c:if>
                         <c:if test="${sessionScope.currentUser != null}">
                             <div class="dropdown">

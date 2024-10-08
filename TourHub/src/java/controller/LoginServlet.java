@@ -108,9 +108,9 @@ public class LoginServlet extends HttpServlet {
             // If user is verified, proceed with login
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            //request.getRequestDispatcher("/home").forward(request, response);
             // Redirect to the homepage or user dashboard
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("home");
             return;  // Important to return after forward
         }
     }

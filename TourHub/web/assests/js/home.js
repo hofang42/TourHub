@@ -49,14 +49,20 @@ document.addEventListener("DOMContentLoaded", function () {
         inputBox.onkeyup = function () {
             let result = [];
             let input = inputBox.value.trim();
-
             if (input.length) {
                 resultBox.style.display = 'block';
                 result = tours.filter(tour => {
                     const normalizedInput = removeDiacritics(input.toLowerCase()).trim();
-                    const normalizedTourName = removeDiacritics(tour.tourName.toLowerCase());
-                    const inputWords = normalizedInput.split(" ").filter(word => word !== "");
-                    return inputWords.every(word => normalizedTourName.includes(word));
+                    console.log(tours);
+                    // Ensure tourName exists and is a string before trying to normalize it
+                    if (tour.tour_Name && typeof tour.tour_Name === 'string') {
+                        const normalizedTourName = removeDiacritics(tour.tour_Name.toLowerCase());
+                        const inputWords = normalizedInput.split("").filter(word => word !== "");
+                        return inputWords.every(word => normalizedTourName.includes(word));
+                    }
+
+                    // If tourName is not defined or not a string, exclude this tour
+                    return false;
                 });
             } else {
                 resultBox.innerHTML = '';
@@ -67,14 +73,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+
+
 function displaySearchs(result) {
     if (result.length > 0) {
         const content = result.map(item => {
             return `<li onclick="selectInput(this)" style="display: flex; align-items: center; margin-bottom: 10px;">
                         <div style="flex-shrink: 0;">
-                            <img src="${item.tourImg}" alt="${item.tourName}" style="width: 100px; height: 100px; object-fit: cover;">
+                            <img src="${item.tour_Img}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
                         </div>
-                        <span style="margin-left: 15px; font-size: 18px;">${item.tourName}</span>
+                        <span style="margin-left: 15px; font-size: 18px;">${item.tour_Name}</span>
                     </li>`;
         });
         resultBox.innerHTML = "<ul>" + content.join('') + "</ul>";
