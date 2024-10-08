@@ -45,6 +45,10 @@ search-page * {
     justify-content: space-between;
     align-items: center;
     padding: 15px;
+    background-color: #f0f0f0;
+    color: black;
+    cursor: pointer;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .pick-location-btn p {
@@ -52,7 +56,16 @@ search-page * {
 }
 
 .pick-location-btn:hover {
-    cursor: pointer;
+    background-color: #FFA900;
+    color: white;
+}
+
+.pick-location-btn i {
+        margin-right: 8px;
+    }
+
+.pick-location-btn p {
+    margin: 0;
 }
 
 .location-popup {
@@ -258,6 +271,7 @@ search-page * {
     justify-content: space-between;
     padding: 15px;
     gap: 10px; 
+    width: 100%;
 }
 
 .tour-card-info h3 {
@@ -289,5 +303,28 @@ search-page * {
     color: #ff0000;
     font-weight: bolder;
 }
+    
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.pagination button {
+    background-color: #FFA900;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pagination button:disabled {
+    background-color: #ccc; /* Grey out the disabled button */
+    cursor: not-allowed;
+}
+
 /* Image/beste-reistijd-hoi-an-vietnam-2400x1350.jpg
 Image/KTG04873.jpg */

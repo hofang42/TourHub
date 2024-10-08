@@ -1,7 +1,7 @@
 package controller;
 
 import DataAccess.UserDB;
-import model.User;
+import Model.User;
 import entity.GoogleAccount;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -100,7 +100,7 @@ public class LoginServlet extends HttpServlet {
             // If user is verified, proceed with login
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-
+            request.getRequestDispatcher("home").forward(request, response);
             // Redirect to the homepage or user dashboard
             response.sendRedirect("index.jsp");
             return;  // Important to return after forward

@@ -58,10 +58,7 @@
                                                         <a href="forgotpassword.jsp" class="link-secondary text-decoration-none">Forgot password?</a>
                                                     </div>
 
-                                                </div>
-                                                <% if (request.getAttribute("error") != null) { %>
-                                                <p style="color:red;"><%= request.getAttribute("error") %></p>
-                                                <% } %>
+                                                </div>                                                
 
                                             </div>
 
