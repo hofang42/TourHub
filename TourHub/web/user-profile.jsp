@@ -35,13 +35,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="user-booking.jsp">
+                    <a href="booking">
                         <i class='bx bxs-shopping-bag-alt' ></i>
                         <span class="text">My Booking</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
                     </a>
@@ -135,10 +135,6 @@
                             <c:otherwise>
                                 <div class="profile-card">
                                     <div>
-                                        <div class="profile-info">
-                                            <label>Username:</label>
-                                            <p><span>${currentUser.username}</span></p>
-                                        </div>
                                         <div class="profile-info">
                                             <label>Password:</label>
                                             <p>
