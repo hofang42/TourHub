@@ -51,15 +51,12 @@
                     </li>
                 </c:if>
                 <li>
-<<<<<<< HEAD
-=======
                     <a href="booking">
                         <i class='bx bxs-shopping-bag-alt' ></i>
                         <span class="text">My Booking</span>
                     </a>
                 </li>
                 <li>
->>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
                     <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>

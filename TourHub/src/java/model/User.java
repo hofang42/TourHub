@@ -128,8 +128,4 @@ public class User {
     public String toString() {
         return "User{" + "user_Id=" + user_Id + ", password=" + password + ", first_Name=" + first_Name + ", last_Name=" + last_Name + ", phone=" + phone + ", email=" + email + ", address=" + address + ", created_At=" + created_At + ", user_Status=" + user_Status + ", role=" + role + ", avatar=" + avatar + '}';
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
 }
