@@ -48,7 +48,7 @@ public class TourDB {
     //Get all tour
     public List<Tour> getTours() {
         List<Tour> tours = new ArrayList<>();
-        String query = "SELECT * FROM Tour";
+        String query = "SELECT * FROM Tour WHERE tour_Status = 'Active'";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 
@@ -318,6 +318,23 @@ public class TourDB {
         }
 
         return tours;
+    }
+
+    public boolean setTourStatusToHidden(String tourId) {
+        String sql = "UPDATE Tour SET tour_Status = 'Hidden' WHERE tour_Id = ?";
+
+        try (Connection conn = getConnect(); // Assuming you have a method to get DB connection
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, tourId); // Set the tourId for which you want to hide the tour
+            int affectedRows = pstmt.executeUpdate();
+
+            return affectedRows > 0 ? true : false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static void main(String[] args) {

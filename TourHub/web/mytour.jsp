@@ -212,6 +212,11 @@
                                                                    style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                     Edit
                                                                 </a>
+                                                                <a href="hidden-tour?tourId=${tour.tourId}" 
+                                                                   class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                   style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                    Hidden
+                                                                </a>
                                                             </div>
                                                         </figure>
                                                     </div>
