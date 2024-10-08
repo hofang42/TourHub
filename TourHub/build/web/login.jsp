@@ -1,6 +1,5 @@
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@include file="includes/header.jsp" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -59,10 +58,7 @@
                                                         <a href="forgotpassword.jsp" class="link-secondary text-decoration-none">Forgot password?</a>
                                                     </div>
 
-                                                </div>
-                                                <% if (request.getAttribute("error") != null) { %>
-                                                <p style="color:red;"><%= request.getAttribute("error") %></p>
-                                                <% } %>
+                                                </div>                                                
 
                                             </div>
 
