@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@include file="includes/header.jsp" %>
+<link rel="stylesheet" href="assests/css/home.css" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>

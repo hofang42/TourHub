@@ -86,6 +86,12 @@
                             <span class="text">Payment</span>
                         </a>
                     </li> 
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
                 </c:if>
 
             </ul>
@@ -170,10 +176,10 @@
                                             <article class="event-default-wrap">
                                                 <div class="event-default">
                                                     <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                        <img src="./assests/images/provinces/danang.jpg" alt="${tourEdit.tourName}" style="width: 100%; height: auto;">
+                                                        <img src="./assests/images/provinces/danang.jpg" alt="${tourEdit.tour_Name}" style="width: 100%; height: auto;">
                                                         <div class="event-default-caption">
                                                             <!-- Ensure tourId is valid -->
-                                                            <a href="edit-tour?tourId=${tourEdit.tourId}" 
+                                                            <a href="edit-tour?tourId=${tourEdit.tour_Id}" 
                                                                class="button button-xs button-secondary button-nina tour-visit-count" 
                                                                style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                 Edit
@@ -184,7 +190,7 @@
                                                 <div class="event-default-inner">
                                                     <div>
                                                         <h5>
-                                                            <a href="#" class="event-default-title">${tourEdit.tourName}</a>
+                                                            <a href="#" class="event-default-title">${tourEdit.tour_Name}</a>
                                                         </h5>
                                                     </div>
                                                 </div>
@@ -204,15 +210,15 @@
                                                 <article class="event-default-wrap">
                                                     <div class="event-default">
                                                         <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                            <img src="./assests/images/provinces/danang.jpg" alt="${tour.tourName}" style="width: 100%; height: auto;">
+                                                            <img src="./assests/images/provinces/danang.jpg" alt="${tour.tour_Name}" style="width: 100%; height: auto;">
                                                             <div class="event-default-caption">
                                                                 <!-- Ensure tourId is valid -->
-                                                                <a href="edit-tour?tourId=${tour.tourId}" 
+                                                                <a href="edit-tour?tourId=${tour.tour_Id}" 
                                                                    class="button button-xs button-secondary button-nina tour-visit-count" 
                                                                    style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                     Edit
                                                                 </a>
-                                                                <a href="hidden-tour?tourId=${tour.tourId}" 
+                                                                <a href="hidden-tour?tourId=${tour.tour_Id}" 
                                                                    class="button button-xs button-secondary button-nina tour-visit-count" 
                                                                    style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                     Hidden
@@ -223,7 +229,7 @@
                                                     <div class="event-default-inner">
                                                         <div>
                                                             <h5>
-                                                                <a href="#" class="event-default-title">${tour.tourName}</a>
+                                                                <a href="#" class="event-default-title">${tour.tour_Name}</a>
                                                             </h5>
                                                         </div>
                                                     </div>
