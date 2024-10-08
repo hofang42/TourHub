@@ -6,12 +6,13 @@
             <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/src/java/model/Tour.java</file>
         </group> -->
         <group>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/user-booking.jsp</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/META-INF/context.xml</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/login.jsp</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/web/index.jsp</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/nbproject/build-impl.xml</file>
-            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/model/User.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/BookingDB.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/DisplayAllServlet.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/GoogleRegisterServlet.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/TourDB.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/UserDB.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/GoogleLogin.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/ReportsDB.java</file>
         </group>
     </open-files>
 </project-private>
