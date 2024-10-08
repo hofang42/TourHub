@@ -2,8 +2,21 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <!-- <group>
+            <file>file:/D:/Downloads/FPT/Kì%205/SWP391/TourHub/TourHub/src/java/model/Tour.java</file>
+        </group> -->
         <group>
+<<<<<<< HEAD
             <file>file:/E:/FPTU/Major%205/SWP/project-clone%20-%20Copy/TourHub/TourHub/web/mytour.jsp</file>
+=======
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/BookingDB.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/DisplayAllServlet.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/GoogleRegisterServlet.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/TourDB.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/UserDB.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/controller/GoogleLogin.java</file>
+            <file>file:/D:/FPT/SWP391%20PROJECT/TourHub/TourHub/src/java/DataAccess/ReportsDB.java</file>
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
         </group>
     </open-files>
 </project-private>
