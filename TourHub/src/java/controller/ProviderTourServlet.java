@@ -70,7 +70,7 @@ public class ProviderTourServlet extends HttpServlet {
             throws ServletException, IOException {
         int companyId = 0;
         try {
-            companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUserId());
+            companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
         } catch (SQLException ex) {
             Logger.getLogger(ProviderTourServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

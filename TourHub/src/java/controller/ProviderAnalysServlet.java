@@ -85,14 +85,14 @@ public class ProviderAnalysServlet extends HttpServlet {
             return; // Stop further processing
         }
 
-        System.out.println("USER PROFILE: " + user.getUserId());
+        System.out.println("USER PROFILE: " + user.getUser_Id());
         TourDB tourDB = new TourDB();
         CompanyDB companyDB = new CompanyDB();
         BookingDB bookingDB = new BookingDB();
         int companyId = 0;
 
         try {
-            companyId = companyDB.getCompanyIdFromUserId(user.getUserId());
+            companyId = companyDB.getCompanyIdFromUserId(user.getUser_Id());
         } catch (SQLException ex) {
             Logger.getLogger(ProviderAnalysServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -183,7 +183,7 @@ public class ProviderAnalysServlet extends HttpServlet {
 
         // Get company ID associated with the current user
         try {
-            companyId = companyDB.getCompanyIdFromUserId(user.getUserId());
+            companyId = companyDB.getCompanyIdFromUserId(user.getUser_Id());
         } catch (SQLException ex) {
             Logger.getLogger(ProviderAnalysServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
