@@ -8,6 +8,7 @@ import static DataAccess.DatabaseInfo.DBURL;
 import static DataAccess.DatabaseInfo.DRIVERNAME;
 import static DataAccess.DatabaseInfo.PASSDB;
 import static DataAccess.DatabaseInfo.USERDB;
+<<<<<<< HEAD
 import jakarta.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +24,16 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.*;
+=======
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import java.util.List;
+
+import java.sql.*;
+import java.util.ArrayList;
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
 import model.Tour;
 
 /**
@@ -45,6 +56,7 @@ public class TourDB implements DatabaseInfo {
         }
         return null;
     }
+<<<<<<< HEAD
 
     //Get all tour
     public List<Tour> getTours() {
@@ -342,6 +354,8 @@ public class TourDB implements DatabaseInfo {
 
         System.out.println(new TourDB().getTotalProfit(2));
     }
+=======
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
     
     //get a tour
     //get all tour

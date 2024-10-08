@@ -8,6 +8,7 @@ import static DataAccess.DatabaseInfo.DBURL;
 import static DataAccess.DatabaseInfo.DRIVERNAME;
 import static DataAccess.DatabaseInfo.PASSDB;
 import static DataAccess.DatabaseInfo.USERDB;
+<<<<<<< HEAD
 import static DataAccess.TourDB.getConnect;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,6 +21,8 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+=======
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -57,6 +60,7 @@ public class BookingDB implements DatabaseInfo {
         return null;
     }
 
+<<<<<<< HEAD
     public int getTotalBookingThisMonth(int companyId) {
         int bookingCount = 0;
         String query = "SELECT COUNT(*) AS booking_count "
@@ -314,6 +318,8 @@ public class BookingDB implements DatabaseInfo {
         System.out.println(profit);
     }
 
+=======
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
     public List<Booking> getUserBooking(int customer_Id) {
         List<Booking> list = new ArrayList<>();
 

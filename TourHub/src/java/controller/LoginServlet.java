@@ -100,9 +100,15 @@ public class LoginServlet extends HttpServlet {
             // If user is verified, proceed with login
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
+<<<<<<< HEAD
             request.getRequestDispatcher("/home").forward(request, response);
             // Redirect to the homepage or user dashboard
             response.sendRedirect("home");
+=======
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            // Redirect to the homepage or user dashboard
+            response.sendRedirect("index.jsp");
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
             return;  // Important to return after forward
         }
     }

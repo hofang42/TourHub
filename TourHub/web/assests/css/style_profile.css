@@ -549,6 +549,7 @@ body {
     grid-template-columns: 1fr;
   }
 
+<<<<<<< HEAD
   #content main .table-data .head {
     min-width: 420px;
   }
@@ -558,4 +559,15 @@ body {
   #content main .table-data .todo .todo-list {
     min-width: 420px;
   }
+=======
+	#content main .table-data .head {
+		min-width: 420px;
+	}
+	#content main .table-data .order table {
+		min-width: 420px;
+	}
+	#content main .table-data .todo .todo-list {
+		min-width: 420px;
+	}
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
 }

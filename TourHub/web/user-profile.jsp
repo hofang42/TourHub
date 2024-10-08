@@ -51,6 +51,15 @@
                     </li>
                 </c:if>
                 <li>
+<<<<<<< HEAD
+=======
+                    <a href="booking">
+                        <i class='bx bxs-shopping-bag-alt' ></i>
+                        <span class="text">My Booking</span>
+                    </a>
+                </li>
+                <li>
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
                     <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
@@ -76,6 +85,20 @@
                         </a>
                     </li> 
                 </c:if>
+                </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
+                </c:if>
+                <li>
+                    <a href="reviewtour.jsp">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
+                    </a>
                 </li>
                 <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                     <li>
@@ -168,10 +191,13 @@
                                     <div>
                                         <div class="profile-info">
 <<<<<<< HEAD
+<<<<<<< HEAD
                                             <label>Username:</label>
                                             <p><span>${sessionScope.currentUser.username}</span></p>
                                         </div>
                                         <div class="profile-info">
+=======
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
 =======
 >>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
                                             <label>Password:</label>
@@ -193,7 +219,11 @@
                                         <div class="profile-info">
                                             <label>Full Name:</label>
 <<<<<<< HEAD
+<<<<<<< HEAD
                                             <p><span>${sessionScope.currentUser.firstName} ${sessionScope.currentUser.lastName}</span></p>
+=======
+                                            <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
+>>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
 =======
                                             <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
 >>>>>>> e839fb6ab9a068e816cbec84d5f2d127cf3c3bd7
