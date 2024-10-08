@@ -4,91 +4,97 @@
  */
 package model;
 
-import java.util.List;
+
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  *
- * @author LENOVO
+ * @author NOMNOM
  */
 public class Tour {
-    private String tourId;
-    private String tourName;
-    private String tourDescription;
-    private Date startDate;
-    private Date endDate;
-    private String location;
-    private int purchasesTime;
-    private BigDecimal averageReviewRating;
-    private int numberOfReview;
-    private String totalTime;
-    private BigDecimal price;
+
+    private String tour_Id; //char(8)
+    private String tour_Name;
+    private String tour_Description;
+    private Date start_Date;
+    private Date end_Date;
+    private String location;//Nhuan Duc, Cu Chi
+    private int purchases_Time;
+    private double average_Review_Rating;
+    private int number_Of_Review;
+    private String total_Time;
+    private BigDecimal price; //covert sang int sau 
     private int slot;
-    private String tourStatus;
-    private Date createdAt;
-    private List<String> tourImg;
-    private int companyId;
+    private String tour_Status;
+    private Date created_At; //DATE DEFAULT GETDATE()
+    private List<String> tour_Img;
+    private int company_Id;
+
 
     public Tour() {
     }
 
-    public Tour(String tourId, String tourName, String tourDescription, Date startDate, Date endDate, String location, int purchasesTime, BigDecimal averageReviewRating, int numberOfReview, String totalTime, BigDecimal price, int slot, String tourStatus, Date createdAt, List<String> tourImg, int companyId) {
-        this.tourId = tourId;
-        this.tourName = tourName;
-        this.tourDescription = tourDescription;
-        this.startDate = startDate;
-        this.endDate = endDate;
+
+    public Tour(String tour_Id, String tour_Name, String tour_Description, Date start_Date, Date end_Date, String location, int purchases_Time, double average_Review_Rating, int number_Of_Review, String total_Time, BigDecimal price, int slot, String tour_Status, Date created_At, List<String> tour_Img, int company_Id) {
+        this.tour_Id = tour_Id;
+        this.tour_Name = tour_Name;
+        this.tour_Description = tour_Description;
+        this.start_Date = start_Date;
+        this.end_Date = end_Date;
         this.location = location;
-        this.purchasesTime = purchasesTime;
-        this.averageReviewRating = averageReviewRating;
-        this.numberOfReview = numberOfReview;
-        this.totalTime = totalTime;
+        this.purchases_Time = purchases_Time;
+        this.average_Review_Rating = average_Review_Rating;
+        this.number_Of_Review = number_Of_Review;
+        this.total_Time = total_Time;
         this.price = price;
         this.slot = slot;
-        this.tourStatus = tourStatus;
-        this.createdAt = createdAt;
-        this.tourImg = tourImg;
-        this.companyId = companyId;
+        this.tour_Status = tour_Status;
+        this.created_At = created_At;
+        this.tour_Img = tour_Img;
+        this.company_Id = company_Id;
     }
 
-    public String getTourId() {
-        return tourId;
+    public String getTour_Id() {
+        return tour_Id;
     }
 
-    public void setTourId(String tourId) {
-        this.tourId = tourId;
+    public void setTour_Id(String tour_Id) {
+        this.tour_Id = tour_Id;
     }
 
-    public String getTourName() {
-        return tourName;
+    public String getTour_Name() {
+        return tour_Name;
     }
 
-    public void setTourName(String tourName) {
-        this.tourName = tourName;
+    public void setTour_Name(String tour_Name) {
+        this.tour_Name = tour_Name;
     }
 
-    public String getTourDescription() {
-        return tourDescription;
+    public String getTour_Description() {
+        return tour_Description;
     }
 
-    public void setTourDescription(String tourDescription) {
-        this.tourDescription = tourDescription;
+    public void setTour_Description(String tour_Description) {
+        this.tour_Description = tour_Description;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getStart_Date() {
+        return start_Date;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setStart_Date(Date start_Date) {
+        this.start_Date = start_Date;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public Date getEnd_Date() {
+        return end_Date;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setEnd_Date(Date end_Date) {
+        this.end_Date = end_Date;
+
     }
 
     public String getLocation() {
@@ -99,36 +105,37 @@ public class Tour {
         this.location = location;
     }
 
-    public int getPurchasesTime() {
-        return purchasesTime;
+
+    public int getPurchases_Time() {
+        return purchases_Time;
     }
 
-    public void setPurchasesTime(int purchasesTime) {
-        this.purchasesTime = purchasesTime;
+    public void setPurchases_Time(int purchases_Time) {
+        this.purchases_Time = purchases_Time;
     }
 
-    public BigDecimal getAverageReviewRating() {
-        return averageReviewRating;
+    public double getAverage_Review_Rating() {
+        return average_Review_Rating;
     }
 
-    public void setAverageReviewRating(BigDecimal averageReviewRating) {
-        this.averageReviewRating = averageReviewRating;
+    public void setAverage_Review_Rating(double average_Review_Rating) {
+        this.average_Review_Rating = average_Review_Rating;
     }
 
-    public int getNumberOfReview() {
-        return numberOfReview;
+    public int getNumber_Of_Review() {
+        return number_Of_Review;
     }
 
-    public void setNumberOfReview(int numberOfReview) {
-        this.numberOfReview = numberOfReview;
+    public void setNumber_Of_Review(int number_Of_Review) {
+        this.number_Of_Review = number_Of_Review;
     }
 
-    public String getTotalTime() {
-        return totalTime;
+    public String getTotal_Time() {
+        return total_Time;
     }
 
-    public void setTotalTime(String totalTime) {
-        this.totalTime = totalTime;
+    public void setTotal_Time(String total_Time) {
+        this.total_Time = total_Time;
     }
 
     public BigDecimal getPrice() {
@@ -147,40 +154,36 @@ public class Tour {
         this.slot = slot;
     }
 
-    public String getTourStatus() {
-        return tourStatus;
+    public String getTour_Status() {
+        return tour_Status;
     }
 
-    public void setTourStatus(String tourStatus) {
-        this.tourStatus = tourStatus;
+    public void setTour_Status(String tour_Status) {
+        this.tour_Status = tour_Status;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getCreated_At() {
+        return created_At;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_At(Date created_At) {
+        this.created_At = created_At;
     }
 
-    public List<String> getTourImg() {
-        return tourImg;
+    public List<String> getTour_Img() {
+        return tour_Img;
     }
 
-    public void setTourImg(List<String> tourImg) {
-        this.tourImg = tourImg;
+    public void setTour_Img(List<String> tour_Img) {
+        this.tour_Img = tour_Img;
     }
 
-    public int getCompanyId() {
-        return companyId;
+    public int getCompany_Id() {
+        return company_Id;
     }
 
-    public void setCompanyId(int companyId) {
-        this.companyId = companyId;
+    public void setCompany_Id(int company_Id) {
+        this.company_Id = company_Id;
     }
-
-    @Override
-    public String toString() {
-        return "Tour{" + "tourId=" + tourId + ", tourName=" + tourName + ", tourDescription=" + tourDescription + ", startDate=" + startDate + ", endDate=" + endDate + ", location=" + location + ", purchasesTime=" + purchasesTime + ", averageReviewRating=" + averageReviewRating + ", numberOfReview=" + numberOfReview + ", totalTime=" + totalTime + ", price=" + price + ", slot=" + slot + ", tourStatus=" + tourStatus + ", createdAt=" + createdAt + ", tourImg=" + tourImg + ", companyId=" + companyId + '}';
-    }
+    
 }
