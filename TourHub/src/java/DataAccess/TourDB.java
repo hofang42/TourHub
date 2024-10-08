@@ -71,7 +71,7 @@ public class TourDB implements DatabaseInfo {
                 tour.setSlot(rs.getInt("slot"));
                 tour.setTour_Status(rs.getString("tour_Status"));
                 tour.setCreated_At(rs.getDate("created_At"));
-                tour.setTour_Img(rs.getString("tour_Img"));
+                //tour.setTour_Img(rs.getString("tour_Img"));
                 tour.setCompany_Id(rs.getInt("company_Id"));
                 
                 // Thêm đối tượng Tour vào danh sách

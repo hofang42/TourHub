@@ -48,10 +48,10 @@ public class ReportErrorDB implements DatabaseInfo {
 
         while (rs.next()) {
             ReportError report = new ReportError();
-            report.setReport_Id(rs.getInt("report_Id"));
-            report.setReport_Date(rs.getDate("report_Date"));
-            report.setReport_Details(rs.getString("report_Details"));
-            report.setReport_Type(rs.getString("report_Type"));
+            report.setReportId(rs.getInt("report_Id"));
+            report.setReportDate(rs.getDate("report_Date"));
+            report.setReportDetails(rs.getString("report_Details"));
+            report.setReportType(rs.getString("report_Type"));
             reports.add(report);
         }
 
@@ -78,10 +78,10 @@ public class ReportErrorDB implements DatabaseInfo {
                 // Duyệt qua kết quả và tạo các đối tượng ReportError
                 while (rs.next()) {
                     ReportError report = new ReportError();
-                    report.setReport_Id(rs.getInt("report_Id"));
-                    report.setReport_Date(rs.getDate("report_Date"));
-                    report.setReport_Details(rs.getString("report_Details"));
-                    report.setReport_Type(rs.getString("report_Type"));
+                    report.setReportId(rs.getInt("report_Id"));
+                    report.setReportDate(rs.getDate("report_Date"));
+                    report.setReportDetails(rs.getString("report_Details"));
+                    report.setReportType(rs.getString("report_Type"));
                     reports.add(report); // Thêm đối tượng vào danh sách
                 }
             } else {
@@ -113,9 +113,9 @@ public class ReportErrorDB implements DatabaseInfo {
         Connection conn = getConnect();
         String query = "INSERT INTO ReportError (report_Date, report_Details, report_Type) VALUES (?, ?, ?)";
         PreparedStatement pstmt = conn.prepareStatement(query);
-        pstmt.setDate(1, new java.sql.Date(report.getReport_Date().getTime()));
-        pstmt.setString(2, report.getReport_Details());
-        pstmt.setString(3, report.getReport_Type());
+        pstmt.setDate(1, new java.sql.Date(report.getReportDate().getTime()));
+        pstmt.setString(2, report.getReportDetails());
+        pstmt.setString(3, report.getReportType());
         pstmt.executeUpdate();
         pstmt.close();
         conn.close();
@@ -137,10 +137,10 @@ public class ReportErrorDB implements DatabaseInfo {
         Connection conn = getConnect();
         String query = "UPDATE ReportError SET report_Date = ?, report_Details = ?, report_Type = ? WHERE report_Id = ?";
         PreparedStatement pstmt = conn.prepareStatement(query);
-        pstmt.setDate(1, new java.sql.Date(report.getReport_Date().getTime()));
-        pstmt.setString(2, report.getReport_Details());
-        pstmt.setString(3, report.getReport_Type());
-        pstmt.setInt(4, report.getReport_Id());
+        pstmt.setDate(1, new java.sql.Date(report.getReportDate().getTime()));
+        pstmt.setString(2, report.getReportDetails());
+        pstmt.setString(3, report.getReportType());
+        pstmt.setInt(4, report.getReportId());
         pstmt.executeUpdate();
         pstmt.close();
         conn.close();

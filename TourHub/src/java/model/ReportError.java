@@ -10,6 +10,11 @@ public class ReportError {
     private String reportType;
     private int userId;
 
+    public ReportError() {
+    }
+    
+    
+
     // Constructor
     public ReportError(Date reportDate, String reportDetails, String reportType, int userId) {
         this.reportDate = reportDate;
@@ -17,6 +22,15 @@ public class ReportError {
         this.reportType = reportType;
         this.userId = userId;
     }
+
+    public ReportError(int reportId, Date reportDate, String reportDetails, String reportType) {
+        this.reportId = reportId;
+        this.reportDate = reportDate;
+        this.reportDetails = reportDetails;
+        this.reportType = reportType;
+    }
+    
+    
 
     // Getters and setters
     public int getReportId() {
