@@ -1,5 +1,6 @@
 package controller;
 
+import DataAccess.ReviewDB;
 import DataAccess.UserDB;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -40,8 +41,8 @@ public class SubmitReviewServlet extends HttpServlet {
         review.setRating_Star(ratingStar);
         review.setComment(comment);
 
-        UserDB userDB = new UserDB();
-        boolean isReviewSubmitted = userDB.submitReview(review);
+        ReviewDB ReviewDB = new ReviewDB();
+        boolean isReviewSubmitted = ReviewDB.submitReview(review);
 
         if (isReviewSubmitted) {
             // Nếu đánh giá được lưu thành công, thêm thông báo vào session

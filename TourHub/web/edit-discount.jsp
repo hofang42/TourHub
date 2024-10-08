@@ -112,7 +112,7 @@
 
                 <form action="discount" method="post">
                     <input type="hidden" name="action" value="update">
-                    <input type="hidden" name="id" value="<%= ((Discount) request.getAttribute("discount")).getDiscountId() %>">
+                    <input type="hidden" name="id" value="<%= ((Discount) request.getAttribute("discount")).getDiscount_Id() %>">
                     
                     <div class="form-group">
                         <label for="code">Discount Code:</label>
@@ -124,15 +124,15 @@
                     </div>
                     <div class="form-group">
                         <label for="percentDiscount">Percent Discount:</label>
-                        <input type="number" id="percentDiscount" name="percentDiscount" value="<%= ((Discount) request.getAttribute("discount")).getPercentDiscount() %>" step="0.01" min="0" max="100" required>
+                        <input type="number" id="percentDiscount" name="percentDiscount" value="<%= ((Discount) request.getAttribute("discount")).getPercent_Discount() %>" step="0.01" min="0" max="100" required>
                     </div>
                     <div class="form-group">
                         <label for="startDate">Start Date:</label>
-                        <input type="date" id="startDate" name="startDate" value="<%= ((Discount) request.getAttribute("discount")).getStartDay() %>" required>
+                        <input type="date" id="startDate" name="startDate" value="<%= ((Discount) request.getAttribute("discount")).getStart_Day() %>" required>
                     </div>
                     <div class="form-group">
                         <label for="endDate">End Date:</label>
-                        <input type="date" id="endDate" name="endDate" value="<%= ((Discount) request.getAttribute("discount")).getEndDay() %>" required>
+                        <input type="date" id="endDate" name="endDate" value="<%= ((Discount) request.getAttribute("discount")).getEnd_Day() %>" required>
                     </div>
                     <div class="form-group">
                         <label for="require">Require:</label>
@@ -140,7 +140,7 @@
                     </div>
                     <div class="form-group">
                         <label for="tourId">Tour ID:</label>
-                        <input type="text" id="tourId" name="tourId" value="<%= ((Discount) request.getAttribute("discount")).getTourId() %>" required>
+                        <input type="text" id="tourId" name="tourId" value="<%= ((Discount) request.getAttribute("discount")).getTour_Id() %>" required>
                     </div>
                     
                     <button type="submit">Update</button>

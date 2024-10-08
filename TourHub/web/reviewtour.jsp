@@ -2,7 +2,7 @@ f<%@ page import="java.util.List" %>
 <%@ page import="model.Tour" %>
 <%@ page import="model.Booking" %>
 <%@ page import="model.User" %>
-<%@ page import="DataAccess.UserDB" %>
+<%@ page import="DataAccess.ReviewDB" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -115,8 +115,8 @@ f<%@ page import="java.util.List" %>
                     if (currentUser == null) {
                         out.println("<p class='alert alert-danger'>You need to log in to see your booked tours.</p>");
                     } else {
-                        UserDB userDB = new UserDB();
-                        List<Booking> bookedTours = userDB.getBookedToursWithoutReview(currentUser.getUser_Id());
+                        ReviewDB ReviewDB = new ReviewDB();
+                        List<Booking> bookedTours = ReviewDB.getBookedToursWithoutReview(currentUser.getUser_Id());
 
                         if (bookedTours == null || bookedTours.isEmpty()) {
                             out.println("<p class='alert alert-info'>You have no tours to review.</p>");
@@ -125,19 +125,19 @@ f<%@ page import="java.util.List" %>
                     <div class="row">
                         <%
                             for (Booking booking : bookedTours) {
-                                Tour tour = userDB.getTourById(booking.getTourId());
+                                Tour tour = ReviewDB.getTourById(booking.getTour_Id());
                         %>
                         <div class="col-md-4">
                             <div class="tour-card">
-                                <img src="<%= userDB.getTourImageUrl(booking.getTourId()) %>" class="tour-image" alt="Tour Image">
+                                <img src="<%= ReviewDB.getTourImageUrl(booking.getTour_Id()) %>" class="tour-image" alt="Tour Image">
                                 <div class="tour-details">
-                                    <h3 class="tour-title"><%= tour != null ? tour.getTourName() : "N/A" %></h3>
+                                    <h3 class="tour-title"><%= tour != null ? tour.getTour_Name() : "N/A" %></h3>
                                     <p class="tour-info">
-                                        <strong>Booking Date:</strong> <%= booking.getBookDate() != null ? booking.getBookDate().toString() : "N/A" %> <br>
-                                        <strong>Quantity:</strong> <%= booking.getSlotOrder() %> <br>
-                                        <strong>Total Cost:</strong> $<%= String.format("%.2f", booking.getTotalCost()) %>
+                                        <strong>Booking Date:</strong> <%= booking.getCreated_At() != null ? booking.getCreated_At().toString() : "N/A" %> <br>
+                                        <strong>Quantity:</strong> <%= booking.getSlot_Order() %> <br>
+                                        <strong>Total Cost:</strong> $<%= String.format("%.2f", booking.getTotal_Cost()) %>
                                     </p>
-                                    <a href="javascript:void(0)" class="review-button" onclick="openReviewPopup('<%= booking.getTourId() %>')">Review</a>
+                                    <a href="javascript:void(0)" class="review-button" onclick="openReviewPopup('<%= booking.getTour_Id() %>')">Review</a>
                                 </div>
                             </div>
                         </div>

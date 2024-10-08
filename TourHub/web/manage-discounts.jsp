@@ -303,19 +303,19 @@
                                 <tr>
                                     <td><%= discount.getCode() %></td>
                                     <td><%= discount.getQuantity() %></td>
-                                    <td><%= discount.getPercentDiscount() %></td>
-                                    <td><%= discount.getStartDay() %></td>
-                                    <td><%= discount.getEndDay() %></td>
+                                    <td><%= discount.getPercent_Discount() %></td>
+                                    <td><%= discount.getStart_Day() %></td>
+                                    <td><%= discount.getEnd_Day() %></td>
                                     <td><%= discount.getRequire() %></td>
-                                    <td><%= discount.getTourId() %></td>
+                                    <td><%= discount.getTour_Id() %></td>
                                     <td>
                                         <form action="discount" method="get" style="display: inline-block; margin-right: 10px;">
                                             <input type="hidden" name="action" value="edit">
-                                            <input type="hidden" name="id" value="<%= discount.getDiscountId() %>">
+                                            <input type="hidden" name="id" value="<%= discount.getDiscount_Id() %>">
                                             <button type="submit" class="btn btn-primary">Edit</button>
                                         </form>
 
-                                        <button class="btn btn-delete" onclick="showModal('<%= discount.getDiscountId() %>')" style="display: inline-block;">Delete</button>
+                                        <button class="btn btn-delete" onclick="showModal('<%= discount.getDiscount_Id() %>')" style="display: inline-block;">Delete</button>
                                     </td>
 
                                 </tr>

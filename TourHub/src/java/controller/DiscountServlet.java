@@ -1,4 +1,5 @@
 
+import DataAccess.DiscountDB;
 import DataAccess.UserDB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,7 +16,7 @@ import model.User;
 @WebServlet("/discount")
 public class DiscountServlet extends HttpServlet {
 
-    private final UserDB userDB = new UserDB();
+    private final DiscountDB DiscountDB = new DiscountDB();
 
     @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -78,7 +79,7 @@ public class DiscountServlet extends HttpServlet {
 
     // Common method to list all discounts
     private void listDiscounts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Discount> listDiscount = userDB.getAllDiscounts();
+        List<Discount> listDiscount = DiscountDB.getAllDiscounts();
         request.setAttribute("listDiscount", listDiscount);
         request.getRequestDispatcher("manage-discounts.jsp").forward(request, response);
     }
@@ -94,7 +95,7 @@ public class DiscountServlet extends HttpServlet {
         if (discountId == -1) {
             return;
         }
-        Discount existingDiscount = userDB.getDiscountById(discountId);
+        Discount existingDiscount = DiscountDB.getDiscountById(discountId);
         if (existingDiscount == null) {
             request.setAttribute("error", "Discount not found.");
             listDiscounts(request, response);
@@ -108,13 +109,13 @@ public class DiscountServlet extends HttpServlet {
     private void insertDiscount(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             Discount discount = getDiscountFromRequest(request);
-            if (userDB.isDiscountCodeExists(discount.getCode())) {
+            if (DiscountDB.isDiscountCodeExists(discount.getCode())) {
                 throw new IllegalArgumentException("Discount code already exists!");
             }
-            if (!userDB.isTourIdExists(discount.getTourId())) {
+            if (!DiscountDB.isTourIdExists(discount.getTour_Id())) {
                 throw new IllegalArgumentException("Tour ID does not exist!");
             }
-            userDB.insertDiscount(discount);
+            DiscountDB.insertDiscount(discount);
             request.setAttribute("message", "Discount created successfully!");
             listDiscounts(request, response);
         } catch (IllegalArgumentException e) {
@@ -131,9 +132,9 @@ public class DiscountServlet extends HttpServlet {
                 return;
             }
             Discount discount = getDiscountFromRequest(request);
-            discount.setDiscountId(discountId);
+            discount.setDiscount_Id(discountId);
 
-            userDB.updateDiscount(discount);
+            DiscountDB.updateDiscount(discount);
             request.setAttribute("message", "Discount updated successfully!");
             listDiscounts(request, response);
         } catch (IllegalArgumentException e) {
@@ -148,7 +149,7 @@ public class DiscountServlet extends HttpServlet {
         if (discountId == -1) {
             return;
         }
-        userDB.deleteDiscount(discountId);
+        DiscountDB.deleteDiscount(discountId);
         request.setAttribute("message", "Discount deleted successfully!");
         listDiscounts(request, response);
     }
