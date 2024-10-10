@@ -4,23 +4,20 @@
  */
 package controller;
 
-import DataAccess.KhanhDB;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import model.Tour;
 
 /**
  *
- * @author LENOVO
+ * @author hoang
  */
-@WebServlet(name = "DisplaySearchServlet", urlPatterns = {"/allTour"})
-public class DisplayAllServlet extends HttpServlet {
+@WebServlet(name = "SearchTourServlet", urlPatterns = {"/search"})
+public class SearchTourServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +36,10 @@ public class DisplayAllServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DisplaySearchServlet</title>");
+            out.println("<title>Servlet SearchTourServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DisplaySearchServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SearchTourServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,49 +57,20 @@ public class DisplayAllServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        KhanhDB u = new KhanhDB();
+        // Get the search query from the request parameters
+        String searchQuery = request.getParameter("query");
 
-        // Get the sort order from the request
-        String sortOrder = request.getParameter("sortOrder");
-        if (sortOrder == null || sortOrder.isEmpty()) {
-            sortOrder = "popularity";  // Default sort by popularity
+        // Optional: Trim the search query to remove leading/trailing whitespace
+        if (searchQuery != null) {
+            searchQuery = searchQuery.trim();
         }
 
-        // Get the location or search query from the request
-        String location = request.getParameter("location");
-        String searchQuery = request.getParameter("query"); // Using 'query' for consistency
-        if (location == null || location.isEmpty()) {
-            location = "All";  // Default to "All"
-        }
+        // Set the search query as a request attribute to be accessed later
+        request.setAttribute("querry", searchQuery);
 
-        // Get the price range from the request
-        String priceRange = request.getParameter("priceRange");
-        int minPrice = 0;
-        int maxPrice = 0;
-
-        // Parse the price range if provided
-        if (priceRange != null && !priceRange.equals("0-0")) {
-            String[] prices = priceRange.split("-");
-            minPrice = Integer.parseInt(prices[0]);
-            maxPrice = Integer.parseInt(prices[1]);
-        }
-
-        // If a search query is provided, prioritize that over location
-        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            location = searchQuery.trim(); // Update location to search query if present
-        }
-
-        // Call the getAll method with the sorting, location, and price filters
-        List<Tour> list = u.getAllTour(sortOrder, location, minPrice, maxPrice);
-        request.setAttribute("data", list);
-
-        // Pass the sortOrder, location (or search query), and priceRange back to the JSP
-        request.setAttribute("sortOrder", sortOrder);
-        request.setAttribute("location", location);
-        request.setAttribute("priceRange", priceRange);
-
-        // Forward to the search-page.jsp
-        request.getRequestDispatcher("search-page.jsp").forward(request, response);
+        // Forward the request to the "allTour" servlet or JSP page
+        // Ensure the path is correct based on your application structure
+        request.getRequestDispatcher("allTour").forward(request, response);
     }
 
     /**

@@ -190,7 +190,7 @@
                                                 <div class="event-default-inner">
                                                     <div>
                                                         <h5>
-                                                            <a href="#" class="event-default-title">${tourEdit.tour_Name}</a>
+                                                            <a href="edit-tour?tourId=${tourEdit.tour_Id}" class="event-default-title">${tourEdit.tour_Name}</a>
                                                         </h5>
                                                     </div>
                                                 </div>
@@ -229,7 +229,7 @@
                                                     <div class="event-default-inner">
                                                         <div>
                                                             <h5>
-                                                                <a href="#" class="event-default-title">${tour.tour_Name}</a>
+                                                                <a href="edit-tour?tourId=${tour.tour_Id}" class="event-default-title">${tour.tour_Name}</a>
                                                             </h5>
                                                         </div>
                                                     </div>

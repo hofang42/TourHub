@@ -89,14 +89,14 @@
                             <span class="text">Payment</span>
                         </a>
                     </li> 
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
                 </c:if>
 
-                <!-- Sub-menu -->
-                <ul class="sub-menu">
-                    <li><a href="add-tour.jsp">Add Tour</a></li>
-                    l<i><a href="payment.jsp">Payment</a></li>
-                        <li><a href="#">Feature 3</a></li>
-                </ul>
 
             </ul>
             <ul class="side-menu">

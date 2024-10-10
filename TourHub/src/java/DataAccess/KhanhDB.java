@@ -22,7 +22,7 @@ import model.TourOption;
 public class KhanhDB {
     public List<Tour> getAllTour(String sortOrder, String location, int minPrice, int maxPrice) {
         List<Tour> list = new ArrayList<>();
-        String sql = "SELECT * FROM Tour WHERE 1=1";
+        String sql = "SELECT * FROM Tour WHERE 1=1 AND tour_Status='Active'";
 
         // Add location filter
         if (location != null && !location.equals("All")) {

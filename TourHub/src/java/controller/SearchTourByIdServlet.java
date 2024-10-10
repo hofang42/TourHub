@@ -4,6 +4,7 @@
  */
 package controller;
 
+import DataAccess.KhanhDB;
 import DataAccess.TourDB;
 import DataAccess.UserDB;
 import DataAccess.hoang_UserDB;
@@ -65,6 +66,10 @@ public class SearchTourByIdServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String tourId = request.getParameter("tourId");
+
+        request.setAttribute("id", tourId);
+        request.getRequestDispatcher("displayTourDetail?id=" + tourId).forward(request, response);
 
     }
 

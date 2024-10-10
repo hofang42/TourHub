@@ -46,7 +46,7 @@
                     <li>
                         <a href="user-booking.jsp">
                             <i class='bx bxs-shopping-bag-alt' ></i>
-                            <span class="text">Manage Booking</span>
+                            <span class="text">My Booking</span>
                         </a>
                     </li>
                 </c:if>
@@ -75,22 +75,21 @@
                             <span class="text">Payment</span>
                         </a>
                     </li> 
-                </c:if>
-                </li>
-                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                     <li>
                         <a href="discount">
                             <i class='bx bxs-discount'></i>
                             <span class="text">Manage Discounts</span>
                         </a>
                     </li>
+                </c:if>                
+                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                    <li>
+                        <a href="reviewtour.jsp">
+                            <i class='bx bxs-star'></i>
+                            <span class="text">Review Tours</span>
+                        </a>
+                    </li>
                 </c:if>
-                <li>
-                    <a href="reviewtour.jsp">
-                        <i class='bx bxs-star'></i>
-                        <span class="text">Review Tours</span>
-                    </a>
-                </li>
                 <%-- <li>
                     <a href="#">
                         <i class='bx bxs-doughnut-chart' ></i>

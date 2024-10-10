@@ -6,56 +6,56 @@
 <%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <body>
     <!-- Page preloader-->
-    <!--        <div class="page-loader"> 
-                <div class="page-loader-body "> 
-                    <div class="preloader-wrapper big active"> 
-                        <div class="spinner-layer spinner-blue"> 
-                            <div class="circle-clipper left">
-                                <div class="circle"> </div>
-                            </div>
-                            <div class="gap-patch">
-                                <div class="circle"> </div>
-                            </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"></div>
-                            </div>
-                        </div>
-                        <div class="spinner-layer spinner-red">
-                            <div class="circle-clipper left">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="gap-patch">
-                                <div class="circle"> </div>
-                            </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"></div>
-                            </div>
-                        </div>
-                        <div class="spinner-layer spinner-yellow"> 
-                            <div class="circle-clipper left">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="gap-patch">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"> </div>
-                            </div>
-                        </div>
-                        <div class="spinner-layer spinner-green"> 
-                            <div class="circle-clipper left">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="gap-patch">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"></div>
-                            </div>
-                        </div>
+    <div class="page-loader"> 
+        <div class="page-loader-body "> 
+            <div class="preloader-wrapper big active"> 
+                <div class="spinner-layer spinner-blue"> 
+                    <div class="circle-clipper left">
+                        <div class="circle"> </div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"> </div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
                     </div>
                 </div>
-            </div>-->
+                <div class="spinner-layer spinner-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"> </div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+                <div class="spinner-layer spinner-yellow"> 
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"> </div>
+                    </div>
+                </div>
+                <div class="spinner-layer spinner-green"> 
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Page-->
     <div class="page">
         <!-- Page Header-->
@@ -194,9 +194,8 @@
                                 <div class="form-request form-request-modern bg-gray-lighter novi-background transparent-bg">     
                                     <div class="search-box custom-radius">
                                         <div class="row">
-
                                             <input type="text" id="input-box" placeholder="Search your tour" autocomplete="off">
-                                            <button class="btn btn-primary">SEARCH</button>
+                                            <button class="btn btn-primary" id="search-btn">SEARCH</button>
                                         </div>
                                         <div class="search-container">
                                             <span class="icon">🔍</span>
@@ -216,25 +215,27 @@
         </section>
 
         <section class="section section-variant-1 bg-default novi-background bg-cover"> 
-            <!--container-wide-->
-            <div class="container "> 
+            <div class="container"> 
                 <div class="row row-fix justify-content-xl-end row-30 text-center text-xl-left">
                     <div class="col-xl-8">
                         <div class="parallax-text-wrap">
-                            <h3>Our Best Tours</h3><span class="parallax-text">Hot tours</span>
+                            <h3>Our Best Tours</h3>
+                            <span class="parallax-text">Hot tours</span>
                         </div>
                         <hr class="divider divider-decorate">
                     </div>
-                    <div class="col-xl-3 text-xl-right"><a class="button button-secondary button-nina" href="#">view all tours</a></div>
+                    <div class="col-xl-3 text-xl-right">
+                        <a class="button button-secondary button-nina" href="allTour">view all tours</a>
+                    </div>
                 </div>
                 <div class="group-btn" role="group" aria-label="City Options">
-                    <button type="button" class="btn btn-primary active" city="Phú Quốc">Phú Quốc</button>
-                    <button type="button" class="btn btn-outline-primary" city="Da Nang">Da Nang</button>
-                    <button type="button" class="btn btn-outline-primary" city="Hà Nội">Ha Noi</button>
-                    <button type="button" class="btn btn-outline-primary" city="TP Ho Chi Minh">TP Ho Chi Minh</button>
-                    <button type="button" class="btn btn-outline-primary" city="Quy Nhon">Quy Nhon</button>
+                    <button type="button" class="btn btn-primary active" city="Phu Quoc">Phú Quốc</button>
+                    <button type="button" class="btn btn-outline-primary" city="Da Nang">Đà Nẵng</button>
+                    <button type="button" class="btn btn-outline-primary" city="Ha Noi">Hà Nội</button>
+                    <button type="button" class="btn btn-outline-primary" city="TP Ho Chi Minh<">TP Hồ Chí Minh</button>
+                    <button type="button" class="btn btn-outline-primary" city="Quy Nhon">Quy Nhơn</button>
                 </div>
-                <div class="row row-50">
+                <div class="row row-50" id="tour-list">
                     <c:if test="${empty tours}">
                         <p>No tours available.</p>
                     </c:if>                   
@@ -354,7 +355,28 @@
         %>
         <script>
             const toursJson = "<%= encodedToursJson %>";
-            const tours = JSON.parse(toursJson); // Parse the JSON string            
+            const tours = JSON.parse(toursJson); // Parse the JSON string  
+            console.log(tours);
+        </script>
+        <script>
+            // Extract the query parameter from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('query');
+
+// Set the search box value if the query exists
+            if (searchQuery) {
+                document.getElementById('input-box').value = decodeURIComponent(searchQuery);
+            }
+
+// Add event listener for the search button
+            document.getElementById("search-btn").addEventListener("click", function () {
+                var queryValue = document.getElementById("input-box").value;
+                if (queryValue) {
+                    // Redirect to the servlet with the new query as a URL parameter
+                    window.location.href = "search?query=" + encodeURIComponent(queryValue);
+                }
+            });
+
         </script>
         <script src="assests/js/home.js"></script>
 

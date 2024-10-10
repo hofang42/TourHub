@@ -214,13 +214,13 @@ public class TourDB implements DatabaseInfo {
     }
 
     public void saveTourToDatabase(HttpServletRequest request, String tourName, String tourDescription, String startDate,
-            String endDate, String location,
-            String duration, double price, int slot, String tourImg) throws SQLException {
+            String endDate, String location, String duration, double price, int slot, String tourImg) throws SQLException {
         int companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
         String tourId = generateTourId();
         String query = "INSERT INTO Tour (tour_Id, tour_Name, tour_Description, start_Date, end_Date, "
-                + "location, total_Time, price, slot, tour_Status , tour_Img, company_Id)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "location, total_Time, price, slot, tour_Status, tour_Img, company_Id, "
+                + "purchases_Time, average_Review_Rating, number_Of_Review) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0.0, 0)";  // Default values for purchases, rating, reviews
 
         try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, tourId);
@@ -237,7 +237,6 @@ public class TourDB implements DatabaseInfo {
             pstmt.setInt(12, companyId);
             pstmt.executeUpdate();
         }
-
     }
 
     private String generateTourId() {
@@ -256,6 +255,44 @@ public class TourDB implements DatabaseInfo {
             // Set the parameter for the prepared statement
             stmt.setString(1, tourId);
             stmt.setInt(2, companyIdInput);
+            // Execute the query
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String tourName = rs.getString("tour_Name");
+                    String description = rs.getString("tour_Description");
+                    Date startDate = rs.getDate("start_Date");
+                    Date endDate = rs.getDate("end_Date");
+                    float avgRating = rs.getFloat("average_Review_Rating");
+                    int numOfReview = rs.getInt("number_Of_Review");
+                    String totalTime = rs.getString("total_Time");
+                    BigDecimal price = rs.getBigDecimal("price");
+                    int slot = rs.getInt("slot");
+                    String location = rs.getString("location");
+                    String tourStatus = rs.getString("tour_Status");
+                    int companyId = rs.getInt("company_Id");
+                    Date createdAt = rs.getDate("created_At");
+                    String tourImg = rs.getString("tour_Img");
+
+                    List<String> tourImgList = splitImages(tourImg);
+                    // Create a new Tour object with the retrieved data
+                    tour = new Tour(tourId, tourName, description, startDate, endDate, location, numOfReview, avgRating, numOfReview, totalTime, price, slot, tourStatus, createdAt, tourImgList, companyId);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TourDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return tour; // Return the Tour object, or null if not found
+    }
+
+    public Tour getTourFromTourID(String tourId) {
+        Tour tour = null;
+        String query = "SELECT * FROM Tour WHERE tour_Id = ?";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+
+            // Set the parameter for the prepared statement
+            stmt.setString(1, tourId);
             // Execute the query
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
