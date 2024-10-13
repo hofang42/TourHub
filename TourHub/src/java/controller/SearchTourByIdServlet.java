@@ -4,6 +4,7 @@
  */
 package controller;
 
+import DataAccess.KhanhDB;
 import DataAccess.TourDB;
 import DataAccess.UserDB;
 import DataAccess.hoang_UserDB;
@@ -65,7 +66,7 @@ public class SearchTourByIdServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        doPost(request, response);
     }
 
     /**
@@ -79,49 +80,9 @@ public class SearchTourByIdServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String tourId = request.getParameter("tour-edit");
-
-        TourDB tourDB = new TourDB();
-        int companyId;
-
-        try {
-            // Fetch the provider Id from user session
-            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
-            System.out.println("GET SUCCESS: Company ID = " + companyId);
-        } catch (SQLException ex) {
-            Logger.getLogger(SearchTourByIdServlet.class.getName()).log(Level.SEVERE, null, ex);
-            request.setAttribute("errorMessage", "Database error occurred while fetching the company ID.");
-            request.getRequestDispatcher("edit-tour.jsp").forward(request, response);
-            return;
-        }
-
-        // If no tourId is provided, fetch all tours
-        if (tourId == null || tourId.trim().isEmpty()) {
-            List<Tour> allTours = tourDB.getToursByProviderID(companyId);
-            if (allTours.isEmpty()) {
-                request.setAttribute("errorMessage", "No tours available.");
-            } else {
-                request.setAttribute("providerTours", allTours);
-            }
-            request.getRequestDispatcher("edit-tour.jsp").forward(request, response);
-            return;
-        }
-
-        // Retrieve the tour details by tourId
-        Tour tourEdit = tourDB.getTourFromTourID(tourId, companyId);
-
-        // Check if the tour was found
-        if (tourEdit == null) {
-            request.setAttribute("errorMessage", "No tour found with the given ID.");
-            request.getRequestDispatcher("edit-tour.jsp").forward(request, response);
-            return;
-        }
-
-        // Set the tourEdit object in request scope and forward to the edit page
-        request.setAttribute("tourEdit", tourEdit);
-        Tour tourEditSession = tourEdit;
-        request.getSession().setAttribute("tourEditSession", tourEditSession);
-        request.getRequestDispatcher("mytour.jsp").forward(request, response);
+        String tourId = request.getParameter("tourId");
+        request.setAttribute("id", tourId);
+        request.getRequestDispatcher("displayTourDetail?id=" + tourId).forward(request, response);
     }
 
     /**

@@ -170,7 +170,7 @@ public class BookingDB implements DatabaseInfo {
     //Doanh thu: Tổng doanh thu từ các tour đã đặt.
     public BigDecimal getTotalRevenue() throws SQLException {
         try (Connection con = getConnect()) {
-            String sql = "SELECT SUM(total_Cost) FROM Booking WHERE book_Status = 'Confirmed'";
+            String sql = "SELECT SUM(total_Cost) FROM Booking WHERE book_Status = 'Booked'";
             try (PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getBigDecimal(1) != null ? rs.getBigDecimal(1) : BigDecimal.ZERO;

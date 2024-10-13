@@ -82,7 +82,7 @@ button .fa-search {
 }
 .result-box ul {
     border-top: 1px solid #999;
-    padding: 15px 10px;    
+    padding: 15px 10px;
 
 }
 
@@ -357,4 +357,81 @@ button .fa-search {
 /* Show the dropdown content when the avatar button is clicked */
 .show {
     display: block;
+}
+
+
+/*Coupon*/
+
+.parallax-text-wrap {
+    text-align: center;
+}
+
+.container-coupon {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between coupon cards */
+    justify-content: center;
+}
+
+.coupon-card {
+    background: linear-gradient(135deg, #7158fe, #9d4de6);
+    color: #fff;
+    text-align: center;
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 10px 0 rgba(0,0,0,0.15);
+    position: relative;
+    max-width: 300px;
+    flex: 1 1 300px; /* Flexible and responsive card */
+}
+
+.logo {
+    width: 80px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.coupon-card h3 {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 30px;
+}
+
+.coupon-row {
+    display: flex;
+    align-items: center;
+    margin: 25px auto;
+    width: fit-content;
+}
+
+.cpnCode {
+    border: 1px dashed #fff;
+    padding: 10px 20px;
+    border-right: 0;
+}
+
+.cpnBtn {
+    border: 1px solid #fff;
+    background: #fff;
+    padding: 10px 20px;
+    color: #7158fe;
+    cursor: pointer;
+}
+
+.circle1, .circle2 {
+    background: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.circle1 {
+    left: -25px;
+}
+
+.circle2 {
+    right: -25px;
 }

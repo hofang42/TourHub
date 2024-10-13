@@ -6,102 +6,102 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html class="wide wow-animation" lang="en">
-  <head>
-    <!-- Site Title-->
-    <title>Home</title>
-    <meta name="format-detection" content="telephone=no" />
-    <meta
-      name="viewport"
-      content="width=device-width, height=device-height, initial-scale=1.0"
-    />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta charset="utf-8" />
-    <link
-      rel="icon"
-      href="assests/images/logo-favicon/logo.png"
-      type="image/x-icon"
-    />
-    <!-- Stylesheets -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="//fonts.googleapis.com/css?family=Oswald:200,400%7CLato:300,400,300italic,700%7CMontserrat:900"
-    />
-    <link rel="stylesheet" href="assests/css/bootstrap.css" />
-    <link rel="stylesheet" href="assests/css/style.css" />
-    <link rel="stylesheet" href="assests/css/fonts.css" />
-    <link rel="stylesheet" href="assests/css/index.css" />
+    <head>
+        <!-- Site Title-->
+        <title>Home</title>
+        <meta name="format-detection" content="telephone=no" />
+        <meta
+            name="viewport"
+            content="width=device-width, height=device-height, initial-scale=1.0"
+            />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta charset="utf-8" />
+        <link
+            rel="icon"
+            href="assests/images/logo-favicon/logo.png"
+            type="image/x-icon"
+            />
+        <!-- Stylesheets -->
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="//fonts.googleapis.com/css?family=Oswald:200,400%7CLato:300,400,300italic,700%7CMontserrat:900"
+            />
+        <link rel="stylesheet" href="assests/css/bootstrap.css" />
+        <link rel="stylesheet" href="assests/css/style.css" />
+        <link rel="stylesheet" href="assests/css/fonts.css" />
+        <link rel="stylesheet" href="assests/css/index.css" />
 
-    <!-- Owl Carousel CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
-    />
+        <!-- Owl Carousel CSS -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+            />
 
-    <!-- jQuery (required for Owl Carousel) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <!-- jQuery (required for Owl Carousel) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <!-- Owl Carousel JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+        <!-- Owl Carousel JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
-    <link rel="stylesheet" href="assests/css/tour-detail.css" />
-    <link rel="stylesheet" href="assests/css/wave.css" />
+        <link rel="stylesheet" href="assests/css/tour-detail.css" />
+        <link rel="stylesheet" href="assests/css/wave.css" />
 
-    <!-- Font Awesome -->
-    <script
-      src="https://kit.fontawesome.com/d14313468c.js"
-      crossorigin="anonymous"
-    ></script>
+        <!-- Font Awesome -->
+        <script
+            src="https://kit.fontawesome.com/d14313468c.js"
+            crossorigin="anonymous"
+        ></script>
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous"
+            />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous"
+            />
 
-    <!-- Flatpickr CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
+        <!-- Flatpickr CSS -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+            />
 
-    <!--<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">-->
-    <!--[if lt IE 10]>
-      <div
-        style="
-          background: #212121;
-          padding: 10px 0;
-          box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.3);
-          clear: both;
-          text-align: center;
-          position: relative;
-          z-index: 1;
-        "
-      >
-        <a href="http://windows.microsoft.com/en-US/internet-explorer/"
-          ><img
-            src="assests/images/ie8-panel/warning_bar_0000_us.jpg"
-            border="0"
-            height="42"
-            width="820"
-            alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."
-        /></a>
-      </div>
-      <script src="js/html5shiv.min.js"></script>
-    <![endif]-->
-  </head>
+        <!--<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">-->
+        <!--[if lt IE 10]>
+          <div
+            style="
+              background: #212121;
+              padding: 10px 0;
+              box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.3);
+              clear: both;
+              text-align: center;
+              position: relative;
+              z-index: 1;
+            "
+          >
+            <a href="http://windows.microsoft.com/en-US/internet-explorer/"
+              ><img
+                src="assests/images/ie8-panel/warning_bar_0000_us.jpg"
+                border="0"
+                height="42"
+                width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."
+            /></a>
+          </div>
+          <script src="js/html5shiv.min.js"></script>
+        <![endif]-->
+    </head>
 </html>
 
 
@@ -298,7 +298,7 @@
             <div class="content flex">
                 <div class="tour-gallery">
                     <div class="image-highlight">
-                        <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 1">
+                        <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 1">
                         <a href="javascript:void(0)" onclick="toggle('popup1')">
                             <div class="img-viewmore">
                                 <h3>
@@ -311,7 +311,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-1">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 2">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 2">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -325,7 +325,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-2">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 3">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 3">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -339,7 +339,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-3">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 4">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 4">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -353,7 +353,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-4">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 5">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 5">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -554,21 +554,21 @@
                                     <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
                                     <div class="option-price-section">
                                         <div class="option-price">${option.option_Price}</div>
-                                        <button class="option-pick-btn">Chọn vé</button>
+                                        <button class="option-pick-btn" onclick="window.location.href='optionAdjustment?id=${option.option_Id}'">Chọn vé</button>
                                     </div>
                                 </div>                            
                             </div>
                         </c:forEach>
                     </div>
                 </div>
-
+                <jsp:include page="/ViewTourReview?id=${tour.tour_Id}" />
                 <div class="tour-rating">
 
                 </div>
             </div>
         </div>
 
-<!--        Popup1-->
+        <!--        Popup1-->
         <div id="popup1">
             <div id="carouselExampleIndicators" class="carousel slide">
                 <div class="carousel-indicators">
@@ -579,7 +579,7 @@
                     </c:forEach>
                 </div>
                 <div class="carousel-inner">
-                    <c:forEach var="image" items="${tour.tour_Img}">
+                    <c:forEach var="image" items="assests/images/tour-images/${tour.tour_Img}">
                         <div class="carousel-item ${image eq tour.tour_Img[0] ? 'active' : ''}">
                             <img src="${image}" class="carousel-img d-block w-100" alt="...">
                         </div>
@@ -598,7 +598,7 @@
             </div>
             <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup1')"></button>
         </div>
-<!--        Popup2-->
+        <!--        Popup2-->
         <div id="popup2">
             <h3>Thêm thông tin</h3>
             <div class="information-wrapper">
@@ -652,7 +652,7 @@
             <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup2')">
             </button>
         </div>
-<!--        Popup3-->
+        <!--        Popup3-->
         <div id="popup3">
             <h3>Bạn sẽ trải nghiệm</h3>
             <div class="experiment-wrapper">
@@ -682,7 +682,7 @@
             <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup3')"></button>
             </button>
         </div>
-<!--        Popup4-->
+        <!--        Popup4-->
         <div id="popup4">
             <h3>Lịch trình tour</h3>
 
@@ -704,7 +704,7 @@
             <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup4')"></button>
             </button>
         </div>
-<!--        Popup5-->
+        <!--        Popup5-->
         <div id="popup5">
             <h4>(Dành cho khách Việt Nam) Tour ghép - Khởi hành từ Đà Nẵng (Kèm bữa trưa)</h4>
             <div class="tour-option-detail-wrapper">
@@ -972,11 +972,11 @@
 
             // Cập nhật biến selectedDate thành ngày đã chọn
             selectedDate = centerDate;
-            
+
             filterTourOptions(selectedDate);
         }
 
-        
+
         const daysMapping = {
             'Chu nhat': 0,
             'Thu hai': 1,
@@ -987,27 +987,27 @@
             'Thu bay': 6
         };
 
-        
+
         function filterTourOptions(selectedDate) {
-        const dayOfWeek = selectedDate.getDay(); // Lấy số ngày trong tuần từ selectedDate
-        console.log("Selected day of week:", dayOfWeek); // Kiểm tra giá trị ngày đã chọn
+            const dayOfWeek = selectedDate.getDay(); // Lấy số ngày trong tuần từ selectedDate
+            console.log("Selected day of week:", dayOfWeek); // Kiểm tra giá trị ngày đã chọn
 
-        const tourOptions = [...document.querySelectorAll('.tour-option')];
+            const tourOptions = [...document.querySelectorAll('.tour-option')];
 
-        tourOptions.forEach(option => {
-            const refundSection = option.querySelector('.refund-section').innerText;
-            console.log("Refund section text:", refundSection); // In ra nội dung refund-section
-            const optionDayOfWeek = daysMapping[refundSection]; // Sử dụng ánh xạ để lấy số
+            tourOptions.forEach(option => {
+                const refundSection = option.querySelector('.refund-section').innerText;
+                console.log("Refund section text:", refundSection); // In ra nội dung refund-section
+                const optionDayOfWeek = daysMapping[refundSection]; // Sử dụng ánh xạ để lấy số
 
-            console.log("Option day of week:", optionDayOfWeek); // Kiểm tra giá trị dayOfWeek trong mỗi option
+                console.log("Option day of week:", optionDayOfWeek); // Kiểm tra giá trị dayOfWeek trong mỗi option
 
-            if (optionDayOfWeek === dayOfWeek) {
-                option.style.display = 'flex'; // Hiển thị tourOption
-            } else {
-                option.style.display = 'none'; // Ẩn tourOption
-            }
-        });
-    }
+                if (optionDayOfWeek === dayOfWeek) {
+                    option.style.display = 'flex'; // Hiển thị tourOption
+                } else {
+                    option.style.display = 'none'; // Ẩn tourOption
+                }
+            });
+        }
 
 
         // Function để xử lý việc chọn ngày trong date-wrapper
@@ -1022,9 +1022,9 @@
 
             // Cập nhật ngày đã chọn
             selectedDate = new Date(dateStr);
-            
+
             console.log("Updated selectedDate:", selectedDate);
-              
+
             filterTourOptions(selectedDate);
         }
 

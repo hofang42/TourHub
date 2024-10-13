@@ -68,8 +68,9 @@ public class DisplayAllServlet extends HttpServlet {
             sortOrder = "popularity";  // Default sort by popularity
         }
 
-        // Get the location from the request
+        // Get the location or search query from the request
         String location = request.getParameter("location");
+        String searchQuery = request.getParameter("querry"); // Using 'query' for consistency
         if (location == null || location.isEmpty()) {
             location = "All";  // Default to "All"
         }
@@ -86,15 +87,21 @@ public class DisplayAllServlet extends HttpServlet {
             maxPrice = Integer.parseInt(prices[1]);
         }
 
+        // If a search query is provided, prioritize that over location
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            location = searchQuery.trim(); // Update location to search query if present
+        }
+
         // Call the getAll method with the sorting, location, and price filters
         List<Tour> list = u.getAllTour(sortOrder, location, minPrice, maxPrice);
         request.setAttribute("data", list);
 
-        // Pass the sortOrder, location, and priceRange back to the JSP
+        // Pass the sortOrder, location (or search query), and priceRange back to the JSP
         request.setAttribute("sortOrder", sortOrder);
         request.setAttribute("location", location);
         request.setAttribute("priceRange", priceRange);
 
+        // Forward to the search-page.jsp
         request.getRequestDispatcher("search-page.jsp").forward(request, response);
     }
 

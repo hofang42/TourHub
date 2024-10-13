@@ -161,20 +161,14 @@
             </c:if>
             <c:if test="${sessionScope.currentUser.role == 'Customer'}">
                 <li  class="active">
-                    <a href="">
+                    <a href="user-booking.jsp">
                         <i class='bx bxs-shopping-bag-alt' ></i>
-                        <span class="text">My Booking</span>
-                    </a>
-                </li>
-                <li  class="active">
-                    <a href="booking">
-                        <i class='bx bxs-shopping-bag-alt' ></i>
-                        <span class="text">My Booking</span>
+                        <span class="text">Manage Booking</span>
                     </a>
                 </li>
             </c:if>
             <li>
-                <a href="#">
+                <a href="user-chat.jsp">
                     <i class='bx bxs-message-dots' ></i>
                     <span class="text">Message</span>
                 </a>
@@ -198,7 +192,33 @@
                         <span class="text">Payment</span>
                     </a>
                 </li> 
+                <li>
+                    <a href="discount">
+                        <i class='bx bxs-discount'></i>
+                        <span class="text">Manage Discounts</span>
+                    </a>
+                </li>
+            </c:if>                
+            <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                <li>
+                    <a href="reviewtour.jsp">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
+                    </a>
+                </li>
             </c:if>
+            <%-- <li>
+                <a href="#">
+                    <i class='bx bxs-doughnut-chart' ></i>
+                    <span class="text">Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bxs-group' ></i>
+                    <span class="text">Team</span>
+                </a>
+            </li> --%>
         </ul>
         <ul class="side-menu">
             <li>
@@ -267,7 +287,8 @@
                         <table id="bookingTable">
                             <thead>
                                 <tr>
-                                    <th onclick="sortTable(0)">ID  <i class='bx bx-filter'></i></th>                          
+                                    <!--<th>ID  <i class='bx bx-filter'></i></th>-->  
+                                    <th onclick="sortTable(0)">ID  <i class='bx bx-filter'></i></th>  
                                     <th onclick="sortTable(1)">Tour Name <i class='bx bx-filter'></i></th>                           
                                     <th onclick="sortTable(2)">Customer Name<i class='bx bx-filter'></i></th>                            
                                     <th onclick="sortTable(3)">Slot<i class='bx bx-filter'></i></th>                            
@@ -278,8 +299,10 @@
                             </thead>
                             <tbody id="product_list">
                                 <c:forEach items="${sessionScope.bookings}" var="booking">
-                                    <tr>                                        
-                                        <td>${booking.bookId}</td>
+                                    <c:set var="id" value="${id + 1}"></c:set>
+                                        <tr>   
+                                            <td>${id}</td>
+                                        <!--<td>${booking.bookId}</td>-->
                                         <td>${booking.tourName}</td>
                                         <td>${booking.customerName}</td>
                                         <td>${booking.slotOrder}</td>
@@ -290,8 +313,7 @@
                                             </c:choose>">
                                             ${booking.bookStatus}
                                         </td>
-                                        <td>${booking.totalCost} VND</td>
-                                        <td>
+                                        <td>${booking.totalCost} VND</td>                                        
                                         <td>
                                             <form action="pending-bookings" method="POST" style="display: inline;">
                                                 <input type="hidden" name="bookingId" value="${booking.bookId}">
@@ -408,34 +430,34 @@
                                             sortDirection[columnIndex] = !isAscending;
                                         }
 
-                                        function acceptBooking(bookId) {
-                                            console.log("Accepting booking ID:", bookId); // Debugging line
-
-                                            if (!bookId) {
-                                                console.error('No booking ID provided');
-                                                return;
-                                            }
-
-                                            fetch(`/Project_SWP/bookings?bookId=${bookId}`, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                }
-                                            })
-                                                    .then(response => {
-                                                        if (!response.ok) {
-                                                            throw new Error('Network response was not ok. Status: ' + response.status);
-                                                        }
-                                                        return response.json();
-                                                    })
-                                                    .then(data => {
-                                                        console.log(data.message);
-                                                        // Optionally refresh the table or update the UI
-                                                    })
-                                                    .catch(error => {
-                                                        console.error('There was a problem with the fetch operation:', error);
-                                                    });
-                                        }
+//                                        function acceptBooking(bookId) {
+//                                            console.log("Accepting booking ID:", bookId); // Debugging line
+//
+//                                            if (!bookId) {
+//                                                console.error('No booking ID provided');
+//                                                return;
+//                                            }
+//
+//                                            fetch(`/Project_SWP/bookings?bookId=${bookId}`, {
+//                                                method: 'POST',
+//                                                headers: {
+//                                                    'Content-Type': 'application/json'
+//                                                }
+//                                            })
+//                                                    .then(response => {
+//                                                        if (!response.ok) {
+//                                                            throw new Error('Network response was not ok. Status: ' + response.status);
+//                                                        }
+//                                                        return response.json();
+//                                                    })
+//                                                    .then(data => {
+//                                                        console.log(data.message);
+//                                                        // Optionally refresh the table or update the UI
+//                                                    })
+//                                                    .catch(error => {
+//                                                        console.error('There was a problem with the fetch operation:', error);
+//                                                    });
+//                                        }
 
 
                                         function refreshPage() {
