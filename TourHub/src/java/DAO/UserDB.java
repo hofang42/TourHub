@@ -121,6 +121,15 @@ public class UserDB implements DatabaseInfo {
         }
         return false;
     }
+     public void updateUserStatusToVerified(String email) {
+        String sql = "UPDATE users SET userStatus = 'verified' WHERE email = ?";
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
     //Kiem tra email co trong database hay la khong
     public boolean checkEmailExists(String email) {
