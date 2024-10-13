@@ -108,8 +108,9 @@ public class ProviderChartServlet extends HttpServlet {
 // Build the JSON response
         StringBuilder jsonResponse = new StringBuilder();
         jsonResponse.append("{");
-        jsonResponse.append("\"monthlyBookings\": [");
 
+// Append monthly bookings
+        jsonResponse.append("\"monthlyBookings\": [");
         if (monthlyBookings.isEmpty()) {
             jsonResponse.append("],"); // Empty array case
         } else {
@@ -134,61 +135,31 @@ public class ProviderChartServlet extends HttpServlet {
             jsonResponse.append(String.format("{\"month\": %d, \"profit\": %.2f},", month + 1, monthlyProfitsLastYear[month]));
         }
         jsonResponse.setLength(jsonResponse.length() - 1); // Remove the last comma
-        jsonResponse.append("]"); // Close monthlyProfitsLastYear array
+        jsonResponse.append("],"); // Close monthlyProfitsLastYear array
 
+// Fetch hot destinations (assuming you have already done this)
+        List<Map<String, Object>> hotDestinations = bookDB.getHotDestination(companyId);
+
+// Prepare data for hot destinations
+        List<String> categoryLabels = new ArrayList<>();
+        List<Integer> categoryData = new ArrayList<>();
+
+        if (hotDestinations != null && !hotDestinations.isEmpty()) {
+            for (Map<String, Object> destination : hotDestinations) {
+                String location = (String) destination.getOrDefault("location", "Unknown");
+                int count = (Integer) destination.getOrDefault("count", 0);
+                categoryLabels.add(location);
+                categoryData.add(count);
+            }
+        }
+
+// Append hot destination data to the JSON response
+        jsonResponse.append("\"categoryLabels\": ").append(new Gson().toJson(categoryLabels)).append(",");
+        jsonResponse.append("\"categoryData\": ").append(new Gson().toJson(categoryData));
+
+// Close the JSON object
         jsonResponse.append("}");
 
-//        BookingDB bookingDB = new BookingDB();
-//        // Fetch hot destinations from the database
-//        List<Map<String, Object>> hotDestinations = bookingDB.getHotDestination(companyId);
-//
-//// Initialize categoryLabels and categoryData lists
-//        List<String> categoryLabels = new ArrayList<>();
-//        List<Integer> categoryData = new ArrayList<>();
-//
-//// Populate the lists from hotDestinations
-//        if (hotDestinations != null && !hotDestinations.isEmpty()) {
-//            for (Map<String, Object> destination : hotDestinations) {
-//                String location = (String) destination.getOrDefault("location", "Unknown");
-//                int count = (Integer) destination.getOrDefault("count", 0);
-//                categoryLabels.add(location);
-//                categoryData.add(count);
-//            }
-//        }
-//
-//// Construct the JSON response
-//        jsonResponse.append("{");
-//
-//// Check if categoryLabels and categoryData are not empty before adding to JSON
-//        boolean hasCategories = !categoryLabels.isEmpty() || !categoryData.isEmpty();
-//        if (hasCategories) {
-//            // Append categoryLabels array
-//            jsonResponse.append("\"categoryLabels\": [");
-//            for (int i = 0; i < categoryLabels.size(); i++) {
-//                jsonResponse.append(String.format("\"%s\"", categoryLabels.get(i)));
-//                if (i < categoryLabels.size() - 1) {
-//                    jsonResponse.append(","); // Add comma except for the last element
-//                }
-//            }
-//            jsonResponse.append("],"); // Close categoryLabels array
-//
-//            // Append categoryData array
-//            jsonResponse.append("\"categoryData\": [");
-//            for (int i = 0; i < categoryData.size(); i++) {
-//                jsonResponse.append(categoryData.get(i));
-//                if (i < categoryData.size() - 1) {
-//                    jsonResponse.append(","); // Add comma except for the last element
-//                }
-//            }
-//            jsonResponse.append("]"); // Close categoryData array
-//        } else {
-//            // If both lists are empty, add empty arrays without trailing commas
-//            jsonResponse.append("\"categoryLabels\": [],");
-//            jsonResponse.append("\"categoryData\": []");
-//        }
-//
-//// Close the overall JSON object
-//        jsonResponse.append("}");
 // Send the JSON response to the client        
         PrintWriter out = response.getWriter();
         out.print(jsonResponse.toString());

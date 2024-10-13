@@ -430,34 +430,34 @@
                                             sortDirection[columnIndex] = !isAscending;
                                         }
 
-                                        function acceptBooking(bookId) {
-                                            console.log("Accepting booking ID:", bookId); // Debugging line
-
-                                            if (!bookId) {
-                                                console.error('No booking ID provided');
-                                                return;
-                                            }
-
-                                            fetch(`/Project_SWP/bookings?bookId=${bookId}`, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                }
-                                            })
-                                                    .then(response => {
-                                                        if (!response.ok) {
-                                                            throw new Error('Network response was not ok. Status: ' + response.status);
-                                                        }
-                                                        return response.json();
-                                                    })
-                                                    .then(data => {
-                                                        console.log(data.message);
-                                                        // Optionally refresh the table or update the UI
-                                                    })
-                                                    .catch(error => {
-                                                        console.error('There was a problem with the fetch operation:', error);
-                                                    });
-                                        }
+//                                        function acceptBooking(bookId) {
+//                                            console.log("Accepting booking ID:", bookId); // Debugging line
+//
+//                                            if (!bookId) {
+//                                                console.error('No booking ID provided');
+//                                                return;
+//                                            }
+//
+//                                            fetch(`/Project_SWP/bookings?bookId=${bookId}`, {
+//                                                method: 'POST',
+//                                                headers: {
+//                                                    'Content-Type': 'application/json'
+//                                                }
+//                                            })
+//                                                    .then(response => {
+//                                                        if (!response.ok) {
+//                                                            throw new Error('Network response was not ok. Status: ' + response.status);
+//                                                        }
+//                                                        return response.json();
+//                                                    })
+//                                                    .then(data => {
+//                                                        console.log(data.message);
+//                                                        // Optionally refresh the table or update the UI
+//                                                    })
+//                                                    .catch(error => {
+//                                                        console.error('There was a problem with the fetch operation:', error);
+//                                                    });
+//                                        }
 
 
                                         function refreshPage() {

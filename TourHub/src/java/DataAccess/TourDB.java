@@ -380,6 +380,23 @@ public class TourDB implements DatabaseInfo {
         return false;
     }
 
+    public boolean setTourStatusToActive(String tourId) {
+        String sql = "UPDATE Tour SET tour_Status = 'Active' WHERE tour_Id = ?";
+
+        try (Connection conn = getConnect(); // Assuming you have a method to get DB connection
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, tourId); // Set the tourId for which you want to hide the tour
+            int affectedRows = pstmt.executeUpdate();
+
+            return affectedRows > 0 ? true : false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
 
         System.out.println(new TourDB().getTotalProfit(2));

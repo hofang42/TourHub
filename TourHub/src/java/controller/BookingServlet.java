@@ -68,7 +68,7 @@ public class BookingServlet extends HttpServlet {
         User currentUser = (User) request.getSession().getAttribute("currentUser");
 
         if (currentUser == null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("/home");
             return;
         } else {
             System.out.println("Current User ID: " + currentUser.getUser_Id());

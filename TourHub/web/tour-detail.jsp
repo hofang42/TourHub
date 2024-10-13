@@ -298,7 +298,7 @@
             <div class="content flex">
                 <div class="tour-gallery">
                     <div class="image-highlight">
-                        <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 1">
+                        <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 1">
                         <a href="javascript:void(0)" onclick="toggle('popup1')">
                             <div class="img-viewmore">
                                 <h3>
@@ -311,7 +311,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-1">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 2">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 2">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -325,7 +325,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-2">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 3">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 3">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -339,7 +339,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-3">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 4">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 4">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -353,7 +353,7 @@
 
                     <c:if test="${not empty tour.tour_Img[0]}">
                         <div class="image-4">
-                            <img class="tour-img" src="${tour.tour_Img.get(0)}" alt="Tour Image 5">
+                            <img class="tour-img" src="assests/images/tour-images/${tour.tour_Img.get(0)}" alt="Tour Image 5">
                             <a href="javascript:void(0)" onclick="toggle('popup1')">
                                 <div class="img-viewmore">
                                     <h3>
@@ -579,7 +579,7 @@
                     </c:forEach>
                 </div>
                 <div class="carousel-inner">
-                    <c:forEach var="image" items="${tour.tour_Img}">
+                    <c:forEach var="image" items="assests/images/tour-images/${tour.tour_Img}">
                         <div class="carousel-item ${image eq tour.tour_Img[0] ? 'active' : ''}">
                             <img src="${image}" class="carousel-img d-block w-100" alt="...">
                         </div>

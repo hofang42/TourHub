@@ -70,7 +70,7 @@ public class DisplayAllServlet extends HttpServlet {
 
         // Get the location or search query from the request
         String location = request.getParameter("location");
-        String searchQuery = request.getParameter("query"); // Using 'query' for consistency
+        String searchQuery = request.getParameter("querry"); // Using 'query' for consistency
         if (location == null || location.isEmpty()) {
             location = "All";  // Default to "All"
         }

@@ -214,8 +214,8 @@
                                         </div>
 
                                         <div class="right-chart">
-                                            <canvas id="circleChart"></canvas>
                                             <div>
+                                                <canvas id="circleChart"  width="500" height="500"></canvas>
                                                 <small class="chart-label">Hot Destination</small>
                                             </div>
                                         </div>
@@ -272,7 +272,60 @@
                     }
                 });
             }
+
         </script>
+        <script>
+//            // Function to fetch data from the server
+            async function fetchHotDestinations() {
+                try {
+                    const response = await fetch('/Project_SWP/charts'); // Update with the correct URL to your servlet
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+
+                    const data = await response.json();
+
+                    // Extract category labels and data from the JSON response
+                    const categoryLabels = data.categoryLabels;
+                    const categoryData = data.categoryData;
+
+                    console.log(categoryLabels);
+                    console.log(categoryData);
+
+                    // Render the chart
+                    var hotDestinationsChart = new Chart(document.getElementById('circleChart').getContext('2d'), {
+                        type: 'pie',
+                        data: {
+                            labels: categoryLabels,
+                            datasets: [{
+                                    label: 'Số lượng đặt tour theo vùng',
+                                    data: categoryData,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.6)',
+                                        'rgba(54, 162, 235, 0.6)',
+                                        'rgba(255, 206, 86, 0.6)',
+                                        'rgba(75, 192, 192, 0.6)',
+                                        'rgba(153, 102, 255, 0.6)',
+                                        'rgba(255, 159, 64, 0.6)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                        },
+                        options: {
+                            responsive: true,
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('There has been a problem with your fetch operation:', error);
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                fetchHotDestinations();
+            });
+
+        </script>
+
         <script src="assests/js/ProviderChart.js"></script>
         <script src="dist/js/theme.min.js"></script>
     </body>
