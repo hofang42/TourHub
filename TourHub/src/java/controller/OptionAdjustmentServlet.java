@@ -6,7 +6,6 @@
 package controller;
 
 import DataAccess.KhanhDB;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,15 +13,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-import model.Tour;
 import model.TourOption;
+import model.TourPeople;
+import java.util.List;
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name="TourDetailServlet", urlPatterns={"/displayTourDetail"})
-public class TourDetailServlet extends HttpServlet {
+@WebServlet(name="OptionAdjustmentServlet", urlPatterns={"/optionAdjustment"})
+public class OptionAdjustmentServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +38,10 @@ public class TourDetailServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet TourDetailServlet</title>");  
+            out.println("<title>Servlet OptionAdjustmentServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TourDetailServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet OptionAdjustmentServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,20 +58,19 @@ public class TourDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String rawTourId = request.getParameter("id");
         KhanhDB u = new KhanhDB();
-
-        // Lấy thông tin tour
-        Tour tour = u.getTourById(rawTourId);
-        request.setAttribute("tour", tour);
-
-        // Lấy danh sách TourOption
-        List<TourOption> tourOptions = u.getAllTourOptionsByTourId(rawTourId);
-        request.setAttribute("tourOptions", tourOptions); // Thêm tourOptions vào request
-
-        // Chuyển tiếp đến trang JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/tour-detail.jsp");
-        dispatcher.forward(request, response);
+        String optionIdRaw = request.getParameter("id");
+        
+        int optionId = Integer.parseInt(optionIdRaw);
+        
+        TourOption option = u.getTourOptionById(optionId);
+        
+        List<TourPeople> peopleList = u.getTourPeopleByOptionId(optionId);
+        
+        request.setAttribute("option", option);
+        request.setAttribute("peopleList", peopleList);
+        
+        request.getRequestDispatcher("/option-adjustment.jsp").forward(request, response);
     } 
 
     /** 
