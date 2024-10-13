@@ -159,7 +159,7 @@ uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
                             <tr>
                               <td>${booking.book_Id}</td>
                               <td>${booking.tour_Name}</td>
-                              <td>${booking.book_Date}</td>
+                              <td>${booking.created_At}</td>
                               <td>${booking.slot_Order}</td>
                               <td>${booking.total_Cost}</td>
                               <td>${booking.book_Status}</td>

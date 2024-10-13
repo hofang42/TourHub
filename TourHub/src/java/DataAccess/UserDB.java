@@ -188,6 +188,33 @@ public class UserDB implements DatabaseInfo {
         }
         return null;
     }
+    
+    public List<User> getAllUsersNotAdmin() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [User] WHERE role = 'Provider' OR role = 'Customer'";
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                user.setUser_Id(resultSet.getInt("user_Id"));
+                user.setPassword(resultSet.getString("password"));
+                user.setFirst_Name(resultSet.getString("first_Name"));
+                user.setLast_Name(resultSet.getString("last_Name"));
+                user.setPhone(resultSet.getString("phone"));
+                user.setEmail(resultSet.getString("email"));
+                user.setAddress(resultSet.getString("address"));
+                user.setCreated_At(resultSet.getDate("created_At"));
+                user.setUser_Status(resultSet.getString("user_Status"));
+                user.setRole(resultSet.getString("role"));
+                users.add(user);
+            }
+            System.out.println(users);
+            return users;
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     public User getUser(int user_Id) {
         User user = null;
@@ -326,11 +353,6 @@ public class UserDB implements DatabaseInfo {
         }
 
         return false;
-    }
-
-    public User getUserFromSession(HttpSession session, HttpServletRequest request) {
-        User user = (User) session.getAttribute("currentUser");
-        return user; // or throw an exception if user not found
     }
 
     

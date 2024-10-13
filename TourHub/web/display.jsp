@@ -14,6 +14,9 @@
         <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
         <!-- My CSS -->
         <link rel="stylesheet" href="assests/css/style_profile.css">  
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+        <!-- Toasify JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
 
         <style>
             .order .head {
@@ -49,6 +52,77 @@
                 transform: translateY(-5px);
                 cursor: pointer;
             }
+
+            /* Style cho bảng */
+            /* Style cho bảng */
+            table {
+                width: 100%; /* Chiếm toàn bộ chiều rộng */
+                border-collapse: collapse; /* Loại bỏ khoảng cách giữa các ô */
+                font-family: Arial, sans-serif;
+                margin-bottom: 20px; /* Khoảng cách dưới bảng */
+            }
+
+            /* Style cho tiêu đề bảng */
+            thead th {
+                background-color: #4CAF50; /* Màu nền cho tiêu đề */
+                color: white; /* Màu chữ trắng */
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: bold;
+                border: 1px solid #ddd;
+            }
+
+            /* Style cho các hàng trong bảng */
+            tbody td {
+                padding: 10px 15px; /* Khoảng cách bên trong các ô */
+                border: 1px solid #ddd; /* Đường viền */
+                text-align: center; /* Căn giữa */
+                vertical-align: middle; /* Canh giữa dọc */
+                background-color: #f9f9f9; /* Màu nền sáng hơn cho nội dung */
+            }
+
+            /* Hiệu ứng hover cho hàng */
+            tbody tr:hover {
+                background-color: #f1f1f1; /* Thay đổi màu nền khi hover */
+            }
+
+            /* Container cho các nút hành động */
+            .action-container {
+                display: flex; /* Sử dụng flexbox để căn giữa */
+                justify-content: center; /* Căn giữa các nút */
+            }
+
+            /* Style cho các nút hành động */
+            a.action-link {
+                display: inline-block;
+                padding: 8px 12px;
+                text-decoration: none;
+                color: white;
+                border-radius: 5px;
+                margin: 0 5px; /* Khoảng cách giữa các nút */
+                transition: background-color 0.3s ease;
+                font-size: 14px;
+            }
+
+            /* Nút Approve */
+            a.approve {
+                background-color: #28a745; /* Màu xanh lá */
+            }
+
+            a.approve:hover {
+                background-color: #218838; /* Màu xanh đậm hơn khi hover */
+            }
+
+            /* Nút Cancel */
+            a.cancel {
+                background-color: #dc3545; /* Màu đỏ */
+            }
+
+            a.cancel:hover {
+                background-color: #c82333; /* Màu đỏ đậm hơn khi hover */
+            }
+
+
 
             /* Responsive styles */
             @media (max-width: 768px) {
@@ -141,17 +215,24 @@
                                             <th>User ID</th>
                                             <th>Username</th>
                                             <th>Email</th>
+                                            <th>User Status</th>
+                                            <th>Role</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <c:forEach var="user" items="${data}">
                                             <tr>
-                                                <td>${user.userId}</td>
-                                                <td>${user.firstName} ${user.lastName}</td>
+                                                <td>${user.user_Id}</td>
+                                                <td>${user.first_Name} ${user.last_Name}</td>
                                                 <td>${user.email}</td>
+                                                <td>${user.user_Status}</td>
+                                                <td>${user.role}</td>
                                                 <td>
-                                                    <a href="deleteUser?id=${user.userId}">Ban</a>
+                                                    <div class="action-container">
+                                                        <a href="manage?action=user-ban&id=${user.user_Id}" class="action-link cancel">Ban</a>
+                                                        <a href="manage?action=user-unban&id=${user.user_Id}" class="action-link approve">UnBan</a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -170,6 +251,7 @@
                                             <th>Start Date</th>
                                             <th>End Date</th>
                                             <th>Price</th>
+                                            <th>Tour Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -182,9 +264,12 @@
                                                 <td>${tour.start_Date}</td>
                                                 <td>${tour.end_Date}</td>
                                                 <td>${tour.price}</td>
+                                                <td>${tour.tour_Status}</td>
                                                 <td>
-                                                    <a href="editTour.jsp?id=${tour.tour_Id}">Approve</a>
-                                                    <a href="deleteTour?id=${tour.tour_Id}">Delete</a>
+                                                    <div class="action-container">
+                                                        <a href="manage?action=approve-tour&id=${tour.tour_Id}" class="action-link approve">Approve</a>
+                                                        <a href="manage?action=cancel-tour&id=${tour.tour_Id}" class="action-link cancel">Cancel</a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -212,7 +297,9 @@
                                                 <td>${report.report_Details}</td>
                                                 <td>${report.report_Date}</td>
                                                 <td>
-                                                    <a href="deleteReport?id=${report.report_Id}">Delete</a>
+                                                    <div class="action-container">
+                                                        <a href="manage?action=delete-report&id=${report.report_Id}" class="action-link approve">Delete</a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -238,7 +325,7 @@
                                                 <td>${booking.book_Id}</td>
                                                 <td>${booking.cus_Id}</td>
                                                 <td>${booking.tour_Id}</td>
-                                                <td>${booking.book_Date}</td>
+                                                <td>${booking.created_At}</td>
                                                 <td>
                                                     <a href="editBooking.jsp?id=${booking.book_Id}">Approve</a>
                                                 </td>
@@ -255,6 +342,23 @@
         </section>
         <!-- CONTENT -->
         <script src="assests/js/script_profile.js"></script>
+        <script>
+            window.onload = function () {
+                const message = '${message}';
+                if (message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // Thời gian hiển thị (3 giây)
+                        gravity: "top", // Vị trí hiển thị (top/bottom)
+                        position: 'right', // Vị trí bên trái/bên phải
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Màu nền
+                    }).showToast();
+
+                    // Xóa message sau khi đã hiển thị
+            <c:remove var="message" />
+                }
+            };
+        </script>
     </body>
 </html>
 

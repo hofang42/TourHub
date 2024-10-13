@@ -88,7 +88,6 @@ public class UserServlet extends HttpServlet {
 
     private void handleUpdate(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy thông tin từ form
         int userId = Integer.parseInt(request.getParameter("userId"));
         String rawPassword = request.getParameter("password");
         String email = request.getParameter("email");
@@ -97,6 +96,7 @@ public class UserServlet extends HttpServlet {
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
         String role = request.getParameter("role");
+        System.out.println(firstName + lastName);
         // Tạo một đối tượng User
         String hashedPassword = Encrypt.toSHA256(rawPassword);
         User user = new User(userId, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", role, null);

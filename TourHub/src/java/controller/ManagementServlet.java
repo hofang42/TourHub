@@ -6,6 +6,7 @@ package controller;
 
 import DataAccess.BookingDB;
 import DataAccess.ReportErrorDB;
+import DataAccess.ThienDB;
 import DataAccess.TourDB;
 import DataAccess.UserDB;
 import jakarta.servlet.ServletException;
@@ -31,31 +32,41 @@ public class ManagementServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ReportErrorDB reportErrorDB = new ReportErrorDB();
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        // Sử dụng switch-case để xử lý các loại yêu cầu khác nhau
         switch (action) {
             case "user-manage":
                 viewUserList(request, response);
                 break;
 
+            case "user-ban":
+                userManage(request, response);
+                break;
+
+            case "user-unban":
+                userManage(request, response);
+                break;
+
             case "tour-manage":
                 viewTourList(request, response);
+                break;
+                
+            case "approve-tour":
+                tourManage(request, response);
+                break;
+
+            case "cancel-tour":
+                tourManage(request, response);
                 break;
 
             case "report-manage":
                 viewReportList(request, response);
+                break;
+
+            case "delete-report":
+                reportManage(request, response);
                 break;
 
             case "booking-manage":
@@ -71,11 +82,32 @@ public class ManagementServlet extends HttpServlet {
     protected void viewUserList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserDB user = new UserDB();
-        List<User> userList = user.getAllUsers();
+        List<User> userList = user.getAllUsersNotAdmin();
         request.setAttribute("data", userList);
         request.setAttribute("type", "user");
         System.out.println("Day là" + userList);
         request.getRequestDispatcher("display.jsp").forward(request, response);
+    }
+
+    protected void userManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+        int userId = Integer.parseInt(request.getParameter("id"));
+
+        ThienDB userDAO = new ThienDB();
+        try {
+            if ("user-ban".equals(action)) {
+                userDAO.banAccount(userId);
+                request.getSession().setAttribute("message", "Account banned successfully!");
+            } else if ("user-unban".equals(action)) {
+                userDAO.unbanAccount(userId);
+                request.getSession().setAttribute("message", "Account unbanned successfully!");
+            }
+            response.sendRedirect("manage?action=user-manage");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
 
     protected void viewTourList(HttpServletRequest request, HttpServletResponse response)
@@ -87,6 +119,28 @@ public class ManagementServlet extends HttpServlet {
         System.out.println("Day là" + tourList);
         request.getRequestDispatcher("display.jsp").forward(request, response);
     }
+    
+    protected void tourManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+        String tourId = request.getParameter("id");
+        System.out.println(action);
+
+        ThienDB tourDAO = new ThienDB();
+        try {
+            if ("approve-tour".equals(action)) {
+                tourDAO.approveTour(tourId);
+                request.getSession().setAttribute("message", "Tour approved successfully!");
+            } else if ("cancel-tour".equals(action)) {
+                tourDAO.cancelTour(tourId);
+                request.getSession().setAttribute("message", "Tour cancelled successfully!");
+            }
+            response.sendRedirect("manage?action=tour-manage");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
 
     protected void viewReportList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -96,6 +150,25 @@ public class ManagementServlet extends HttpServlet {
         request.setAttribute("type", "report");
         System.out.println("Day là" + reportList);
         request.getRequestDispatcher("display.jsp").forward(request, response);
+    }
+
+    protected void reportManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if ("delete-report".equals(action)) {
+            int reportId = Integer.parseInt(request.getParameter("id"));
+
+            ThienDB reportDAO = new ThienDB();
+            try {
+                reportDAO.deleteReport(reportId);
+                request.getSession().setAttribute("message", "Report deleted successfully!");
+                response.sendRedirect("manage?action=report-manage");
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("error.jsp");
+            }
+        }
     }
 
     protected void viewBookingList(HttpServletRequest request, HttpServletResponse response)
@@ -114,28 +187,12 @@ public class ManagementServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-//        private String viewTours
-//            //View, Delete, Approve before publish
-//        Users
-//            //Ban -> View ban -> unban
-    //Bill data nên để thống kê 
-    // Discount của provider 
-    // Wishlist của user 
-    //Review ( Comment ) AI suggestion ?
     @Override
     public String getServletInfo() {
         return "Short description";
