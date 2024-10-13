@@ -5,24 +5,22 @@
 
 package controller;
 
-import DataAccess.KhanhDB;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-import model.Tour;
-import model.TourOption;
+import model.User;
+
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name="TourDetailServlet", urlPatterns={"/displayTourDetail"})
-public class TourDetailServlet extends HttpServlet {
+@WebServlet(name="CheckLoginServlet", urlPatterns={"/CheckLogin"})
+public class CheckLoginServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +37,10 @@ public class TourDetailServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet TourDetailServlet</title>");  
+            out.println("<title>Servlet CheckLoginServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TourDetailServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CheckLoginServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,20 +57,18 @@ public class TourDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String rawTourId = request.getParameter("id");
-        KhanhDB u = new KhanhDB();
+        HttpSession session = request.getSession(false); // Lấy session hiện tại (không tạo mới)
+        User currentUser = (User) session.getAttribute("currentUser");
 
-        // Lấy thông tin tour
-        Tour tour = u.getTourById(rawTourId);
-        request.setAttribute("tour", tour);
-
-        // Lấy danh sách TourOption
-        List<TourOption> tourOptions = u.getAllTourOptionsByTourId(rawTourId);
-        request.setAttribute("tourOptions", tourOptions); // Thêm tourOptions vào request
-
-        // Chuyển tiếp đến trang JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/tour-detail.jsp");
-        dispatcher.forward(request, response);
+        // Trả về JSON để thông báo người dùng có đăng nhập hay không
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        if (currentUser != null) {
+            out.print("{\"loggedIn\": true}");
+        } else {
+            out.print("{\"loggedIn\": false}");
+        }
+        out.flush();
     } 
 
     /** 
