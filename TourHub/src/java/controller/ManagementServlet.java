@@ -71,7 +71,7 @@ public class ManagementServlet extends HttpServlet {
     protected void viewUserList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserDB user = new UserDB();
-        List<User> userList = user.getAllUsers();
+        List<User> userList = user.getAllUsersExceptAdmin();
         request.setAttribute("data", userList);
         request.setAttribute("type", "user");
         System.out.println("Day là" + userList);

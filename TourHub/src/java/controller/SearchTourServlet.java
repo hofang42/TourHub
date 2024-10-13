@@ -4,9 +4,6 @@
  */
 package controller;
 
-import DataAccess.TourDB;
-import DataAccess.UserDB;
-import DataAccess.hoang_UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,17 +11,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import model.Tour;
+import java.text.Normalizer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author hoang
  */
-@WebServlet(name = "HiddenTourServlet", urlPatterns = {"/hidden-tour"})
-public class HiddenTourServlet extends HttpServlet {
+@WebServlet(name = "SearchTourServlet", urlPatterns = {"/search"})
+public class SearchTourServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +40,10 @@ public class HiddenTourServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DeleteTourServlet</title>");
+            out.println("<title>Servlet SearchTourServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DeleteTourServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SearchTourServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,11 +61,20 @@ public class HiddenTourServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String tourId = request.getParameter("tourId");
-        TourDB tourDB = new TourDB();
-        String errorMessage = tourDB.setTourStatusToHidden(tourId) ? "Hidden Successfully" : "Hidden Fail";
-        request.setAttribute("errorMessage", errorMessage);
-        request.getRequestDispatcher("mytour.jsp").forward(request, response);
+        // Get the search query from the request parameters
+        String searchQuerry = request.getParameter("querry");
+        // Optional: Trim the search query to remove leading/trailing whitespace
+        if (searchQuerry != null) {
+            searchQuerry = searchQuerry.trim();
+
+        }
+
+        // Set the search query as a request attribute to be accessed later
+        request.setAttribute("querry", searchQuerry); // Corrected "querry" to "query"
+
+        // Forward the request to the "allTour" servlet or JSP page
+        // Ensure the path is correct based on your application structure
+        request.getRequestDispatcher("allTour").forward(request, response);
     }
 
     /**
@@ -93,6 +99,5 @@ public class HiddenTourServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }

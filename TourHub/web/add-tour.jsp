@@ -161,7 +161,7 @@
                 <div class="table-data">
                     <div class="order">
                         <h3 class="head">Add Tour</h3>
-                        <form action="addtour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
+                        <form action="provider-management?action=add-tour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
                             <div class="form-group">
                                 <label for="tour_Name">Tour Name:</label>
                                 <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" required>

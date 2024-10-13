@@ -39,8 +39,8 @@ public class ReviewDB implements DatabaseInfo {
         }
         return null;
     }
-    
-        public static boolean addReview(String comment, int ratingStar, int cusID, String tourId) {
+
+    public static boolean addReview(String comment, int ratingStar, int cusID, String tourId) {
         String sql = "INSERT INTO Review (comment, rating_Star, cus_Id, tour_Id) VALUES (?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, comment);
@@ -154,4 +154,37 @@ public class ReviewDB implements DatabaseInfo {
 
         return imageUrl != null ? imageUrl : "assests/images/default-tour.jpg";
     }
+
+    public List<Review> getReviewsByTourId(String tourId) {
+        List<Review> reviews = new ArrayList<>();
+
+        // Kiểm tra nếu tourId không hợp lệ
+        if (tourId == null || tourId.isEmpty()) {
+            return reviews;  // Trả về danh sách rỗng nếu tourId không hợp lệ
+        }
+
+        String sql = "SELECT * FROM Review WHERE tour_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tourId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Review review = new Review();
+                    review.setComment(rs.getString("comment"));
+                    review.setRating_Star(rs.getInt("rating_Star"));
+                    review.setUser_Id(rs.getInt("user_Id"));
+
+                    review.setTour_Id(rs.getString("tour_Id"));
+                    reviews.add(review);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Thay thế bằng logging trong production
+        }
+
+        System.out.println("Danh sách review: " + reviews);  // In ra danh sách review để debug
+        return reviews;
+    }
+
 }

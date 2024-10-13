@@ -49,38 +49,43 @@ document.addEventListener("DOMContentLoaded", function () {
         inputBox.onkeyup = function () {
             let result = [];
             let input = inputBox.value.trim();
+
             if (input.length) {
                 resultBox.style.display = 'block';
-                result = tours.filter(tour => {
-                    const normalizedInput = removeDiacritics(input.toLowerCase()).trim();
-                    console.log(tours);
-                    // Ensure tourName exists and is a string before trying to normalize it
-                    if (tour.tour_Name && typeof tour.tour_Name === 'string') {
-                        const normalizedTourName = removeDiacritics(tour.tour_Name.toLowerCase());
-                        const inputWords = normalizedInput.split("").filter(word => word !== "");
-                        return inputWords.every(word => normalizedTourName.includes(word));
-                    }
 
-                    // If tourName is not defined or not a string, exclude this tour
+                // Normalize the input string
+                const normalizedInput = removeDiacritics(input.toLowerCase()).trim();
+                const inputWords = normalizedInput.split(" ").filter(word => word !== "");
+
+                // Helper function to match input with tour name or location
+                function matchNormalizedField(field) {
+                    if (field && typeof field === 'string') {
+                        const normalizedField = removeDiacritics(field.toLowerCase());
+                        return inputWords.every(word => normalizedField.includes(word));
+                    }
                     return false;
-                });
+                }
+
+                // Filter tours by matching against tour name or location
+                result = tours.filter(tour => matchNormalizedField(tour.location) || matchNormalizedField(tour.tour_Name));
             } else {
-                resultBox.innerHTML = '';
                 resultBox.style.display = 'none';
             }
-            displaySearchs(result);
+
+            displaySearchs(result); // Update the UI with the filtered results
         };
     }
 });
 
 
 
+
 function displaySearchs(result) {
     if (result.length > 0) {
         const content = result.map(item => {
-            return `<li onclick="selectInput(this)" style="display: flex; align-items: center; margin-bottom: 10px;">
+            return `<li onclick="selectInput(${item.tour_Id})" style="display: flex; align-items: center; margin-bottom: 10px;">
                         <div style="flex-shrink: 0;">
-                            <img src="${item.tour_Img}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
+                            <img src="assests/images/tour-images/${item.tour_Img}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
                         </div>
                         <span style="margin-left: 15px; font-size: 18px;">${item.tour_Name}</span>
                     </li>`;
@@ -96,18 +101,21 @@ function displaySearchs(result) {
 function displayTours(city) {
     // Filter tours based on the selected city
     const filteredTours = tours.filter(tour =>
-        tour.tourName.toLowerCase().includes(city.toLowerCase())
+        tour.location.toLowerCase().includes(city.toLowerCase())
     );
+
     const cityList = document.querySelector('.row.row-50');
+
     // Clear the existing list
     cityList.innerHTML = '';
     if (filteredTours.length === 0) {
         cityList.innerHTML = 'No tours found for the selected city.';
         return;
     }
-
+    console.log(filteredTours);
     // Display filtered tours
     filteredTours.forEach(tour => {
+        console.log(tour.tour_Name, tour.tour_Img, tour.price, tour.total_Time);
         // Create the column div and set its classes
         const colDiv = document.createElement('div');
         colDiv.classList.add('col-md-6', 'col-xl-4');
@@ -124,8 +132,8 @@ function displayTours(city) {
         const figure = document.createElement('figure');
         figure.classList.add('event-default-image');
         const img = document.createElement('img');
-        img.src = tour.tourImg;
-        img.alt = tour.tourName;
+        img.src = "assests/images/tour-images/" + tour.tour_Img;
+        img.alt = tour.tour_Name;
         img.width = 570;
         img.height = 370;
         figure.appendChild(img);
@@ -137,13 +145,24 @@ function displayTours(city) {
         const captionDiv = document.createElement('div');
         captionDiv.classList.add('event-default-caption');
 
-        // Create the "Learn more" button, set its properties, and append it to the caption div
+        // Create the "Learn more" button
         const learnMoreBtn = document.createElement('a');
+
+// Add classes to style the button
         learnMoreBtn.classList.add('button', 'button-xs', 'button-secondary', 'button-nina', 'tour-visit-count');
-        learnMoreBtn.href = "#";
+
+// Set the href attribute to link to the detailed tour page, passing the tourId
+        learnMoreBtn.href = `SearchTourByIdServlet?tourId=${tour.tour_Id}`;
+
+// Set the button text
         learnMoreBtn.textContent = "Learn more";
-        learnMoreBtn.setAttribute('data-id', tour.tourId);
+
+// Optionally, store the tour ID as a data attribute (useful for tracking or event handling)
+        learnMoreBtn.setAttribute('data-id', tour.tour_Id);
+
+// Append the "Learn more" button to the caption div
         captionDiv.appendChild(learnMoreBtn);
+
 
         // Append the caption div to the event default div
         eventDefault.appendChild(captionDiv);
@@ -162,8 +181,8 @@ function displayTours(city) {
         const tourName = document.createElement('h5');
         const tourLink = document.createElement('a');
         tourLink.classList.add('event-default-title');
-        tourLink.href = "#";
-        tourLink.textContent = tour.tourName;
+        tourLink.href = `SearchTourByIdServlet?tourId=${tour.tour_Id}`; // Redirect to the detail page
+        tourLink.textContent = tour.tour_Name;
         tourName.appendChild(tourLink);
 
         // Append the tour name to the tour info div
@@ -181,7 +200,7 @@ function displayTours(city) {
         // Create the total time div, set its content, and append it to the event default inner div
         const totalTimeDiv = document.createElement('div');
         totalTimeDiv.classList.add('heading-6');
-        totalTimeDiv.textContent = tour.totalTime;
+        totalTimeDiv.textContent = tour.total_Time;
         eventDefaultInner.appendChild(totalTimeDiv);
 
         // Append the inner div to the article element
@@ -194,9 +213,10 @@ function displayTours(city) {
         cityList.appendChild(colDiv);
     });
 }
+
 // Event listener to load tours for "Phú Quốc" automatically
 document.addEventListener('DOMContentLoaded', function () {
-    displayTours("Phú Quốc");
+    displayTours("Phu Quoc");
     // Add event listeners to buttons
     document.querySelectorAll('button[city]').forEach(button => {
         button.addEventListener('click', function () {
@@ -216,26 +236,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Get the search container element
     const searchContainer = document.querySelector(".search-container");
-    searchContainer.style.display = 'none';
+    searchContainer.style.display = 'none'; // Initially hide the search container
+
     // Add an event listener to the input field to detect user input
     searchInput.addEventListener('input', function () {
-        const input = searchInput.value.trim();  // Trim the input to remove extra spaces
+        const input = searchInput.value.trim(); // Trim the input to remove extra spaces
         console.log(input);
 
         // Check if the trimmed input is non-empty
         if (input.length > 0) {
-            userInput.innerText = `"` + input + `"`;  // Update search keyword
-            searchContainer.style.display = 'flex';    // Show element if input exists
+            userInput.innerText = `"${input}"`; // Update search keyword dynamically
+            searchContainer.style.display = 'flex'; // Show element if input exists
         } else {
-            searchContainer.style.display = 'none';      // Hide element if input is empty
+            searchContainer.style.display = 'none'; // Hide element if input is empty
         }
     });
 });
 
-function selectInput(list) {
-    inputBox.value = list.innerText;
-    resultBox.innerHTML = '';
-    resultBox.style.display = 'none';
+function selectInput(tourId) {
+    // Redirect to the SearchTourByIdServlet with the selected tour ID
+    window.location.href = `displayTourDetail?tourId=${encodeURIComponent(tourId)}`;
 }
 
 // Function to toggle dropdown visibility

@@ -59,7 +59,7 @@ public class UserDB implements DatabaseInfo {
     }
 
     public void verifyUser(String email) {
-        String sql = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
+        String sql = "UPDATE [User] SET user_Status = 'Verified' WHERE email = ?";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.executeUpdate();
@@ -150,7 +150,7 @@ public class UserDB implements DatabaseInfo {
     }
 
     public void updateUser_StatusToVerified(String email) {
-        String sql = "UPDATE [User] SET user_Status = 'verified' WHERE email = ?";
+        String sql = "UPDATE [User] SET user_Status = 'Verified' WHERE email = ?";
 
         try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -165,6 +165,33 @@ public class UserDB implements DatabaseInfo {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [User]";
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                user.setUser_Id(resultSet.getInt("user_Id"));
+                user.setPassword(resultSet.getString("password"));
+                user.setFirst_Name(resultSet.getString("first_Name"));
+                user.setLast_Name(resultSet.getString("last_Name"));
+                user.setPhone(resultSet.getString("phone"));
+                user.setEmail(resultSet.getString("email"));
+                user.setAddress(resultSet.getString("address"));
+                user.setCreated_At(resultSet.getDate("created_At"));
+                user.setUser_Status(resultSet.getString("user_Status"));
+                user.setRole(resultSet.getString("role"));
+                users.add(user);
+            }
+            System.out.println(users);
+            return users;
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<User> getAllUsersExceptAdmin() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [User] WHERE (role='Customer' OR role='Provider')";
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
@@ -332,7 +359,5 @@ public class UserDB implements DatabaseInfo {
         User user = (User) session.getAttribute("currentUser");
         return user; // or throw an exception if user not found
     }
-
-    
 
 }
