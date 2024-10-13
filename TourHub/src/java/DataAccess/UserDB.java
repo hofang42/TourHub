@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Company;
+import model.Customer;
 
 import model.Tour;
 import model.TourOption;
@@ -160,8 +162,60 @@ public class UserDB implements DatabaseInfo {
         }
     }
 
+    public void saveCompany(Company company) throws SQLException {
+        String query = "INSERT INTO Company (tax_Code, bank_Information, balance, user_Id) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, company.getTaxCode());
+            stmt.setString(2, company.getBankInformation());
+            stmt.setDouble(3, company.getBalance());
+            stmt.setInt(4, company.getUser_Id());
+            stmt.executeUpdate();
+        }
+    }
+
+    public void saveCustomer(Customer customer) throws SQLException {
+        String query = "INSERT INTO Customer (cus_Birth, user_Id) VALUES (?, ?)";
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setDate(1, customer.getCus_Birth());
+            stmt.setInt(2, customer.getUser_Id());
+            stmt.executeUpdate();
+        }
+    }
+
+    public boolean hasCustomerInfo(int userId) {
+        // Query the customer table to check if this user has already provided info
+        String sql = "SELECT COUNT(*) FROM Customer WHERE user_Id = ?"; // Ensure column name matches your DB schema
+        try (Connection conn = getConnect(); // Get the connection here
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Return true if there is customer info
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean hasCompanyInfo(int userId) {
+        // Query the company table to check if this user has already provided info
+        String sql = "SELECT COUNT(*) FROM Company WHERE user_Id = ?"; // Ensure column name matches your DB schema
+        try (Connection conn = getConnect(); // Get the connection here
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Return true if there is company info
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 //-------------------------------------------------
-    //Lấy all user ra
+    //Láº¥y all user ra
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [User]";
@@ -188,7 +242,7 @@ public class UserDB implements DatabaseInfo {
         }
         return null;
     }
-    
+
     public List<User> getAllUsersNotAdmin() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [User] WHERE role = 'Provider' OR role = 'Customer'";
@@ -275,7 +329,7 @@ public class UserDB implements DatabaseInfo {
         return user;
     }
 
-    //Thêm user mới
+    //ThÃªm user má»›i
     public void insertUser(User user) {
         String sql = "INSERT INTO [User] (password, role, email) VALUES (?, ?, ?)";
 
@@ -381,6 +435,7 @@ public class UserDB implements DatabaseInfo {
 
         return false;
     }
+
     public User getUserFromSession(HttpSession session, HttpServletRequest request) {
         User user = (User) session.getAttribute("currentUser");
         return user; // or throw an exception if user not found
