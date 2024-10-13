@@ -136,7 +136,7 @@
                         </div>
                         <c:choose>
                             <c:when test="${currentUser == null}">
-                                <c:redirect url="index.jsp" />
+                                <c:redirect url="home" />
                             </c:when>
                             <c:otherwise>
                                 <div class="container">

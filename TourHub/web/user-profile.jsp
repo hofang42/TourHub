@@ -19,8 +19,6 @@
         <title>User Profile</title>
     </head>
     <body>
-
-
         <!-- SIDEBAR -->
         <section id="sidebar">
             <a href="home" class="brand">
@@ -44,7 +42,7 @@
                 </c:if>
                 <c:if test="${sessionScope.currentUser.role == 'Customer'}">
                     <li>
-                        <a href="user-booking.jsp">
+                        <a href="booking">
                             <i class='bx bxs-shopping-bag-alt' ></i>
                             <span class="text">My Booking</span>
                         </a>
@@ -56,7 +54,7 @@
                         <span class="text">Message</span>
                     </a>
                 </li>    
-                <c:if test="${sessionScope.currentUser.role == 'Provider' || sessionScope.currentUser.role == 'Admin'}">
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
                     <li class="">
                         <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
                             <i class='bx bxs-dashboard' ></i>
@@ -90,18 +88,12 @@
                         </a>
                     </li>
                 </c:if>
-                <%-- <li>
-                    <a href="#">
-                        <i class='bx bxs-doughnut-chart' ></i>
-                        <span class="text">Analytics</span>
+                <li>
+                    <a href="reviewtour.jsp">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-group' ></i>
-                        <span class="text">Team</span>
-                    </a>
-                </li> --%>
             </ul>
             <ul class="side-menu">
                 <li>
@@ -149,15 +141,12 @@
 
             <!-- MAIN -->
             <main>
-
-
                 <div class="table-data">
                     <div class="order">
                         <div class="head">
                             <h3>User Information</h3>
                         </div>
                         <!-- Enter data here -->
-
                         <c:choose>
                             <c:when test="${sessionScope.currentUser == null}">
                                 <c:redirect url="home" />
@@ -166,14 +155,8 @@
                                 <div class="profile-card">
                                     <div>
                                         <div class="profile-info">
-                                            <label>Password:</label>
-                                            <p>
-                                                <span id="passwordDisplay">********</span>
-                                                <button onclick="togglePassword()">Show</button>
-                                            </p>
-                                            <form class="changeform" action="user-updateinfo.jsp" method="get">
-                                                <button type="submit" name="buttonChange" value="pass">Change password</button>
-                                            </form>
+                                            <label>Full Name:</label>
+                                            <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
                                         </div>
                                         <div class="profile-info">
                                             <label>Email:</label>
@@ -183,16 +166,22 @@
                                             </form>
                                         </div>
                                         <div class="profile-info">
-                                            <label>Full Name:</label>
-                                            <p><span>${sessionScope.currentUser.first_Name} ${sessionScope.currentUser.last_Name}</span></p>
-                                        </div>
-                                        <div class="profile-info">
                                             <label>Phone Number:</label>
-                                            <p><span>${sessionScope.currentUser.phone}</span></p>
+                                            <p><span>${currentUser.phone}</span></p>
                                         </div>
                                         <div class="profile-info">
                                             <label>Address:</label>
-                                            <p><span>${sessionScope.currentUser.address}</span></p>
+                                            <p><span>${currentUser.address}</span></p>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Password:</label>
+                                            <p>
+                                                <span id="passwordDisplay">********</span>
+                                                <button onclick="togglePassword()">Show</button>
+                                            </p>
+                                            <form class="changeform" action="user-updateinfo.jsp" method="get">
+                                                <button type="submit" name="buttonChange" value="pass">Change password</button>
+                                            </form>
                                         </div>
                                     </div>
                                     <div class="change-info-button">
@@ -219,7 +208,7 @@
                                                         var button = event.target;
 
                                                         if (passwordField.innerHTML === "********") {
-                                                            passwordField.innerHTML = "${sessionScope.currentUser.password}";
+                                                            passwordField.innerHTML = "${currentUser.password}";
                                                             button.textContent = "Hide";
                                                         } else {
                                                             passwordField.innerHTML = "********";
