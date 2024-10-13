@@ -113,7 +113,7 @@
         <script>
                                                 // Tự động tải lại tin nhắn mỗi 3 giây
                                                 setInterval(function () {
-                                                    fetchChatMessages(user1);
+                                                    fetchChatMessages(user2);
                                                 }, 3000);
         </script>
     </body>
