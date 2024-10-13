@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.BookingDetails;
+import model.Tour;
 
 /**
  *
@@ -302,6 +303,49 @@ public class hoang_UserDB implements DatabaseInfo {
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;  // Rethrow or handle the exception as needed
+        }
+    }
+
+    public void updateTour(Tour updatedTour) throws SQLException {
+        String sql = "UPDATE Tour SET tour_Name = ?, tour_Description = ?, start_Date = ?, end_Date = ?, location = ?, "
+                + "total_Time = ?, price = ?, slot = ?, tour_Img = ? WHERE tour_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            // Set the parameters for the prepared statement
+            stmt.setString(1, updatedTour.getTour_Name());
+            stmt.setString(2, updatedTour.getTour_Description());
+
+            // Assuming start_Date and end_Date are java.util.Date, convert them to java.sql.Date
+            stmt.setDate(3, new java.sql.Date(updatedTour.getStart_Date().getTime()));
+            stmt.setDate(4, new java.sql.Date(updatedTour.getEnd_Date().getTime()));
+
+            stmt.setString(5, updatedTour.getLocation());
+            stmt.setString(6, updatedTour.getTotal_Time());
+
+            // Assuming price is BigDecimal
+            stmt.setBigDecimal(7, updatedTour.getPrice());
+
+            stmt.setInt(8, updatedTour.getSlot());
+
+            // Assuming tour_Img is a List<String>, join them into a single string separated by semicolons
+            List<String> images = updatedTour.getTour_Img();
+            String imageFilenames = String.join(";", images);
+            stmt.setString(9, imageFilenames);
+
+            stmt.setString(10, updatedTour.getTour_Id()); // Assuming tour_Id is String
+
+            // Execute the update statement
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Error updating tour: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        List<BookingDetails> tours = new hoang_UserDB().getPendingBookingDetails();
+        for (BookingDetails book : tours) {
+            System.out.println(book.toString());
         }
     }
 }

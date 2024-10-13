@@ -49,29 +49,34 @@ document.addEventListener("DOMContentLoaded", function () {
         inputBox.onkeyup = function () {
             let result = [];
             let input = inputBox.value.trim();
+
             if (input.length) {
                 resultBox.style.display = 'block';
-                result = tours.filter(tour => {
-                    const normalizedInput = removeDiacritics(input.toLowerCase()).trim();
-                    console.log(tours);
-                    // Ensure tourName exists and is a string before trying to normalize it
-                    if (tour.tour_Name && typeof tour.tour_Name === 'string') {
-                        const normalizedTourName = removeDiacritics(tour.tour_Name.toLowerCase());
-                        const inputWords = normalizedInput.split("").filter(word => word !== "");
-                        return inputWords.every(word => normalizedTourName.includes(word));
-                    }
 
-                    // If tourName is not defined or not a string, exclude this tour
+                // Normalize the input string
+                const normalizedInput = removeDiacritics(input.toLowerCase()).trim();
+                const inputWords = normalizedInput.split(" ").filter(word => word !== "");
+
+                // Helper function to match input with tour name or location
+                function matchNormalizedField(field) {
+                    if (field && typeof field === 'string') {
+                        const normalizedField = removeDiacritics(field.toLowerCase());
+                        return inputWords.every(word => normalizedField.includes(word));
+                    }
                     return false;
-                });
+                }
+
+                // Filter tours by matching against tour name or location
+                result = tours.filter(tour => matchNormalizedField(tour.location) || matchNormalizedField(tour.tour_Name));
             } else {
-                resultBox.innerHTML = '';
                 resultBox.style.display = 'none';
             }
-            displaySearchs(result);
+
+            displaySearchs(result); // Update the UI with the filtered results
         };
     }
 });
+
 
 
 
@@ -80,7 +85,7 @@ function displaySearchs(result) {
         const content = result.map(item => {
             return `<li onclick="selectInput(${item.tour_Id})" style="display: flex; align-items: center; margin-bottom: 10px;">
                         <div style="flex-shrink: 0;">
-                            <img src="${item.tour_Img}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
+                            <img src="assests/images/tour-images/${item.tour_Img}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
                         </div>
                         <span style="margin-left: 15px; font-size: 18px;">${item.tour_Name}</span>
                     </li>`;
@@ -98,6 +103,7 @@ function displayTours(city) {
     const filteredTours = tours.filter(tour =>
         tour.location.toLowerCase().includes(city.toLowerCase())
     );
+
     const cityList = document.querySelector('.row.row-50');
 
     // Clear the existing list
@@ -126,7 +132,7 @@ function displayTours(city) {
         const figure = document.createElement('figure');
         figure.classList.add('event-default-image');
         const img = document.createElement('img');
-        img.src = tour.tour_Img;
+        img.src = "assests/images/tour-images/" + tour.tour_Img;
         img.alt = tour.tour_Name;
         img.width = 570;
         img.height = 370;

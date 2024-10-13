@@ -53,7 +53,7 @@ public class PendingBookingServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         hoang_UserDB bookingManager = new hoang_UserDB();
-        List<BookingDetails> bookings = bookingManager.getPendingBookingDetails();
+        List<BookingDetails> bookings = bookingManager.getPendingBookingDetails();        
         request.getSession().setAttribute("bookings", bookings);
         request.getRequestDispatcher("provider-booking.jsp").forward(request, response);
     }

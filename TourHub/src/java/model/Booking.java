@@ -6,6 +6,7 @@ package model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -23,8 +24,11 @@ public class Booking {
     private String tour_Name;
     private Date tour_Date;
     private Date cancel_Date;
+    private String booking_Detail;
+    private List<String> tour_Img; 
+    private String option_Name;
 
-    public Booking(int book_Id, Date created_At, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name, Date tour_Date, Date cancel_Date) {
+    public Booking(int book_Id, Date created_At, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name, Date tour_Date, Date cancel_Date, String booking_Detail, List<String> tour_Img, String option_Name) {
         this.book_Id = book_Id;
         this.created_At = created_At;
         this.slot_Order = slot_Order;
@@ -35,6 +39,9 @@ public class Booking {
         this.tour_Name = tour_Name;
         this.tour_Date = tour_Date;
         this.cancel_Date = cancel_Date;
+        this.booking_Detail = booking_Detail;
+        this.tour_Img = tour_Img;
+        this.option_Name = option_Name;
     }
 
     public Booking() {
@@ -122,4 +129,34 @@ public class Booking {
         this.tour_Name = tour_Name;
     }
 
+    public String getBooking_Detail() {
+        return booking_Detail;
+    }
+
+    public void setBooking_Detail(String booking_Detail) {
+        this.booking_Detail = booking_Detail;
+    }
+
+    public List<String> getTour_Img() {
+        return tour_Img;
+    }
+
+    public void setTour_Img(List<String> tour_Img) {
+        this.tour_Img = tour_Img;
+    }
+
+    public String getOption_Name() {
+        return option_Name;
+    }
+
+    public void setOption_Name(String option_Name) {
+        this.option_Name = option_Name;
+    }
+    
+
+    @Override
+    public String toString() {
+        return "Booking{" + "book_Id=" + book_Id + ", created_At=" + created_At + ", slot_Order=" + slot_Order + ", total_Cost=" + total_Cost + ", book_Status=" + book_Status + ", cus_Id=" + cus_Id + ", tour_Id=" + tour_Id + ", tour_Name=" + tour_Name + ", tour_Date=" + tour_Date + ", cancel_Date=" + cancel_Date + ", booking_Detail=" + booking_Detail + '}';
+    }
+    
 }

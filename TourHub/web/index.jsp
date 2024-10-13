@@ -2,7 +2,7 @@
 <%@include file="includes/header.jsp" %>
 <link rel="stylesheet" href="assests/css/home.css" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page import="java.text.Normalizer" %> 
 <%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <body>
     <!-- Page preloader-->
@@ -200,9 +200,8 @@
                                         <div class="search-container">
                                             <span class="icon">🔍</span>
                                             <span class="search-text">Tìm <strong id="search-keyword"></strong></span>
-                                            <span class="arrow"><a href="login.jsp">→</a></span>
+                                            <span class="arrow"><a href="#" id="search-link">→</a></span>
                                         </div>
-
                                         <div class="result-box">                                               
                                         </div>
                                     </div>
@@ -257,17 +256,17 @@
                     <!-- Full width Owl Carousel Container -->
                     <div class="owl-carousel owl-theme location-slider">
                         <c:forEach items="${sessionScope.provinces}" var="province">
-                            <!--Location Card--> 
-                            <div class="item" >
-                                <a href="login.jsp" data-id="${province.province_id}" class="location-link">
+                            <div class="item">
+                                <a href="search?querry= ${province.province_name}" 
+                                   data-id="${province.province_id}" class="location-link">
                                     <div class="location-card">
-
-                                        <img class="quote-boxed-image" src="assests/images/provinces/${province.image_url}" alt="${province.province_name}" style="width: 100%; height: auto"/>
+                                        <img class="quote-boxed-image" src="assests/images/provinces/${province.image_url}" 
+                                             alt="${province.province_name}" style="width: 100%; height: auto"/>
                                         <div class="location-name">${province.province_name}</div>
-
                                     </div>
                                 </a>
                             </div>
+
                         </c:forEach>
                     </div>   
 
@@ -278,6 +277,55 @@
             </div>                              
         </section>
 
+        <section class="section section-variant-1 bg-default novi-background bg-cover container ">
+            <div class="container"> <!-- Make it full width -->
+                <div class="row justify-content-xl-end text-center text-xl-left">
+                    <div class="col-xl-12"> <!-- Full width column -->
+                        <div class="parallax-text-wrap">
+                            <h3>Coupon</h3><span class="parallax-text">COUPON</span>
+                        </div>
+                        <hr class="divider divider-decorate">
+                    </div>
+                    <div class="col-12">
+                        <div class="container-coupon flex-wrap justify-content-center">
+                            <div class="coupon-card">
+                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
+                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
+                                <di class="coupon-row">
+                                    <span class="cpnCode">STEALDEAL20</span>
+                                    <span class="cpnBtn">Copy Code</span>
+                                </di>
+                                <p>Valid Till: 20Dec, 2021</p>
+                                <div class="circle1"></div>
+                                <div class="circle2"></div>
+                            </div>
+                            <div class="coupon-card">
+                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
+                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
+                                <di class="coupon-row">
+                                    <span class="cpnCode">STEALDEAL20</span>
+                                    <span class="cpnBtn">Copy Code</span>
+                                </di>
+                                <p>Valid Till: 20Dec, 2021</p>
+                                <div class="circle1"></div>
+                                <div class="circle2"></div>
+                            </div>
+                            <div class="coupon-card">
+                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
+                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
+                                <di class="coupon-row">
+                                    <span class="cpnCode">STEALDEAL20</span>
+                                    <span class="cpnBtn">Copy Code</span>
+                                </di>
+                                <p>Valid Till: 20Dec, 2021</p>
+                                <div class="circle1"></div>
+                                <div class="circle2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> 
         <section class="section section-lg text-center bg-gray-lighter novi-background bg-cover">
             <div class="container container-bigger">
                 <h3>testimonials</h3>
@@ -361,23 +409,102 @@
         <script>
             // Extract the query parameter from the URL
             const urlParams = new URLSearchParams(window.location.search);
-            const searchQuery = urlParams.get('query');
+            const searchQuery = urlParams.get('querry');
 
-// Set the search box value if the query exists
+            // Set the search box value if the query exists
             if (searchQuery) {
                 document.getElementById('input-box').value = decodeURIComponent(searchQuery);
             }
 
-// Add event listener for the search button
+            // Add event listener for the search button
             document.getElementById("search-btn").addEventListener("click", function () {
                 var queryValue = document.getElementById("input-box").value;
                 if (queryValue) {
+                    // Remove diacritics before encoding the value
+                    var cleanedQuery = encodeURIComponent(removeDiacritics(queryValue));
                     // Redirect to the servlet with the new query as a URL parameter
-                    window.location.href = "search?query=" + encodeURIComponent(queryValue);
+                    window.location.href = "search?querry=" + cleanedQuery;
                 }
             });
 
+            function removeDiacritics(str) {
+                const diacriticsMap = {
+                    'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
+                    'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
+                    'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
+                    'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
+                    'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
+                    'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
+                    'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
+                    'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
+                    'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
+                    'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
+                    'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
+                    'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
+                    'Đ': 'D', 'đ': 'd'
+                };
+
+                return str.split('').map(char => diacriticsMap[char] || char).join('');
+            }
+            function setProvinceLinks() {
+                const provinceLinks = document.querySelectorAll('.location-link'); // Select all links with the class 'location-link'
+                provinceLinks.forEach(link => {
+                    const provinceName = link.querySelector('.location-name').innerText; // Get the province name
+                    const cleanedName = encodeURIComponent(removeDiacritics(provinceName)); // Remove diacritics
+                    const dataId = link.getAttribute('data-id'); // Get the data-id attribute
+                    console.log(cleanedName);
+                    // Set the new href attribute with the cleaned province name
+                    if (cleanedName) { // Check if cleanedName is not empty
+                        link.href = "search?querry=" + cleanedName; // Set the new href
+                    } else {
+                        console.error('Cleaned name is empty, href not set.');
+                    }
+                });
+            }
+            document.getElementById("search-link").addEventListener("click", function () {
+                // Get the input value
+                const inputBox = document.getElementById("input-box").value.trim();
+
+                // Check if the input box is not empty
+                if (inputBox) {
+                    // Encode the query
+                    const querry = encodeURIComponent(inputBox);
+
+                    // Update the search link's href
+                    const searchLink = document.getElementById("search-link");
+                    searchLink.href = "search?querry=" + querry;
+
+                    // Redirect to the search page
+                    window.location.href = searchLink.href; // Navigate immediately
+                }
+            });
+            // Call the function on page load
+            document.addEventListener('DOMContentLoaded', setProvinceLinks);
+            
+            
+            var cpnBtns = document.querySelectorAll(".cpnBtn");
+            var cpnCodes = document.querySelectorAll(".cpnCode");
+
+            cpnBtns.forEach(function (btn, index) {
+                btn.onclick = function () {
+                    // Get the corresponding coupon code using the same index
+                    var cpnCode = cpnCodes[index].innerHTML;
+
+                    // Copy the coupon code to the clipboard
+                    navigator.clipboard.writeText(cpnCode).then(function () {
+                        // Update the button text to indicate success
+                        btn.innerHTML = "COPIED";
+
+                        // Reset the button text after 2 seconds
+                        setTimeout(function () {
+                            btn.innerHTML = "COPY CODE";
+                        }, 3000);
+                    });
+                };
+            });
+
         </script>
+
         <script src="assests/js/home.js"></script>
 
         <%@include file="includes/footer.jsp" %>

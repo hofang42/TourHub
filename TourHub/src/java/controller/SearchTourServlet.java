@@ -11,6 +11,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.text.Normalizer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -58,15 +62,15 @@ public class SearchTourServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Get the search query from the request parameters
-        String searchQuery = request.getParameter("query");
-
+        String searchQuerry = request.getParameter("querry");
         // Optional: Trim the search query to remove leading/trailing whitespace
-        if (searchQuery != null) {
-            searchQuery = searchQuery.trim();
+        if (searchQuerry != null) {
+            searchQuerry = searchQuerry.trim();
+
         }
 
         // Set the search query as a request attribute to be accessed later
-        request.setAttribute("querry", searchQuery);
+        request.setAttribute("querry", searchQuerry); // Corrected "querry" to "query"
 
         // Forward the request to the "allTour" servlet or JSP page
         // Ensure the path is correct based on your application structure
@@ -95,6 +99,5 @@ public class SearchTourServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }
