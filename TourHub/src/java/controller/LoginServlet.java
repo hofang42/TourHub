@@ -113,13 +113,13 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("currentUser", user);
 
                 // Check if the user is a customer and has incomplete info
-                if (user.getRole().equals("customer") && !userDB.hasCustomerInfo(user.getUser_Id())) {
+                if (user.getRole().equals("Customer") && !userDB.hasCustomerInfo(user.getUser_Id())) {
                     response.sendRedirect("customerinfo.jsp");
                     return;
                 }
 
                 // Check if the user is a provider and has incomplete info
-                if (user.getRole().equals("provider") && !userDB.hasCompanyInfo(user.getUser_Id())) {
+                if (user.getRole().equals("Provider") && !userDB.hasCompanyInfo(user.getUser_Id())) {
                     response.sendRedirect("companyinfo.jsp");
                     return;
                 }
