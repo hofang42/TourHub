@@ -1,14 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="model.User" %>
-<%@ page import="DataAccess.UserDB"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<jsp:useBean id="currentUser" class="model.User" scope="session" />
 <%@include file="includes/header.jsp" %>
+<link rel="stylesheet" href="assests/css/home.css" />
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.text.Normalizer" %> 
+<%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <body>
     <!-- Page preloader-->
     <div class="page-loader"> 
-        <div class="page-loader-body"> 
+        <div class="page-loader-body "> 
             <div class="preloader-wrapper big active"> 
                 <div class="spinner-layer spinner-blue"> 
                     <div class="circle-clipper left">
@@ -93,14 +92,15 @@
                             <!-- RD Navbar Toggle-->
                             <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
                             <!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img class="logo-default" src="assests/images/logo-favicon/logo.png" alt="" width="208" height="46"/>
+                            <div class="rd-navbar-brand"><a class="brand-name" href="home"><img class="logo-default" src="assests/images/logo-favicon/logo.png" alt="" width="208" height="46"/>
                                     <img class="logo-inverse" src="assests/images/logo-favicon/logo.png" alt="" width="208" height="46"/></a></div>
+
                         </div>
                         <div class="rd-navbar-aside-center">
                             <div class="rd-navbar-nav-wrap">
                                 <!-- RD Navbar Nav-->
                                 <ul class="rd-navbar-nav">
-                                    <li class="active"><a href="index.jsp">Home</a>
+                                    <li class="active"><a href="home">Home</a>
                                     </li>
                                     <li><a href="about-us.jsp">About Us</a>
                                     </li>
@@ -110,290 +110,222 @@
                                     </li>
                                     <li><a href="faqs.jsp">FAQs</a>
                                     </li>
+                                    <li><a href="reporterror.jsp">Report Error</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
-
-                        <c:choose>
-                            <c:when test="${currentUser == null}">
-                                <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="#">Book a tour now</a></div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="dropdown">
-                                    <button class="avatar-button" onclick="toggleDropdown()">
-                                        <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
-                                    </button>
-                                    <div id="dropdownContent" class="dropdown-content">
-                                        <a href="user-profile.jsp">Profile</a>
-                                        <a href="settings.jsp">Settings</a>
-                                        <a href="logout">Logout</a>
-                                    </div>
+                        <c:if test="${sessionScope.currentUser == null}">
+                            <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="login">Login</a></div>
+                            <div class="rd-navbar-aside-right"><a class="button button-sm button-secondary button-nina" href="register.jsp">Register</a></div>
+                        </c:if>
+                        <c:if test="${sessionScope.currentUser != null}">
+                            <div class="dropdown">
+                                <button class="avatar-button" onclick="toggleDropdown()">
+                                    <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
+                                </button>
+                                <div id="dropdownContent" class="dropdown-content">
+                                    <a href="user-profile.jsp">Profile</a>
+                                    <a href="settings.jsp">Settings</a>
+                                    <c:if test="${sessionScope.currentUser.role.equals('Provider')}">
+                                        <a href="provider-analys">Dashboard</a>
+                                    </c:if>
+                                    <c:if test="${sessionScope.currentUser.role.equals('Admin')}">
+                                        <a href="admin-analysis.jsp">Dashboard</a>
+                                    </c:if>
+                                    <a href="logout">Logout</a>
                                 </div>
-
-                            </c:otherwise>
-                        </c:choose>
-
-
+                            </div>
+                        </c:if>
                     </div>
                 </nav>
             </div>
         </header>
         <section class="section">
-            <div class="swiper-container swiper-slider swiper-slider_height-1 swiper-align-left swiper-align-left-custom context-dark bg-gray-darker" data-loop="false" data-autoplay="5500" data-simulate-touch="false" data-slide-effect="fade">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide" data-slide-bg="assests/images/banner/bg1.webp">
-                        <div class="swiper-slide-caption">
-                            <div class="container container-bigger swiper-main-section">
-                                <div class="row row-fix justify-content-sm-center justify-content-md-start">
-                                    <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
-                                        <h3>Hundreds of Amazing Destinations</h3>
-                                        <!--<div class="divider divider-decorate"></div>-->
-                                        <p class="text-spacing-sm">We offer a variety of destinations to travel to, ranging from exotic to some extreme ones. They include very popular countries and cities like Paris, Rio de Janeiro, Cairo and a lot of others.</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
+            <div class="swiper-form-wrap">
+                <!-- Swiper-->
+                <div class="swiper-container swiper-slider swiper-slider_height-1 swiper-align-left swiper-align-left-custom context-dark bg-gray-darker" data-loop="false" data-autoplay="5500" data-simulate-touch="false" data-slide-effect="fade">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" data-slide-bg="assests/images/banner/bg1.webp">
+                            <div class="swiper-slide-caption">
+                                <div class="container container-bigger swiper-main-section">
+                                    <div class="row row-fix justify-content-sm-center justify-content-md-start">
+                                        <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
+                                            <h3>Hundreds of Amazing Destinations</h3>
+                                            <div class="divider divider-decorate"></div>
+                                            <p class="text-spacing-sm">We offer a variety of destinations to travel to, ranging from exotic to some extreme ones. They include very popular countries and cities like Paris, Rio de Janeiro, Cairo and a lot of others.</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="swiper-slide" data-slide-bg="assests/images/banner/bg2.jpg">
-                        <div class="swiper-slide-caption">
-                            <div class="container container-bigger swiper-main-section">
-                                <div class="row row-fix justify-content-sm-center justify-content-md-start">
-                                    <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
-                                        <h3>The Trip of Your Dream</h3>
-                                        <!--<div class="divider divider-decorate"></div>-->
-                                        <p class="text-spacing-sm">Our travel agency is ready to offer you an exciting vacation that is designed to fit your own needs and wishes. Whether it’s an exotic cruise or a trip to your favorite resort, you will surely have the best experience.</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
+                        <div class="swiper-slide" data-slide-bg="assests/images/banner/bg2.jpg">
+                            <div class="swiper-slide-caption">
+                                <div class="container container-bigger swiper-main-section">
+                                    <div class="row row-fix justify-content-sm-center justify-content-md-start">
+                                        <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
+                                            <h3>The Trip of Your Dream</h3>
+                                            <div class="divider divider-decorate"></div>
+                                            <p class="text-spacing-sm">Our travel agency is ready to offer you an exciting vacation that is designed to fit your own needs and wishes. Whether it’s an exotic cruise or a trip to your favorite resort, you will surely have the best experience.</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="swiper-slide" data-slide-bg="assests/images/banner/bg3.jpg">
+                            <div class="swiper-slide-caption">
+                                <div class="container container-bigger swiper-main-section">
+                                    <div class="row row-fix justify-content-sm-center justify-content-md-start">
+                                        <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
+                                            <h3>unique Travel Insights</h3>
+                                            <div class="divider divider-decorate"></div>
+                                            <p class="text-spacing-sm">Our team is ready to provide you with unique weekly travel insights that include photos, videos, and articles about untravelled tourist paths. We know everything about the places you’ve never been to!</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                          
+                        </div>
                     </div>
-                    <div class="swiper-slide" data-slide-bg="assests/images/banner/bg3.jpg">
-                        <div class="swiper-slide-caption">
-                            <div class="container container-bigger swiper-main-section">
-                                <div class="row row-fix justify-content-sm-center justify-content-md-start">
-                                    <div class="col-md-6 col-lg-5 col-xl-4 col-xxl-5">
-                                        <h3>unique Travel Insights</h3>
-                                        <!--<div class="divider divider-decorate"></div>-->
-                                        <p class="text-spacing-sm">Our team is ready to provide you with unique weekly travel insights that include photos, videos, and articles about untravelled tourist paths. We know everything about the places you’ve never been to!</p><a class="button button-default-outline button-nina button-sm" href="#">learn more</a>
+
+                    <!-- Swiper controls-->
+                    <div class="container container-bigger form-request-wrap form-request-wrap-modern">
+                        <div class="row row-fix justify-content-sm-center justify-content-lg-end">
+                            <div class="col-lg-6 col-xxl-5">
+                                <div class="form-request form-request-modern bg-gray-lighter novi-background transparent-bg">     
+                                    <div class="search-box custom-radius">
+                                        <div class="row">
+                                            <input type="text" id="input-box" placeholder="Search your tour" autocomplete="off">
+                                            <button class="btn btn-primary" id="search-btn">SEARCH</button>
+                                        </div>
+                                        <div class="search-container">
+                                            <span class="icon">🔍</span>
+                                            <span class="search-text">Tìm <strong id="search-keyword"></strong></span>
+                                            <span class="arrow"><a href="#" id="search-link">→</a></span>
+                                        </div>
+                                        <div class="result-box">                                               
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Swiper controls-->
-                <div class="swiper-pagination-wrap">
-                    <div class="container container-bigger">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="swiper-pagination"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </section>
 
         <section class="section section-variant-1 bg-default novi-background bg-cover"> 
-            <div class="container container-wide">
+            <div class="container"> 
                 <div class="row row-fix justify-content-xl-end row-30 text-center text-xl-left">
                     <div class="col-xl-8">
                         <div class="parallax-text-wrap">
-                            <h3>Our Best Tours</h3><span class="parallax-text">Hot tours</span>
+                            <h3>Our Best Tours</h3>
+                            <span class="parallax-text">Hot tours</span>
                         </div>
                         <hr class="divider divider-decorate">
                     </div>
-                    <div class="col-xl-3 text-xl-right"><a class="button button-secondary button-nina" href="#">view all tours</a></div>
+                    <div class="col-xl-3 text-xl-right">
+                        <a class="button button-secondary button-nina" href="allTour">view all tours</a>
+                    </div>
                 </div>
-                <div class="row row-50">
-                    <div class="col-md-6 col-xl-4">
-                        <article class="event-default-wrap">
-                            <div class="event-default">
-                                <figure class="event-default-image"><img src="assests/images/landing-private-airlines-01-570x370.jpg" alt="" width="570" height="370"/>
-                                </figure>
-                                <div class="event-default-caption"><a class="button button-xs button-secondary button-nina" href="#">learn more</a></div>
-                            </div>
-                            <div class="event-default-inner">
-                                <h5><a class="event-default-title" href="#">France, Paris</a></h5><span class="heading-5">from $280</span>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-xl-4">
-                        <article class="event-default-wrap">
-                            <div class="event-default">
-                                <figure class="event-default-image"><img src="assests/images/landing-private-airlines-02-570x370.jpg" alt="" width="570" height="370"/>
-                                </figure>
-                                <div class="event-default-caption"><a class="button button-xs button-secondary button-nina" href="#">learn more</a></div>
-                            </div>
-                            <div class="event-default-inner">
-                                <h5><a class="event-default-title" href="#">USA, Boston</a></h5><span class="heading-5">from $480</span>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-xl-4">
-                        <article class="event-default-wrap">
-                            <div class="event-default">
-                                <figure class="event-default-image"><img src="assests/images/landing-private-airlines-03-570x370.jpg" alt="" width="570" height="370"/>
-                                </figure>
-                                <div class="event-default-caption"><a class="button button-xs button-secondary button-nina" href="#">learn more</a></div>
-                            </div>
-                            <div class="event-default-inner">
-                                <h5><a class="event-default-title" href="#">Italy, Venice</a></h5><span class="heading-5">from $350</span>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-xl-4">
-                        <article class="event-default-wrap">
-                            <div class="event-default">
-                                <figure class="event-default-image"><img src="assests/images/landing-private-airlines-04-570x370.jpg" alt="" width="570" height="370"/>
-                                </figure>
-                                <div class="event-default-caption"><a class="button button-xs button-secondary button-nina" href="#">learn more</a></div>
-                            </div>
-                            <div class="event-default-inner">
-                                <h5><a class="event-default-title" href="#">Spain, Benidorm</a></h5><span class="heading-5">from $350</span>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-xl-4">
-                        <article class="event-default-wrap">
-                            <div class="event-default">
-                                <figure class="event-default-image"><img src="assests/images/landing-private-airlines-05-570x370.jpg" alt="" width="570" height="370"/>
-                                </figure>
-                                <div class="event-default-caption"><a class="button button-xs button-secondary button-nina" href="#">learn more</a></div>
-                            </div>
-                            <div class="event-default-inner">
-                                <h5><a class="event-default-title" href="#">Egypt,  Sharm El Sheikh</a></h5><span class="heading-5">from $520</span>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-xl-4">
-                        <article class="event-default-wrap">
-                            <div class="event-default">
-                                <figure class="event-default-image"><img src="assests/images/landing-private-airlines-06-570x370.jpg" alt="" width="570" height="370"/>
-                                </figure>
-                                <div class="event-default-caption"><a class="button button-xs button-secondary button-nina" href="#">learn more</a></div>
-                            </div>
-                            <div class="event-default-inner">
-                                <h5><a class="event-default-title" href="#">UK, London</a></h5><span class="heading-5">from $600</span>
-                            </div>
-                        </article>
-                    </div>
+                <div class="group-btn" role="group" aria-label="City Options">
+                    <button type="button" class="btn btn-primary active" city="Phu Quoc">Phú Quốc</button>
+                    <button type="button" class="btn btn-outline-primary" city="Da Nang">Đà Nẵng</button>
+                    <button type="button" class="btn btn-outline-primary" city="Ha Noi">Hà Nội</button>
+                    <button type="button" class="btn btn-outline-primary" city="TP Ho Chi Minh<">TP Hồ Chí Minh</button>
+                    <button type="button" class="btn btn-outline-primary" city="Quy Nhon">Quy Nhơn</button>
+                </div>
+                <div class="row row-50" id="tour-list">
+                    <c:if test="${empty tours}">
+                        <p>No tours available.</p>
+                    </c:if>                   
                 </div>
             </div>
         </section>
 
-        <!-- our advantages-->
-        <section class="section section-lg bg-gray-lighter novi-background bg-cover text-center">
-            <div class="container container-wide">
-                <h3>our services</h3>
-                <div class="divider divider-decorate"></div>
-                <div class="row row-50 justify-content-sm-center text-left">
-                    <div class="col-sm-10 col-md-6 col-xl-3">
-                        <article class="box-minimal box-minimal-border">
-                            <div class="box-minimal-icon novi-icon mdi mdi-airplane"></div>
-                            <p class="big box-minimal-title">Air Tickets</p>
-                            <hr>
-                            <div class="box-minimal-text text-spacing-sm">At our travel agency, you can book air tickets to any world destination. We also provide online ticket booking via our website in just a couple of steps.</div>
-                        </article>
+
+        <section class="section section-variant-1 bg-default novi-background bg-cover container"> 
+            <div class="container"> <!-- Make it full width -->
+                <div class="row justify-content-xl-end text-center text-xl-left">
+                    <div class="col-xl-12"> <!-- Full width column -->
+                        <div class="parallax-text-wrap">
+                            <h3>Best Destinations In Viet Nam</h3><span class="parallax-text">Destination</span>
+                        </div>
+                        <hr class="divider divider-decorate">
                     </div>
-                    <div class="col-sm-10 col-md-6 col-xl-3">
-                        <article class="box-minimal box-minimal-border">
-                            <div class="box-minimal-icon novi-icon mdi mdi-map"></div>
-                            <p class="big box-minimal-title">Voyages & Cruises</p>
-                            <hr>
-                            <div class="box-minimal-text text-spacing-sm">Besides regular tours and excursions, we also offer a variety of cruises & sea voyages for different customers looking for awesome experiences.</div>
-                        </article>
+
+                    <!-- Full width Owl Carousel Container -->
+                    <div class="owl-carousel owl-theme location-slider">
+                        <c:forEach items="${sessionScope.provinces}" var="province">
+                            <div class="item">
+                                <a href="search?querry= ${province.province_name}" 
+                                   data-id="${province.province_id}" class="location-link">
+                                    <div class="location-card">
+                                        <img class="quote-boxed-image" src="assests/images/provinces/${province.image_url}" 
+                                             alt="${province.province_name}" style="width: 100%; height: auto"/>
+                                        <div class="location-name">${province.province_name}</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </c:forEach>
+                    </div>   
+
+                    <div class="owl-carousel owl-theme location-slider">
                     </div>
-                    <div class="col-sm-10 col-md-6 col-xl-3">
-                        <article class="box-minimal box-minimal-border">
-                            <div class="box-minimal-icon novi-icon mdi mdi-city"></div>
-                            <p class="big box-minimal-title">Hotel Bookings</p>
-                            <hr>
-                            <div class="box-minimal-text text-spacing-sm">We offer a wide selection of hotel ranging from 5-star ones to small properties located worldwide so that you could book a hotel you like.</div>
-                        </article>
-                    </div>
-                    <div class="col-sm-10 col-md-6 col-xl-3">
-                        <article class="box-minimal box-minimal-border">
-                            <div class="box-minimal-icon novi-icon mdi mdi-beach"></div>
-                            <p class="big box-minimal-title">Tailored Summer Tours</p>
-                            <hr>
-                            <div class="box-minimal-text text-spacing-sm">Our agency provides varied tours including tailored summer tours for clients who are searching for an exclusive and memorable vacation.</div>
-                        </article>
-                    </div>
+
                 </div>
-            </div>
+            </div>                              
         </section>
 
-        <!-- Tips & tricks-->
-        <section class="section section-lg novi-background bg-cover bg-default text-center">
-            <div class="container-wide">
-                <div class="row row-50">
-                    <div class="col-sm-12">
-                        <h3>Latest News</h3>
-                        <div class="divider divider-decorate"></div>
-                        <!-- Owl Carousel-->
-                        <div class="owl-carousel owl-carousel-team owl-carousel-inset" data-items="1" data-md-items="2" data-xl-items="3" data-stage-padding="15" data-loop="true" data-margin="30" data-mouse-drag="false" data-dots="true" data-autoplay="true">
-                            <article class="post-blog"><a class="post-blog-image" href="#"><img src="assests/images/landing-private-airlines-7-570x415.jpg" alt="" width="570" height="415"/></a>
-                                <div class="post-blog-caption">
-                                    <div class="post-blog-caption-header">
-                                        <ul class="post-blog-tags">
-                                            <li><a class="button-tags" href="#">Hotels</a></li>
-                                        </ul>
-                                        <ul class="post-blog-meta">
-                                            <li><span>by</span>&nbsp;<a href="#">Ronald Chen</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="post-blog-caption-body">
-                                        <h5><a class="post-blog-title" href="#">Top 10 Hotels to Stay At: Exclusive Rating by Sealine Travel Experts</a></h5>
-                                    </div>
-                                    <div class="post-blog-caption-footer">
-                                        <time datetime="2019">Feb 27, 2019 at 6:53 pm</time><a class="post-comment" href="#"><span class="icon novi-icon icon-md-middle icon-gray-1 mdi mdi-comment"></span><span>12</span></a>
-                                    </div>
-                                </div>
-                            </article>
-                            <article class="post-blog"><a class="post-blog-image" href="#"><img src="assests/images/landing-private-airlines-8-570x415.jpg" alt="" width="570" height="415"/></a>
-                                <div class="post-blog-caption">
-                                    <div class="post-blog-caption-header">
-                                        <ul class="post-blog-tags">
-                                            <li><a class="button-tags" href="#">Tips</a></li>
-                                        </ul>
-                                        <ul class="post-blog-meta">
-                                            <li><span>by</span>&nbsp;<a href="#">Ronald Chen</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="post-blog-caption-body">
-                                        <h5><a class="post-blog-title" href="#">How to Plan Your Vacation in Advance and Why It’s Beneficial</a></h5>
-                                    </div>
-                                    <div class="post-blog-caption-footer">
-                                        <time datetime="2019">Feb 27, 2019 at 6:53 pm</time><a class="post-comment" href="#"><span class="icon novi-icon icon-md-middle icon-gray-1 mdi mdi-comment"></span><span>12</span></a>
-                                    </div>
-                                </div>
-                            </article>
-                            <article class="post-blog"><a class="post-blog-image" href="#"><img src="assests/images/landing-private-airlines-9-570x415.jpg" alt="" width="570" height="415"/></a>
-                                <div class="post-blog-caption">
-                                    <div class="post-blog-caption-header">
-                                        <ul class="post-blog-tags">
-                                            <li><a class="button-tags" href="#">Traveling</a></li>
-                                        </ul>
-                                        <ul class="post-blog-meta">
-                                            <li><span>by</span>&nbsp;<a href="#">Ronald Chen</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="post-blog-caption-body">
-                                        <h5><a class="post-blog-title" href="#">Your Personal Guide to 5 Best Places to Visit on Earth</a></h5>
-                                    </div>
-                                    <div class="post-blog-caption-footer">
-                                        <time datetime="2019">Feb 27, 2019 at 6:53 pm</time><a class="post-comment" href="#"><span class="icon novi-icon icon-md-middle icon-gray-1 mdi mdi-comment"></span><span>12</span></a>
-                                    </div>
-                                </div>
-                            </article>
+        <section class="section section-variant-1 bg-default novi-background bg-cover container ">
+            <div class="container"> <!-- Make it full width -->
+                <div class="row justify-content-xl-end text-center text-xl-left">
+                    <div class="col-xl-12"> <!-- Full width column -->
+                        <div class="parallax-text-wrap">
+                            <h3>Coupon</h3><span class="parallax-text">COUPON</span>
+                        </div>
+                        <hr class="divider divider-decorate">
+                    </div>
+                    <div class="col-12">
+                        <div class="container-coupon flex-wrap justify-content-center">
+                            <div class="coupon-card">
+                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
+                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
+                                <di class="coupon-row">
+                                    <span class="cpnCode">STEALDEAL20</span>
+                                    <span class="cpnBtn">Copy Code</span>
+                                </di>
+                                <p>Valid Till: 20Dec, 2021</p>
+                                <div class="circle1"></div>
+                                <div class="circle2"></div>
+                            </div>
+                            <div class="coupon-card">
+                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
+                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
+                                <di class="coupon-row">
+                                    <span class="cpnCode">STEALDEAL20</span>
+                                    <span class="cpnBtn">Copy Code</span>
+                                </di>
+                                <p>Valid Till: 20Dec, 2021</p>
+                                <div class="circle1"></div>
+                                <div class="circle2"></div>
+                            </div>
+                            <div class="coupon-card">
+                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
+                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
+                                <di class="coupon-row">
+                                    <span class="cpnCode">STEALDEAL20</span>
+                                    <span class="cpnBtn">Copy Code</span>
+                                </di>
+                                <p>Valid Till: 20Dec, 2021</p>
+                                <div class="circle1"></div>
+                                <div class="circle2"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-12"><a class="button button-secondary button-nina button-offset-lg" href="#">view all blog posts</a></div>
                 </div>
             </div>
-        </section>
-
+        </section> 
         <section class="section section-lg text-center bg-gray-lighter novi-background bg-cover">
             <div class="container container-bigger">
                 <h3>testimonials</h3>
@@ -457,6 +389,122 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section>    
+
+        <% 
+                   // Retrieve the JSON string from the request attribute
+                   String toursJson = (String) request.getAttribute("toursJson");
+                   // Escape special characters for safe embedding
+                   String encodedToursJson = toursJson
+                       .replace("\\", "\\\\")  // Escape backslashes
+                       .replace("\"", "\\\"")  // Escape double quotes
+                       .replace("\n", "\\n")   // Escape new lines
+                       .replace("\r", "\\r");  // Escape carriage returns
+        %>
+        <script>
+            const toursJson = "<%= encodedToursJson %>";
+            const tours = JSON.parse(toursJson); // Parse the JSON string  
+            console.log(tours);
+        </script>
+        <script>
+            // Extract the query parameter from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('querry');
+
+            // Set the search box value if the query exists
+            if (searchQuery) {
+                document.getElementById('input-box').value = decodeURIComponent(searchQuery);
+            }
+
+            // Add event listener for the search button
+            document.getElementById("search-btn").addEventListener("click", function () {
+                var queryValue = document.getElementById("input-box").value;
+                if (queryValue) {
+                    // Remove diacritics before encoding the value
+                    var cleanedQuery = encodeURIComponent(removeDiacritics(queryValue));
+                    // Redirect to the servlet with the new query as a URL parameter
+                    window.location.href = "search?querry=" + cleanedQuery;
+                }
+            });
+
+            function removeDiacritics(str) {
+                const diacriticsMap = {
+                    'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
+                    'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
+                    'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
+                    'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
+                    'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
+                    'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
+                    'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
+                    'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
+                    'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
+                    'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
+                    'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
+                    'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
+                    'Đ': 'D', 'đ': 'd'
+                };
+
+                return str.split('').map(char => diacriticsMap[char] || char).join('');
+            }
+            function setProvinceLinks() {
+                const provinceLinks = document.querySelectorAll('.location-link'); // Select all links with the class 'location-link'
+                provinceLinks.forEach(link => {
+                    const provinceName = link.querySelector('.location-name').innerText; // Get the province name
+                    const cleanedName = encodeURIComponent(removeDiacritics(provinceName)); // Remove diacritics
+                    const dataId = link.getAttribute('data-id'); // Get the data-id attribute
+                    console.log(cleanedName);
+                    // Set the new href attribute with the cleaned province name
+                    if (cleanedName) { // Check if cleanedName is not empty
+                        link.href = "search?querry=" + cleanedName; // Set the new href
+                    } else {
+                        console.error('Cleaned name is empty, href not set.');
+                    }
+                });
+            }
+            document.getElementById("search-link").addEventListener("click", function () {
+                // Get the input value
+                const inputBox = document.getElementById("input-box").value.trim();
+
+                // Check if the input box is not empty
+                if (inputBox) {
+                    // Encode the query
+                    const querry = encodeURIComponent(inputBox);
+
+                    // Update the search link's href
+                    const searchLink = document.getElementById("search-link");
+                    searchLink.href = "search?querry=" + querry;
+
+                    // Redirect to the search page
+                    window.location.href = searchLink.href; // Navigate immediately
+                }
+            });
+            // Call the function on page load
+            document.addEventListener('DOMContentLoaded', setProvinceLinks);
+            
+            
+            var cpnBtns = document.querySelectorAll(".cpnBtn");
+            var cpnCodes = document.querySelectorAll(".cpnCode");
+
+            cpnBtns.forEach(function (btn, index) {
+                btn.onclick = function () {
+                    // Get the corresponding coupon code using the same index
+                    var cpnCode = cpnCodes[index].innerHTML;
+
+                    // Copy the coupon code to the clipboard
+                    navigator.clipboard.writeText(cpnCode).then(function () {
+                        // Update the button text to indicate success
+                        btn.innerHTML = "COPIED";
+
+                        // Reset the button text after 2 seconds
+                        setTimeout(function () {
+                            btn.innerHTML = "COPY CODE";
+                        }, 3000);
+                    });
+                };
+            });
+
+        </script>
+
+        <script src="assests/js/home.js"></script>
 
         <%@include file="includes/footer.jsp" %>

@@ -10,6 +10,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Properties;
+import java.util.Random;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
@@ -35,17 +44,29 @@ public class LoginServlet extends HttpServlet {
             user = userDB.authenticate(googleAccount.getEmail(), null);
 
             if (user == null) {
-                // Register the Google user if not found in the database
+                // If Google user not found, create a new user and redirect to googleregister.jsp
                 user = new User();
-                user.setUsername(googleAccount.getName());
                 user.setEmail(googleAccount.getEmail());
-                user.setFirstName(googleAccount.getGiven_name());
-                user.setLastName(googleAccount.getFamily_name());
-                user.setPassword(""); // No password for Google users
-                user.setCreatedAt(new java.util.Date());
-                user.setUserStatus("verified");
-                user.setRole("customer");
+                user.setFirst_Name(googleAccount.getGiven_name());
+                user.setLast_Name(googleAccount.getFamily_name());
+                user.setPassword(""); // No password for Google users initially
+                user.setCreated_At(new java.util.Date());
+                user.setUser_Status("verified");
                 userDB.registerUser(user); // Save user in the DB
+
+                // Set user in session before redirecting
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", user);
+
+                // Redirect to the Google registration page
+                response.sendRedirect("googleregister.jsp");
+                return;  // Important to return after redirect
+            } else if (user.getPassword().equals("")) {
+                // If the user exists but has an empty password, redirect to Google register
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", user);  // Make sure to keep the session
+                response.sendRedirect("googleregister.jsp");
+                return;
             }
         } else if (email != null && password != null) {
             // Manual login
@@ -63,12 +84,66 @@ public class LoginServlet extends HttpServlet {
         }
 
         if (user != null) {
-            // Save user information in session
+            // Check if the user status is "unverified"
+            if (user.getUser_Status().equals("unverified")) {
+                // Generate OTP
+                Random rand = new Random();
+                int otp = rand.nextInt(999999);
+
+                // Send the OTP to the user's email
+                sendOtpEmail(user.getEmail(), otp);
+
+                // Store OTP and email in session for validation later
+                HttpSession session = request.getSession();
+                session.setAttribute("otp", otp);
+                session.setAttribute("email", user.getEmail());
+                session.setAttribute("type", "login");  // Set type for login OTP
+
+                // Redirect to the OTP verification page
+                request.setAttribute("message", "OTP has been sent to your email. Please verify.");
+                request.getRequestDispatcher("enterotp.jsp").forward(request, response);
+                return;
+            }
+            if (user.getUser_Status().equals("Banned")) {
+                request.setAttribute("message", "Your account was banned");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+
+            // If user is verified, proceed with login
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-
+//            request.getRequestDispatcher("/home").forward(request, response);
             // Redirect to the homepage or user dashboard
-            response.sendRedirect("welcome.jsp");
+            response.sendRedirect("home");
+            return;  // Important to return after forward
+        }
+    }
+
+    private void sendOtpEmail(String to, int otp) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("tourhubforlife@gmail.com", "zlnk ggii octx hbdf");
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("tourhubforlife@gmail.com"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("OTP for Email Verification");
+            message.setText("Your OTP is: " + otp);
+            Transport.send(message);
+            System.out.println("OTP email sent successfully.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 
@@ -86,6 +161,6 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Handles Google and manual login";
+        return "Handles Google and manual login, including OTP for unverified users";
     }
 }

@@ -3,7 +3,7 @@
 <%@ page import="DataAccess.UserDB"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<jsp:useBean id="currentUser" class="model.User" scope="session" />
+<%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -19,11 +19,9 @@
         <title>User Profile</title>
     </head>
     <body>
-
-
         <!-- SIDEBAR -->
         <section id="sidebar">
-            <a href="index.jsp" class="brand">
+            <a href="home" class="brand">
                 <i class='bx bxs-smile'></i>
                 <span class="text">TourHub</span>
             </a>
@@ -34,30 +32,68 @@
                         <span class="text">User Information</span>
                     </a>
                 </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="pending-bookings">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">Manage Booking</span>
+                        </a>
+                    </li>
+                </c:if>
+                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                    <li>
+                        <a href="booking">
+                            <i class='bx bxs-shopping-bag-alt' ></i>
+                            <span class="text">My Booking</span>
+                        </a>
+                    </li>
+                </c:if>
                 <li>
-                    <a href="user-booking.jsp">
-                        <i class='bx bxs-shopping-bag-alt' ></i>
-                        <span class="text">My Booking</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
+                    <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots' ></i>
                         <span class="text">Message</span>
                     </a>
-                </li>
-                <%-- <li>
-                    <a href="#">
-                        <i class='bx bxs-doughnut-chart' ></i>
-                        <span class="text">Analytics</span>
-                    </a>
-                </li>
+                </li>    
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li class="">
+                        <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
+                            <i class='bx bxs-dashboard' ></i>
+                            <span class="text">Dashboard</span>
+                        </a>
+                    </li>   
+                    <li class="dropdown-btn">
+                        <a href="my-tour">
+                            <i class='bx bxs-briefcase-alt' ></i>
+                            <span class="text">My Tour</span>
+                        </a>
+                    </li>   
+                    <li>
+                        <a href="payment.jsp">
+                            <i class='bx bxs-credit-card'></i>
+                            <span class="text">Payment</span>
+                        </a>
+                    </li> 
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
+                </c:if>                
+                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                    <li>
+                        <a href="reviewtour.jsp">
+                            <i class='bx bxs-star'></i>
+                            <span class="text">Review Tours</span>
+                        </a>
+                    </li>
+                </c:if>
                 <li>
-                    <a href="#">
-                        <i class='bx bxs-group' ></i>
-                        <span class="text">Team</span>
+                    <a href="reviewtour.jsp">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
                     </a>
-                </li> --%>
+                </li>
             </ul>
             <ul class="side-menu">
                 <li>
@@ -105,25 +141,37 @@
 
             <!-- MAIN -->
             <main>
-
-
                 <div class="table-data">
                     <div class="order">
                         <div class="head">
                             <h3>User Information</h3>
                         </div>
                         <!-- Enter data here -->
-
                         <c:choose>
-                            <c:when test="${currentUser == null}">
-                                <c:redirect url="index.jsp" />
+                            <c:when test="${sessionScope.currentUser == null}">
+                                <c:redirect url="home" />
                             </c:when>
                             <c:otherwise>
                                 <div class="profile-card">
                                     <div>
                                         <div class="profile-info">
-                                            <label>Username:</label>
-                                            <p><span>${currentUser.username}</span></p>
+                                            <label>Full Name:</label>
+                                            <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Email:</label>
+                                            <p><span>${sessionScope.currentUser.email}</span></p>
+                                            <form class="changeform" action="user-updateinfo.jsp" method="get">
+                                                <button type="submit" name="buttonChange" value="email">Change email</button>
+                                            </form>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Phone Number:</label>
+                                            <p><span>${currentUser.phone}</span></p>
+                                        </div>
+                                        <div class="profile-info">
+                                            <label>Address:</label>
+                                            <p><span>${currentUser.address}</span></p>
                                         </div>
                                         <div class="profile-info">
                                             <label>Password:</label>
@@ -134,25 +182,6 @@
                                             <form class="changeform" action="user-updateinfo.jsp" method="get">
                                                 <button type="submit" name="buttonChange" value="pass">Change password</button>
                                             </form>
-                                        </div>
-                                        <div class="profile-info">
-                                            <label>Email:</label>
-                                            <p><span>${currentUser.email}</span></p>
-                                            <form class="changeform" action="user-updateinfo.jsp" method="get">
-                                                <button type="submit" name="buttonChange" value="email">Change email</button>
-                                            </form>
-                                        </div>
-                                        <div class="profile-info">
-                                            <label>Full Name:</label>
-                                            <p><span>${currentUser.firstName} ${currentUser.lastName}</span></p>
-                                        </div>
-                                        <div class="profile-info">
-                                            <label>Phone Number:</label>
-                                            <p><span>${currentUser.phone}</span></p>
-                                        </div>
-                                        <div class="profile-info">
-                                            <label>Address:</label>
-                                            <p><span>${currentUser.address}</span></p>
                                         </div>
                                     </div>
                                     <div class="change-info-button">

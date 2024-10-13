@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  *
@@ -21,8 +20,9 @@ public class LogoutServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.getSession().removeAttribute("currentUser");
         request.getSession().invalidate(); // End the session
-        response.sendRedirect("login.jsp"); // Redirect to login page
+        response.sendRedirect("home"); // Redirect to index
     }
 
     @Override
