@@ -5,6 +5,7 @@
 package controller;
 
 import DataAccess.BookingDB;
+import DataAccess.FAQDB;
 import DataAccess.ReportErrorDB;
 import DataAccess.ThienDB;
 import DataAccess.TourDB;
@@ -16,8 +17,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
 import model.Booking;
+import model.FAQ;
 import model.ReportError;
 import model.Tour;
 import model.User;
@@ -52,7 +55,7 @@ public class ManagementServlet extends HttpServlet {
             case "tour-manage":
                 viewTourList(request, response);
                 break;
-                
+
             case "approve-tour":
                 tourManage(request, response);
                 break;
@@ -71,6 +74,18 @@ public class ManagementServlet extends HttpServlet {
 
             case "booking-manage":
                 viewBookingList(request, response);
+                break;
+
+            case "faq-manage":
+                viewFAQList(request, response);
+                break;
+
+            case "add-faq":
+                faqManage(request, response);
+                break;
+
+            case "delete-faq":
+                faqManage(request, response);
                 break;
 
             default:
@@ -119,7 +134,7 @@ public class ManagementServlet extends HttpServlet {
         System.out.println("Day là" + tourList);
         request.getRequestDispatcher("display.jsp").forward(request, response);
     }
-    
+
     protected void tourManage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -179,6 +194,68 @@ public class ManagementServlet extends HttpServlet {
         request.setAttribute("type", "booking");
         System.out.println("Day là" + bookingList);
         request.getRequestDispatcher("display.jsp").forward(request, response);
+    }
+
+    protected void viewFAQList(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        FAQDB faqDB = new FAQDB();
+        try {
+            List<FAQ> faqList = faqDB.getAllFAQs();
+            request.setAttribute("data", faqList);
+            request.setAttribute("type", "faq");
+            System.out.println("FAQ List: " + faqList);
+            request.getRequestDispatcher("display.jsp").forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("error", "Error retrieving FAQ list.");
+            response.sendRedirect("error.jsp");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("error", "An unexpected error occurred.");
+            response.sendRedirect("error.jsp");
+        }
+    }
+
+    protected void faqManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+        FAQDB faqDB = new FAQDB();
+
+        try {
+            if ("add-faq".equals(action)) {
+                String question = request.getParameter("question");
+                String answer = request.getParameter("answer");
+                FAQ newFAQ = new FAQ();
+                newFAQ.setQuestion(question);
+                newFAQ.setAnswer(answer);
+                faqDB.insertFAQ(newFAQ);
+                request.getSession().setAttribute("message", "FAQ added successfully!");
+            } else if ("delete-faq".equals(action)) {
+                int faqId = Integer.parseInt(request.getParameter("id"));
+                faqDB.deleteFAQ(faqId);
+                request.getSession().setAttribute("message", "FAQ deleted successfully!");
+            } else if ("update-faq".equals(action)) {
+                int faqId = Integer.parseInt(request.getParameter("id"));
+                String question = request.getParameter("question");
+                String answer = request.getParameter("answer");
+
+                FAQ updatedFAQ = new FAQ();
+                updatedFAQ.setFaqId(faqId);
+                updatedFAQ.setQuestion(question);
+                updatedFAQ.setAnswer(answer);
+                faqDB.updateFAQ(updatedFAQ);
+                request.getSession().setAttribute("message", "FAQ updated successfully!");
+            }
+            response.sendRedirect("manage?action=faq-manage");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("error", "Database error occurred while managing FAQs.");
+            response.sendRedirect("error.jsp");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("error", "An unexpected error occurred.");
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @Override
