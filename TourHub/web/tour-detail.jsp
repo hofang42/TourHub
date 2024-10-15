@@ -265,7 +265,7 @@
                                     <button class="save-btn">
                                         <i class="fa-regular fa-bookmark"></i>
                                     </button>
-                                    <button class="share-btn">
+                                    <button class="share-btn" onclick="sharePage()">
                                         <i class="fa-regular fa-share-from-square"></i>
                                     </button>
                                 </div>
@@ -554,7 +554,7 @@
                                     <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
                                     <div class="option-price-section">
                                         <div class="option-price">${option.option_Price}</div>
-                                        <button class="option-pick-btn" onclick="window.location.href='optionAdjustment?id=${option.option_Id}'">Chọn vé</button>
+                                        <button class="option-pick-btn" onclick="window.location.href = 'optionAdjustment?id=${option.option_Id}'">Chọn vé</button>
                                     </div>
                                 </div>                            
                             </div>
@@ -1069,6 +1069,14 @@
                 });
             });
         });
+    </script>
+    <script>
+        function sharePage() {
+            var pageUrl = encodeURIComponent(window.location.href); // Get the current page URL
+            var facebookShareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + pageUrl;
+            // Open the share URL in a new window
+            window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
+        }
     </script>
 </body>
 

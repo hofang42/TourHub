@@ -44,7 +44,25 @@ public class GoogleRegisterServlet extends HttpServlet {
         // Cập nhật session
         session.setAttribute("currentUser", user);
 
-        // Redirect tới trang chính sau khi hoàn thành
-        response.sendRedirect("home");
+        // Kiểm tra role và điều hướng
+        if ("Customer".equalsIgnoreCase(role)) {
+            UserDB customerDB = new UserDB();
+            if (!customerDB.hasCustomerInfo(user.getUser_Id())) {
+                // Nếu chưa có thông tin customer thì điều hướng tới customerinfo.jsp
+                response.sendRedirect("customerinfo.jsp");
+            } else {
+                response.sendRedirect("home");
+            }
+        } else if ("provider".equalsIgnoreCase(role)) {
+            if (!userDB.hasCompanyInfo(user.getUser_Id())) {
+                // Nếu chưa có thông tin company thì điều hướng tới companyinfo.jsp
+                response.sendRedirect("companyinfo.jsp");
+            } else {
+                response.sendRedirect("home");
+            }
+        } else {
+            // Nếu role không hợp lệ, điều hướng về trang chủ
+            response.sendRedirect("home");
+        }
     }
 }
