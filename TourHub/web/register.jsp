@@ -9,6 +9,29 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Register Page</title>
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <style>
+            body {
+                background-image: url('https://golden-lotus-hotel.s3.ap-southeast-1.amazonaws.com/uploads/2021/04/013d407166ec4fa56eb1e1f8cbe183b9/images1089892_1.jpg');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .container {
+                background-color: rgba(255, 255, 255, 0.8);
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .form-control, .form-floating {
+                background-color: rgba(255, 255, 255, 0.8) !important;
+            }
+        </style>
     </head>
     <body>
         <section class="py-3 py-md-5 py-xl-8">
