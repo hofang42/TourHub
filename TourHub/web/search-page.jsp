@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <!DOCTYPE html>
 <html class="wide wow-animation" lang="en">
     <head>
@@ -28,7 +30,7 @@
         <link rel="stylesheet" href="assests/css/style.css" />
         <link rel="stylesheet" href="assests/css/fonts.css" />
         <link rel="stylesheet" href="assests/css/index.css" />
-        <link rel="stylesheet" href="assests/css/search-page.css" />
+        <link rel="stylesheet" href="assests/css/search-page.css" />        
 
         <!-- Owl Carousel CSS -->
         <link
@@ -98,6 +100,9 @@
           </div>
           <script src="js/html5shiv.min.js"></script>
         <![endif]-->
+        <style>
+           
+        </style>
     </head>
 </html>
 
@@ -225,9 +230,10 @@
                         <i class="fa-solid fa-caret-down"></i>
                     </button>
 
-                    <input class="search-box" type="text" placeholder="Any ideas on what to do for your next trip?"/>
-                </div>
 
+                    <input class="search-box" type="text" id="input-box" placeholder="Any ideas on what to do for your next trip?" autocomplete="off"> 
+                    <div class="result-box" id="result-box"></div>
+                </div>
                 <div class="location-popup" id="popup">
 
                     <div class="popup-content">
@@ -564,6 +570,7 @@
 
 
         </script>
+        <script src="assests/js/searchpage-test.js"></script>
 </body>
 
 <%@include file="includes/footer.jsp" %>

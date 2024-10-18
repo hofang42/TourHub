@@ -24,6 +24,20 @@
 
 
         <title>Analytic</title>
+        <style>
+            .head button {
+                border-radius: 20px; /* Add border radius to the button */
+                padding: 8px 15px; /* Optional: Adjust padding for better appearance */
+                background-color: #ff5722; /* Optional: Set background color for button */
+                color: #fff; /* Optional: Set text color for button */
+                border: none; /* Optional: Remove default border */
+                cursor: pointer; /* Optional: Change cursor to pointer on hover */
+            }
+
+            .head button:hover {
+                background-color: #e64a19; /* Optional: Darken button on hover */
+            }
+        </style>
     </head>
     <body>
 
@@ -149,6 +163,9 @@
                     <div class="order">
                         <div class="head">
                             <h3>Dashboard</h3>
+                            <div>
+                                <button>Export File</button>
+                            </div>
                         </div>
 
                         <c:choose>

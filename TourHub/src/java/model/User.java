@@ -24,8 +24,8 @@ public class User {
     public User(int user_Id, String password, String first_Name, String last_Name, String phone, String email, String address, Date created_At, String user_Status, String role, String avatar) {
         this.user_Id = user_Id;
         this.password = password;
-        this.first_Name = firstName;
-        this.last_Name = lastName;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
         this.phone = phone;
         this.email = email;
         this.address = address;
@@ -40,8 +40,6 @@ public class User {
         this.first_Name = first_Name;
         this.last_Name = last_Name;
     }
-    
-    
 
     public int getUser_Id() {
         return user_Id;

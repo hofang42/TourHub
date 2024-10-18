@@ -5,6 +5,9 @@
 package controller;
 
 import DataAccess.KhanhDB;
+import DataAccess.TourDB;
+import DataAccess.hoang_UserDB;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -94,8 +97,11 @@ public class DisplayAllServlet extends HttpServlet {
 
         // Call the getAll method with the sorting, location, and price filters
         List<Tour> list = u.getAllTour(sortOrder, location, minPrice, maxPrice);
+        List<Tour> tours = new TourDB().getTours();
         request.setAttribute("data", list);
-
+        request.setAttribute("tours", tours);
+        response.setContentType("application/json");
+        response.getWriter().write(new Gson().toJson(tours));
         // Pass the sortOrder, location (or search query), and priceRange back to the JSP
         request.setAttribute("sortOrder", sortOrder);
         request.setAttribute("location", location);

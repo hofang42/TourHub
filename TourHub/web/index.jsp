@@ -277,7 +277,7 @@
             </div>                              
         </section>
 
-        <section class="section section-variant-1 bg-default novi-background bg-cover container ">
+        <section class="section section-variant-1 bg-default novi-background bg-cover" style="margin-top: 100px">
             <div class="container"> <!-- Make it full width -->
                 <div class="row justify-content-xl-end text-center text-xl-left">
                     <div class="col-xl-12"> <!-- Full width column -->
@@ -480,8 +480,8 @@
             });
             // Call the function on page load
             document.addEventListener('DOMContentLoaded', setProvinceLinks);
-            
-            
+
+
             var cpnBtns = document.querySelectorAll(".cpnBtn");
             var cpnCodes = document.querySelectorAll(".cpnCode");
 

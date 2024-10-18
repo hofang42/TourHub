@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function displaySearchs(result) {
     if (result.length > 0) {
         const content = result.map(item => {
-            return `<li onclick="selectInput(${item.tour_Id})" style="display: flex; align-items: center; margin-bottom: 10px;">
+            return `<li onclick="selectInput('${item.tour_Id}')" style="display: flex; align-items: center; margin-bottom: 10px;">
                         <div style="flex-shrink: 0;">
                             <img src="assests/images/tour-images/${item.tour_Img}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
                         </div>
@@ -119,7 +119,7 @@ function displayTours(city) {
         // Create the column div and set its classes
         const colDiv = document.createElement('div');
         colDiv.classList.add('col-md-6', 'col-xl-4');
-
+        colDiv.style.maxHeight = '450px';
         // Create the article element and set its class
         const article = document.createElement('article');
         article.classList.add('event-default-wrap');
@@ -191,9 +191,10 @@ function displayTours(city) {
         // Create the price span, set its content, and append it to the tour info div
         const priceSpan = document.createElement('span');
         priceSpan.classList.add('heading-5');
-        priceSpan.textContent = `${tour.price} VND`;
+        const price = tour.price;  // Assuming tour.price contains the price value
+        const formattedPrice = new Intl.NumberFormat('vi-VN').format(price);
+        priceSpan.textContent = `${formattedPrice} VND`;
         tourInfoDiv.appendChild(priceSpan);
-
         // Append the tour info div to the event default inner div
         eventDefaultInner.appendChild(tourInfoDiv);
 
@@ -255,7 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function selectInput(tourId) {
     // Redirect to the SearchTourByIdServlet with the selected tour ID
-    window.location.href = `displayTourDetail?tourId=${encodeURIComponent(tourId)}`;
+    window.location.href = `SearchTourByIdServlet?tourId=${encodeURIComponent(tourId)}`;
 }
 
 // Function to toggle dropdown visibility
