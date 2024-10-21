@@ -554,7 +554,10 @@
                                     <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
                                     <div class="option-price-section">
                                         <div class="option-price">${option.option_Price}</div>
-                                        <button class="option-pick-btn" onclick="window.location.href='optionAdjustment?id=${option.option_Id}'">Chọn vé</button>
+                                        <button class="option-pick-btn" 
+                                            onclick="window.location.href='optionAdjustment?id=${option.option_Id}&selectedDate=' + selectedDate.toISOString().split('T')[0]">
+                                            Chọn vé
+                                        </button>
                                     </div>
                                 </div>                            
                             </div>
