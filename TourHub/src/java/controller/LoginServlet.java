@@ -104,11 +104,16 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher("enterotp.jsp").forward(request, response);
                 return;
             }
+            if (user.getUser_Status().equals("Banned")) {
+                request.setAttribute("message", "Your account was banned");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
 
             // If user is verified, proceed with login
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-            //request.getRequestDispatcher("/home").forward(request, response);
+//            request.getRequestDispatcher("/home").forward(request, response);
             // Redirect to the homepage or user dashboard
             response.sendRedirect("home");
             return;  // Important to return after forward

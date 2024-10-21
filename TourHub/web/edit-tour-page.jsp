@@ -39,7 +39,6 @@
     </head>
     <body>
 
-
         <!-- SIDEBAR -->
         <section id="sidebar">
             <a href="home" class="brand">
@@ -166,8 +165,8 @@
 
                         <div class="table-data">
                             <div class="order">
-                                <h3 class="head">Add Tour</h3>
-                                <form action="tour-edit" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
+                                <h3 class="head">Edit Tour</h3>
+                                <form action="provider-management?action=save-edit-tour&tourId=${tour.tour_Id}" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
                                     <div class="form-group">
                                         <label for="tour_Name">Tour Name:</label>
                                         <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tour_Name}" required>

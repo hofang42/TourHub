@@ -6,7 +6,6 @@
 package controller;
 
 import DataAccess.KhanhDB;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,15 +13,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-import model.Tour;
-import model.TourOption;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Booking;
+
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name="TourDetailServlet", urlPatterns={"/displayTourDetail"})
-public class TourDetailServlet extends HttpServlet {
+@WebServlet(name="CustomerInformationServlet", urlPatterns={"/CustomerInformation"})
+public class CustomerInformationServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +40,10 @@ public class TourDetailServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet TourDetailServlet</title>");  
+            out.println("<title>Servlet CustomerInformationServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TourDetailServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CustomerInformationServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,20 +60,45 @@ public class TourDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String rawTourId = request.getParameter("id");
-        KhanhDB u = new KhanhDB();
+        // Lấy các thông tin từ request
+        KhanhDB khanhDB = new KhanhDB();
+        String fullname = request.getParameter("fullname");
+        String phone = request.getParameter("phone");
+        String email = request.getParameter("email");
+        String bookId = request.getParameter("bookId");
 
-        // Lấy thông tin tour
-        Tour tour = u.getTourById(rawTourId);
-        request.setAttribute("tour", tour);
+        // Kiểm tra nếu có thông tin bị thiếu hoặc rỗng
+        if (fullname == null || fullname.trim().isEmpty() || 
+            phone == null || phone.trim().isEmpty() ||
+            bookId == null || bookId.trim().isEmpty() ||
+            email == null || email.trim().isEmpty()) {
 
-        // Lấy danh sách TourOption
-        List<TourOption> tourOptions = u.getAllTourOptionsByTourId(rawTourId);
-        request.setAttribute("tourOptions", tourOptions); // Thêm tourOptions vào request
+            System.out.println("Cannot get customer information");
 
-        // Chuyển tiếp đến trang JSP
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/tour-detail.jsp");
-        dispatcher.forward(request, response);
+            // Phản hồi lỗi về phía client
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Thông tin không hợp lệ. Vui lòng điền đầy đủ thông tin.");
+            return; // Dừng lại nếu có lỗi
+        }
+
+        // Nếu thông tin hợp lệ, in ra console
+        System.out.println("Customer information: " + fullname + " " + phone + " " + email + " " + bookId);
+
+        // Xử lý thông tin (lưu vào database hoặc các tác vụ khác)
+        int converttedBookId = Integer.parseInt(bookId);
+        Booking book = new Booking();
+        try {
+            book = khanhDB.getBookingById(converttedBookId);
+            // Phản hồi thành công về client
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerInformationServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        response.setContentType("text/plain");
+        response.getWriter().write("Thông tin liên hệ đã được nhận!");
+        request.setAttribute("book", book);
+        request.getRequestDispatcher("/tour-pay.jsp").forward(request, response);
     } 
 
     /** 
@@ -85,8 +111,9 @@ public class TourDetailServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
+
 
     /** 
      * Returns a short description of the servlet.
