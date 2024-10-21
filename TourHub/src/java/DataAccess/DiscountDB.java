@@ -16,6 +16,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Discount;
 
 /**
@@ -40,23 +42,35 @@ public class DiscountDB implements DatabaseInfo {
     }
 
     // Get all discounts
-    public static List<Discount> getAllDiscounts() {
+    public static List<Discount> getDiscountsByCompanyId(int companyId) {
         List<Discount> discounts = new ArrayList<>();
-        String sql = "SELECT * FROM [Discount]";
 
-        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                int discountId = rs.getInt("discount_Id");
-                String code = rs.getString("code");
-                int quantity = rs.getInt("quantity");
-                double percentDiscount = rs.getDouble("percent_Discount");
-                Date startDay = rs.getDate("start_Day");
-                Date endDay = rs.getDate("end_Day");
-                String require = rs.getString("require");
-                String tourId = rs.getString("tour_Id");
+        // Giả sử rằng bảng Tour có cột companyId
+        String sql = "SELECT d.* FROM [Discount] d "
+                + "JOIN [Tour] t ON d.tour_Id = t.tour_Id "
+                + "WHERE t.company_Id = ?";
 
-                Discount discount = new Discount(discountId, code, quantity, percentDiscount, startDay, endDay, require, tourId);
-                discounts.add(discount);
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Thiết lập tham số cho companyId
+            ps.setInt(1, companyId);
+
+            // Thực hiện truy vấn và xử lý kết quả
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int discountId = rs.getInt("discount_Id");
+                    String code = rs.getString("code");
+                    int quantity = rs.getInt("quantity");
+                    double percentDiscount = rs.getDouble("percent_Discount");
+                    Date startDay = rs.getDate("start_Day");
+                    Date endDay = rs.getDate("end_Day");
+                    String require = rs.getString("require");
+                    String tourId = rs.getString("tour_Id");
+                    String description = rs.getString("description");
+
+                    Discount discount = new Discount(discountId, code, quantity, percentDiscount, startDay, endDay, require, tourId, description);
+                    discounts.add(discount);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,7 +93,8 @@ public class DiscountDB implements DatabaseInfo {
                         rs.getDate("start_Day"),
                         rs.getDate("end_Day"),
                         rs.getString("require"),
-                        rs.getString("tour_Id")
+                        rs.getString("tour_Id"),
+                        rs.getString("description")
                 );
             }
         } catch (SQLException e) {
@@ -99,7 +114,7 @@ public class DiscountDB implements DatabaseInfo {
             return false;
         }
 
-        String sql = "INSERT INTO [Discount] (code, quantity, percent_Discount, start_Day, end_Day, require, tour_Id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO [Discount] (code, quantity, percent_Discount, start_Day, end_Day, require, tour_Id, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, discount.getCode());
             ps.setInt(2, discount.getQuantity());
@@ -108,6 +123,7 @@ public class DiscountDB implements DatabaseInfo {
             ps.setDate(5, new java.sql.Date(discount.getEnd_Day().getTime()));
             ps.setString(6, discount.getRequire());
             ps.setString(7, discount.getTour_Id());
+            ps.setString(8, discount.getDescription());
 
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;
@@ -119,7 +135,7 @@ public class DiscountDB implements DatabaseInfo {
 
     // Update a discount
     public boolean updateDiscount(Discount discount) {
-        String sql = "UPDATE [Discount] SET code=?, quantity=?, percent_Discount=?, start_Day=?, end_Day=?, require=?, tour_Id=? WHERE discount_Id=?";
+        String sql = "UPDATE [Discount] SET code=?, quantity=?, percent_Discount=?, start_Day=?, end_Day=?, require=?, tour_Id=?, description=? WHERE discount_Id=?";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, discount.getCode());
             ps.setInt(2, discount.getQuantity());
@@ -128,7 +144,8 @@ public class DiscountDB implements DatabaseInfo {
             ps.setDate(5, new java.sql.Date(discount.getEnd_Day().getTime()));
             ps.setString(6, discount.getRequire());
             ps.setString(7, discount.getTour_Id());
-            ps.setInt(8, discount.getDiscount_Id());
+            ps.setString(8, discount.getDescription());
+            ps.setInt(9, discount.getDiscount_Id());
 
             int rowsUpdated = ps.executeUpdate();
             return rowsUpdated > 0;
@@ -179,4 +196,43 @@ public class DiscountDB implements DatabaseInfo {
         return false;
     }
 
+    public List<String> getTourIdsByCompanyId(int companyId) {
+        List<String> tourIds = new ArrayList<>();
+        String query = "SELECT tour_Id FROM Tour WHERE company_Id = ?";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setInt(1, companyId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String tourId = rs.getString("tour_Id");
+                    tourIds.add(tourId);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DiscountDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("Danh sách tour IDs: " + tourIds);
+        return tourIds;
+    }
+
+    public static void main(String[] args) {
+        int companyId = 2;
+
+        // Tạo đối tượng DiscountDB để gọi phương thức
+        DiscountDB discountDB = new DiscountDB();
+
+        // Gọi phương thức getTourIdsByCompanyId với companyId để lấy danh sách tour
+        List<String> tourIds = discountDB.getTourIdsByCompanyId(companyId);
+
+        // Kiểm tra và in ra danh sách tour ID
+        if (tourIds.isEmpty()) {
+            System.out.println("Không có tour nào cho companyId: " + companyId);
+        } else {
+            System.out.println("Danh sách tour ID cho companyId " + companyId + ":");
+            for (String tourId : tourIds) {
+                System.out.println(tourId);
+            }
+        }
+    }
 }

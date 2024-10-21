@@ -20,8 +20,9 @@ public class Discount {
     private Date end_Day;
     private String require;
     private String tour_Id;
+    private String description;
 
-    public Discount(int discount_Id, String code, int quantity, double percent_Discount, Date start_Day, Date end_Day, String require, String tour_Id) {
+    public Discount(int discount_Id, String code, int quantity, double percent_Discount, Date start_Day, Date end_Day, String require, String tour_Id, String description) {
         this.discount_Id = discount_Id;
         this.code = code;
         this.quantity = quantity;
@@ -30,9 +31,18 @@ public class Discount {
         this.end_Day = end_Day;
         this.require = require;
         this.tour_Id = tour_Id;
+        this.description = description;
     }
 
     public Discount() {
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getDiscount_Id() {
@@ -99,5 +109,4 @@ public class Discount {
         this.tour_Id = tour_Id;
     }
 
-    
 }
