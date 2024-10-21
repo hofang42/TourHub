@@ -230,7 +230,7 @@
                     <li>
                         <a href="payment.jsp">
                             <i class='bx bxs-credit-card'></i>
-                            <span class="text">Payment</span>
+                            <span class="text">Widthdraw</span>
                         </a>
                     </li> 
                     <li  class="active">
@@ -304,24 +304,38 @@
 
             <!-- MAIN -->
             <main>
-                <% 
-                String message = (String) request.getAttribute("message");
-                String error = (String) request.getAttribute("error");
-                if (message != null) { %>
-                <div class="alert alert-success">
-                    <%= message %>
+                <%
+    String errorMessage = (String) session.getAttribute("error");
+    String successMessage = (String) session.getAttribute("message");
+    
+    // Hiển thị thông báo lỗi nếu có
+    if (errorMessage != null) {
+                %> 
+                <div style="color:red; margin-bottom: 10px;">
+                    <%= errorMessage %>
                 </div>
-                <% } else if (error != null) { %>
-                <div class="alert alert-error">
-                    <%= error %>
+                <%
+                        // Xóa thông báo lỗi khỏi session để không hiển thị lại
+                        session.removeAttribute("error");
+                    }
+
+                    // Hiển thị thông báo thành công nếu có
+                    if (successMessage != null) {
+                %> 
+                <div style="color:green; margin-bottom: 10px;">
+                    <%= successMessage %>
                 </div>
-                <% } %>
+                <%
+                        // Xóa thông báo thành công khỏi session để không hiển thị lại
+                        session.removeAttribute("message");
+                    }
+                %>
 
                 <div class="table-data">
                     <div class="order">
                         <div class="head">
                             <h3>Manage Discounts</h3>
-                            <a href="create-discount.jsp" class="create-button">Create New Discount</a>
+                            <a href="create-discount" class="create-button">Create New Discount</a>
                         </div>
                         <table>
                             <thead>
@@ -333,6 +347,7 @@
                                     <th>End Day</th>
                                     <th>Require</th>
                                     <th>Tour ID</th>
+                                    <th>Description</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -350,8 +365,9 @@
                                     <td><%= discount.getEnd_Day() %></td>
                                     <td><%= discount.getRequire() %></td>
                                     <td><%= discount.getTour_Id() %></td>
+                                    <td><%= discount.getDescription() %></td>
                                     <td>
-                                        <form action="discount" method="get" style="display: inline-block; margin-right: 10px;">
+                                        <form action="edit-discount" method="get" style="display: inline-block; margin-right: 10px;">
                                             <input type="hidden" name="action" value="edit">
                                             <input type="hidden" name="id" value="<%= discount.getDiscount_Id() %>">
                                             <button type="submit" class="btn btn-primary">Edit</button>

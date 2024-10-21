@@ -699,34 +699,34 @@
         }, true);
     </script>
 
-    <script>
-        // Biến lưu ngày được chọn, mặc định là ngày hiện tại
-        let selectedDate = new Date();
+    <% 
+        // Get the previous selected date from the request attribute
+        String previousSelectedDate = (String) request.getAttribute("previousSelectedDate");
+    %>
 
-        // Function để hiển thị 14 ngày với ngày hiện tại hoặc đã chọn ở giữa
-        // Function để hiển thị 14 ngày với ngày hiện tại hoặc đã chọn ở giữa
+    <script>
+        // Convert the previousSelectedDate from the server into a JavaScript Date object
+        let previousSelectedDate = '<%= previousSelectedDate != null ? previousSelectedDate : "" %>';
+        let selectedDate = previousSelectedDate ? new Date(previousSelectedDate) : new Date(); // If no date is passed, use the current date
+
+        // Function to display the date range and filter options
         function displayDateRange(centerDate) {
             const daysOfWeek = ['Chu nhat', 'Thu hai', 'Thu ba', 'Thu tu', 'Thu nam', 'Thu sau', 'Thu bay'];
 
-            // Tìm tất cả các phần tử .date-container
             let dateContainers = document.querySelectorAll('.date-container');
 
-            // Vòng lặp để tạo 14 ngày
             for (let i = 0; i < 14; i++) {
                 let date = new Date(centerDate);
-                date.setDate(centerDate.getDate() + i); // Hiển thị 7 ngày trước và 7 ngày sau
+                date.setDate(centerDate.getDate() + i);
 
                 let dayOfWeek = daysOfWeek[date.getDay()];
                 let formattedDate = date.getDate() + ' thg ' + (date.getMonth() + 1);
 
-                // Cập nhật nội dung của phần tử date-container
                 dateContainers[i].querySelector('[data-dayofweek]').innerText = dayOfWeek;
                 dateContainers[i].querySelector('[data-formatteddate]').innerText = formattedDate;
 
-                // Cập nhật sự kiện onclick với giá trị ngày mới
-                dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString()); // Sử dụng hàm mũi tên
+                dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString());
 
-                // Đặt class selected cho ngày hiện tại
                 if (i === 0) {
                     dateContainers[i].classList.add('selected');
                 } else {
@@ -734,9 +734,7 @@
                 }
             }
 
-            // Cập nhật biến selectedDate thành ngày đã chọn
             selectedDate = centerDate;
-            
             filterTourOptions(selectedDate);
         }
 
@@ -778,6 +776,7 @@
 
         // Hàm để định dạng ngày theo yêu cầu
         function formatDateToDisplay(date) {
+            const daysOfWeek = ['Chu nhat', 'Thu hai', 'Thu ba', 'Thu tu', 'Thu nam', 'Thu sau', 'Thu bay'];
             let dayOfWeek = daysOfWeek[date.getDay()];
             let formattedDate = dayOfWeek + ', ' + date.getDate() + ' thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
             return formattedDate;
@@ -828,13 +827,13 @@
             }).open();
         }
 
-        // Khi trang tải, hiển thị dải ngày với ngày đầu tiên là ngày hiện tại
+        // Display the date range on page load
         window.onload = function () {
-            displayDateRange(new Date());
+            displayDateRange(selectedDate);
 
-            // Hiển thị ngày mặc định trong selected-date
+            // Display the selected date in the desired format
             let selectedDateElement = document.querySelector('.selected-date');
-            selectedDateElement.innerText = formatDateToDisplay(new Date()); // Ngày hiện tại với định dạng mong muốn
+            selectedDateElement.innerText = formatDateToDisplay(selectedDate);
         };
     </script>
 

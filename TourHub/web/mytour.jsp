@@ -92,7 +92,7 @@
                     <li>
                         <a href="payment.jsp">
                             <i class='bx bxs-credit-card'></i>
-                            <span class="text">Payment</span>
+                            <span class="text">Widthdraw</span>
                         </a>
                     </li> 
                     <li>
@@ -159,15 +159,25 @@
                         <form action="provider-management?action=search" method="POST">
                             <div class="form-input-custom">
                                 <input type="search" name="tour-edit" class="search-field-custom tour-edit" 
-                                       placeholder="Enter tourID to find tour you want to edit">
+                                       placeholder="Enter tourID or tour name to find tour you want to edit">
                                 <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                             </div>
                         </form>
                         <!-- Add New Tour Button -->
-                        <div style="margin-top: 10px;">
-                            <form action="add-tour.jsp" method="GET">
-                                <button type="submit" class="button button-primary">Add New Tour</button>
-                            </form>
+                        <div style="display: flex; justify-content: space-between; align-items: center">
+                            <div style="margin-top: 10px;">
+                                <form action="add-tour.jsp" method="GET">
+                                    <button type="submit" class="button button-primary">Add New Tour</button>
+                                </form>
+                            </div>
+                            <div class="sort-options">
+                                <label for="sortOrder">Sort by:</label>
+                                <select id="sortOrder" name="sortOrder" onchange="sortTours()">
+                                    <option value="most-booking" ${param.sortOrder == 'most-booking' ? 'selected' : ''}>Most Booking</option>
+                                    <option value="price-asc" ${param.sortOrder == 'price-asc' ? 'selected' : ''}>Lowest Price</option>
+                                    <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected' : ''}>Highest Price</option>
+                                </select>
+                            </div>
                         </div>
                         <!-- Error Message Display -->
                         <c:if test="${not empty errorMessage}">
@@ -181,51 +191,54 @@
                             <div class="table-data">
                                 <div class="order">
                                     <div class="row row-50">
-                                        <div class="col-md-6 col-xl-4">
-                                            <article class="event-default-wrap">
-                                                <c:choose>
-                                                    <c:when test="${tourEdit.tour_Status == 'Hidden'}">
-                                                        <div class="event-default darken-effect>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <div class="event-default  no-blur-effect">
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                    <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                        <img src="./assests/images/provinces/danang.jpg" alt="${tourEdit.tour_Name}" style="width: 100%; height: auto;">
-                                                        <div class="event-default-caption">
-                                                            <!-- Ensure tourId is valid -->
-                                                            <a href="provider-management?action=edit-tour&tourId=${tourEdit.tour_Id}" 
-                                                               class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                               style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                                Edit
-                                                            </a>
-                                                            <c:if test="${tourEdit.tour_Status == 'Active'}">
-                                                                <a href="provider-management?action=set-tour-status&tourId=${tourEdit.tour_Id}&status=Hidden"
+                                        <c:forEach var="tourEdit" items="${tourEdit}">
+                                            <div class="col-md-6 col-xl-4">
+
+                                                <article class="event-default-wrap">
+                                                    <c:choose>
+                                                        <c:when test="${tourEdit.tour_Status == 'Hidden'}">
+                                                            <div class="event-default darken-effect>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="event-default  no-blur-effect">
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                        <figure class="event-default-image" style="max-width: 250px; margin: auto;">
+                                                            <img src="./assests/images/provinces/danang.jpg" alt="${tourEdit.tour_Name}" style="width: 100%; height: auto;">
+                                                            <div class="event-default-caption">
+                                                                <!-- Ensure tourId is valid -->
+                                                                <a href="provider-management?action=edit-tour&tourId=${tourEdit.tour_Id}" 
                                                                    class="button button-xs button-secondary button-nina tour-visit-count" 
                                                                    style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                                    Hidden
+                                                                    Edit
                                                                 </a>
-                                                            </c:if>
-                                                            <c:if test="${tourEdit.tour_Status == 'Hidden'}">
-                                                                <a href="provider-management?action=set-tour-status&tourId=${tourEdit.tour_Id}&status=Active" 
-                                                                   class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                   style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                                    Active
-                                                                </a>
-                                                            </c:if>
-                                                        </div>
-                                                    </figure>
-                                                </div>
-                                                <div class="event-default-inner">
-                                                    <div>
-                                                        <h5>
-                                                            <a href="provider-management?action=edit-tour&tourId=${tourEdit.tour_Id}" class="event-default-title">${tourEdit.tour_Name}</a>
-                                                        </h5>
+                                                                <c:if test="${tourEdit.tour_Status == 'Active'}">
+                                                                    <a href="provider-management?action=set-tour-status&tourId=${tourEdit.tour_Id}&status=Hidden"
+                                                                       class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                       style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                        Hidden
+                                                                    </a>
+                                                                </c:if>
+                                                                <c:if test="${tourEdit.tour_Status == 'Hidden'}">
+                                                                    <a href="provider-management?action=set-tour-status&tourId=${tourEdit.tour_Id}&status=Active" 
+                                                                       class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                       style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                        Active
+                                                                    </a>
+                                                                </c:if>
+                                                            </div>
+                                                        </figure>
                                                     </div>
-                                                </div>
-                                            </article>
-                                        </div>
+                                                    <div class="event-default-inner">
+                                                        <div>
+                                                            <h5>
+                                                                <a href="provider-management?action=edit-tour&tourId=${tourEdit.tour_Id}" class="event-default-title">${tourEdit.tour_Name}</a>
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            </div>
+                                        </c:forEach>
                                     </div>
                                 </div>
                             </div>
@@ -302,18 +315,18 @@
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const burger = document.querySelector('.burger');
-                const navigation = document.querySelector('.navigation-admin');
-                const main = document.querySelector('.main-admin');
-                const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const burger = document.querySelector('.burger');
+                                        const navigation = document.querySelector('.navigation-admin');
+                                        const main = document.querySelector('.main-admin');
+                                        const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                burger.addEventListener('click', function () {
-                    navigation.classList.toggle('active');
-                    main.classList.toggle('active');
-                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                });
-            });
+                                        burger.addEventListener('click', function () {
+                                            navigation.classList.toggle('active');
+                                            main.classList.toggle('active');
+                                            profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                        });
+                                    });
 
 
         </script>
@@ -333,6 +346,11 @@
                         document.querySelector("#bookingThisMonthValue").innerHTML = data.bookingThisMonth || 0;
                     }
                 });
+            }
+            function sortTours() {
+                const sortOrder = document.getElementById('sortOrder').value;
+                const location = new URLSearchParams(window.location.search).get('location') || 'All'; // Retain the current location filter if present
+                window.location.href = 'provider-management?action=sort&sortOrder=' + sortOrder;
             }
         </script>
 

@@ -199,7 +199,7 @@
                                         </div>
                                         <div class="search-container">
                                             <span class="icon">🔍</span>
-                                            <span class="search-text">Tìm <strong id="search-keyword"></strong></span>
+                                            <span class="search-text">Find <strong id="search-keyword"></strong></span>
                                             <span class="arrow"><a href="#" id="search-link">→</a></span>
                                         </div>
                                         <div class="result-box">                                               
@@ -277,7 +277,7 @@
             </div>                              
         </section>
 
-        <section class="section section-variant-1 bg-default novi-background bg-cover container ">
+        <section class="section section-variant-1 bg-default novi-background bg-cover" style="margin-top: 100px">
             <div class="container"> <!-- Make it full width -->
                 <div class="row justify-content-xl-end text-center text-xl-left">
                     <div class="col-xl-12"> <!-- Full width column -->
@@ -403,8 +403,7 @@
         %>
         <script>
             const toursJson = "<%= encodedToursJson %>";
-            const tours = JSON.parse(toursJson); // Parse the JSON string  
-            console.log(tours);
+            const tours = JSON.parse(toursJson); // Parse the JSON string              
         </script>
         <script>
             // Extract the query parameter from the URL
@@ -480,8 +479,8 @@
             });
             // Call the function on page load
             document.addEventListener('DOMContentLoaded', setProvinceLinks);
-            
-            
+
+
             var cpnBtns = document.querySelectorAll(".cpnBtn");
             var cpnCodes = document.querySelectorAll(".cpnCode");
 

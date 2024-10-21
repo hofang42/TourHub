@@ -162,24 +162,23 @@
                     <div class="order">
                         <h3 class="head">Add Tour</h3>
                         <form action="provider-management?action=add-tour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
-                            <div class="form-group">
-                                <label for="tour_Name">Tour Name:</label>
+                            <div class="form-group required">
+                                <label for="tour_Name">Tour Name: <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" required>
                             </div>
-                            <div class="form-group">
-                                <label for="tour_Description">Tour Description:</label>
+                            <div class="form-group required">
+                                <label for="tour_Description">Tour Description: <span style="color: red;">*</span></label>
                                 <textarea class="form-control" id="tour_Description" name="tour_Description" rows="4" required style="width: 100%; resize: vertical;"></textarea>
                             </div>
-                            <div class="form-group">
-                                <label for="start_Date">Start Date:</label>
+                            <div class="form-group required">
+                                <label for="start_Date">Start Date: <span style="color: red;">*</span></label>
                                 <input type="date" class="form-control" id="start_Date" name="start_Date" required onchange="calculateDuration()">
                             </div>
-                            <div class="form-group">
-                                <label for="end_Date">End Date:</label>
+                            <div class="form-group required">
+                                <label for="end_Date">End Date: <span style="color: red;">*</span></label>
                                 <input type="date" class="form-control" id="end_Date" name="end_Date" required onchange="calculateDuration()">
                             </div>
-
-                            <div class="form-group">
+                            <div class="form-group required">
                                 <label for="total_Time">Duration</label>
                                 <div class="d-flex align-items-center">
                                     <div class="mr-3">
@@ -190,27 +189,27 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="location">Location:</label>
+                            <div class="form-group required">
+                                <label for="location">Location: <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
-                            </div>                          
-                            <div class="form-group">
-                                <label for="price">Price:</label>
+                            </div>
+                            <div class="form-group required">
+                                <label for="price">Price: <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control" id="price" name="price" required>
                             </div>
-                            <div class="form-group">
-                                <label for="slot">Slot:</label>
+                            <div class="form-group required">
+                                <label for="slot">Slot: <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control" id="slot" name="slot" required>
                             </div>
-                            <div class="form-group">
-                                <label for="tour_Img">Tour Images:</label>
+                            <div class="form-group required">
+                                <label for="tour_Img">Tour Images: <span style="color: red;">*</span></label>
                                 <input type="file" class="form-control-file" id="tour_Img" name="tour_Img" multiple required>
                                 <small class="form-text text-muted">Upload image files (JPG, PNG, etc.), each not exceeding 2MB.</small>
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-block">Add Tour</button>
-
                         </form>
+
                     </div>
                 </div>
             </main>          

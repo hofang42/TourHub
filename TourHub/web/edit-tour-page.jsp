@@ -166,21 +166,21 @@
                         <div class="table-data">
                             <div class="order">
                                 <h3 class="head">Edit Tour</h3>
-                                <form action="provider-management?action=save-edit-tour&tourId=${tour.tour_Id}" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
+                                <form action="provider-management?action=save-edit-tour&tourId=${tour.tour_Id}" method="POST" enctype="multipart/form-data">
                                     <div class="form-group">
-                                        <label for="tour_Name">Tour Name:</label>
+                                        <label for="tour_Name">Tour Name: <span style="color: red;">*</span></label>
                                         <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tour_Name}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="tour_Description">Tour Description:</label>
+                                        <label for="tour_Description">Tour Description: <span style="color: red;">*</span></label>
                                         <textarea class="form-control" id="tour_Description" name="tour_Description" rows="4" required style="width: 100%; resize: vertical;">${tour.tour_Description}</textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label for="start_Date">Start Date:</label>
+                                        <label for="start_Date">Start Date: <span style="color: red;">*</span></label>
                                         <input type="date" class="form-control" id="start_Date" name="start_Date" value="${tour.start_Date}" required onchange="calculateDuration()">
                                     </div>
                                     <div class="form-group">
-                                        <label for="end_Date">End Date:</label>
+                                        <label for="end_Date">End Date: <span style="color: red;">*</span></label>
                                         <input type="date" class="form-control" id="end_Date" name="end_Date" value="${tour.end_Date}" required onchange="calculateDuration()">
                                     </div>
                                     <div class="form-group">
@@ -197,23 +197,23 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="location">Location:</label>
+                                        <label for="location">Location: <span style="color: red;">*</span></label>
                                         <input type="text" class="form-control" id="location" name="location" value="${tour.location}" maxlength="50" required>
-                                    </div>                          
+                                    </div>
                                     <div class="form-group">
-                                        <label for="price">Price:</label>
+                                        <label for="price">Price: <span style="color: red;">*</span></label>
                                         <input type="number" class="form-control" id="price" name="price" value="${tour.price}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="slot">Slot:</label>
+                                        <label for="slot">Slot: <span style="color: red;">*</span></label>
                                         <input type="number" class="form-control" id="slot" name="slot" value="${tour.slot}" required>
-                                    </div>    
+                                    </div>
                                     <div class="form-group">
-                                        <label for="day">Status:</label>
+                                        <label for="status">Status:</label>
                                         <input type="text" class="form-control" id="status" name="status" value="${tour.tour_Status}" readonly>
-                                    </div>  
-                                    <button type="submit" class="btn btn-primary btn-block">Save</button>  
-                                </form>   
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Save</button>
+                                </form>
                             </c:otherwise>
                         </c:choose>
                     </div>

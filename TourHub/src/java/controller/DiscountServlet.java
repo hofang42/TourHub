@@ -1,6 +1,8 @@
 
 import DataAccess.DiscountDB;
 import DataAccess.UserDB;
+import DataAccess.hoang_UserDB;
+import controller.ProviderTourServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,7 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Discount;
 import model.User;
 
@@ -19,12 +24,12 @@ public class DiscountServlet extends HttpServlet {
     private final DiscountDB DiscountDB = new DiscountDB();
 
     @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
 
         // Check if the user is Admin or Provider
-        if (currentUser != null && ("Admin".equals(currentUser.getRole()) || "Provider".equals(currentUser.getRole()))) {
+        if (currentUser != null && ("Provider".equals(currentUser.getRole()))) {
             String action = request.getParameter("action");
 
             if (action == null) {
@@ -79,9 +84,21 @@ public class DiscountServlet extends HttpServlet {
 
     // Common method to list all discounts
     private void listDiscounts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Discount> listDiscount = DiscountDB.getAllDiscounts();
-        request.setAttribute("listDiscount", listDiscount);
-        request.getRequestDispatcher("manage-discounts.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("currentUser");
+
+        // Kiểm tra người dùng đã đăng nhập và có vai trò là Provider
+        if (currentUser != null && "Provider".equals(currentUser.getRole())) {
+            int companyId = 0;
+            try {
+                companyId = new hoang_UserDB().getProviderIdFromUserId(currentUser.getUser_Id());
+            } catch (SQLException ex) {
+                Logger.getLogger(ProviderTourServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            List<Discount> listDiscount = DiscountDB.getDiscountsByCompanyId(companyId);
+            request.setAttribute("listDiscount", listDiscount);
+            request.getRequestDispatcher("manage-discounts.jsp").forward(request, response);
+        }
     }
 
     // Shows the form to create a new discount
@@ -109,18 +126,36 @@ public class DiscountServlet extends HttpServlet {
     private void insertDiscount(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             Discount discount = getDiscountFromRequest(request);
+
+            // Kiểm tra xem startDate không được trễ hơn endDate
+            if (discount.getStart_Day().after(discount.getEnd_Day())) {
+                throw new IllegalArgumentException("Start date cannot be after end date.");
+            }
+
+            // Kiểm tra mã giảm giá đã tồn tại
             if (DiscountDB.isDiscountCodeExists(discount.getCode())) {
                 throw new IllegalArgumentException("Discount code already exists!");
             }
+
+            // Kiểm tra tour ID có tồn tại không
             if (!DiscountDB.isTourIdExists(discount.getTour_Id())) {
                 throw new IllegalArgumentException("Tour ID does not exist!");
             }
+
+            // Chèn discount vào cơ sở dữ liệu
             DiscountDB.insertDiscount(discount);
-            request.setAttribute("message", "Discount created successfully!");
-            listDiscounts(request, response);
+
+            // Đặt thông báo thành công vào session
+            request.getSession().setAttribute("message", "Discount created successfully!");
+
+            // Chuyển hướng đến trang quản lý discount
+            response.sendRedirect("discount");
         } catch (IllegalArgumentException e) {
-            request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("create-discount.jsp").forward(request, response);
+            // Đặt thông báo lỗi vào session
+            request.getSession().setAttribute("error", e.getMessage());
+
+            // Chuyển hướng đến trang tạo mã giảm giá
+            response.sendRedirect("create-discount");
         }
     }
 
@@ -131,15 +166,44 @@ public class DiscountServlet extends HttpServlet {
             if (discountId == -1) {
                 return;
             }
+
+            // Lấy thông tin mã giảm giá từ request
             Discount discount = getDiscountFromRequest(request);
             discount.setDiscount_Id(discountId);
 
+            // Lấy mã giảm giá hiện tại từ cơ sở dữ liệu
+            String currentCode = DiscountDB.getDiscountById(discountId).getCode();
+
+            // Kiểm tra nếu mã mới khác với mã hiện tại và mã đó đã tồn tại
+            if (!currentCode.equals(discount.getCode()) && DiscountDB.isDiscountCodeExists(discount.getCode())) {
+                throw new IllegalArgumentException("Discount code already exists!");
+            }
+
+            // Kiểm tra tour ID có tồn tại không
+            if (!DiscountDB.isTourIdExists(discount.getTour_Id())) {
+                throw new IllegalArgumentException("Tour ID does not exist!");
+            }
+
+            // Kiểm tra xem startDate không được trễ hơn endDate
+            if (discount.getStart_Day().after(discount.getEnd_Day())) {
+                throw new IllegalArgumentException("Start date cannot be after end date.");
+            }
+
+            // Cập nhật discount vào cơ sở dữ liệu
             DiscountDB.updateDiscount(discount);
-            request.setAttribute("message", "Discount updated successfully!");
-            listDiscounts(request, response);
+
+            // Đặt thông báo thành công vào session
+            request.getSession().setAttribute("message", "Discount updated successfully!");
+
+            // Chuyển hướng đến trang quản lý discount
+            response.sendRedirect("discount");
+
         } catch (IllegalArgumentException e) {
-            request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("create-discount.jsp").forward(request, response);
+            // Đặt thông báo lỗi vào session
+            request.getSession().setAttribute("error", e.getMessage());
+
+            // Chuyển hướng đến trang chỉnh sửa mã giảm giá
+            response.sendRedirect("edit-discount?id=" + request.getParameter("id"));
         }
     }
 
@@ -199,12 +263,15 @@ public class DiscountServlet extends HttpServlet {
             throw new IllegalArgumentException("Discount percentage cannot be negative.");
         }
         String require = request.getParameter("require");
+        if (require == null || require.isEmpty()) {
+            throw new IllegalArgumentException("You must select the required number of order slots.");
+        }
         String tourId = request.getParameter("tourId");
-
+        String description = request.getParameter("description");
         Date startDate = parseDate(request.getParameter("startDate"));
         Date endDate = parseDate(request.getParameter("endDate"));
 
-        return new Discount(0, code, quantity, percentDiscount, startDate, endDate, require, tourId);
+        return new Discount(0, code, quantity, percentDiscount, startDate, endDate, require, tourId, description);
     }
 
 }

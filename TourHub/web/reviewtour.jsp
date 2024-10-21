@@ -106,7 +106,16 @@ f<%@ page import="java.util.List" %>
                 session.removeAttribute("reviewSuccess");
                 }
             %>
-
+            <div class="container mt-3">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="reviewtour.jsp">Review Tours</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="myreview.jsp">My Reviews</a>
+                    </li>
+                </ul>
+            </div>
             <main>
                 <div class="container mt-5">
                     <h2>Review your booked tours</h2>
