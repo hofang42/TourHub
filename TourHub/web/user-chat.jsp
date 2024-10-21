@@ -66,7 +66,7 @@
                     <li>
                         <a href="payment.jsp">
                             <i class='bx bxs-credit-card'></i>
-                            <span class="text">Payment</span>
+                            <span class="text">Widthdraw</span>
                         </a>
                     </li> 
                     <li>
@@ -169,7 +169,7 @@
         <script>
                                                 // Tự động tải lại tin nhắn mỗi 3 giây
                                                 setInterval(function () {
-                                                    fetchChatMessages(user1);
+                                                    fetchChatMessages(user2);
                                                 }, 3000);
         </script>
     </body>

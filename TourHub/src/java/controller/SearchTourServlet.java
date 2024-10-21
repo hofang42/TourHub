@@ -4,6 +4,9 @@
  */
 package controller;
 
+import DataAccess.ProvinceDB;
+import DataAccess.hoang_UserDB;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,10 +14,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import model.Province;
+import model.Tour;
 
 /**
  *
@@ -88,7 +96,21 @@ public class SearchTourServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String query = request.getParameter("q"); // Get the search query from the request body
+
+        // Fetch matching tours and provinces
+        List<Tour> tours = new hoang_UserDB().searchTours(query);
+        List<Province> provinces = new ProvinceDB().getProvinceByQuery(query); // Add a method to search provinces
+
+        // Create a map to hold both results
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("tours", tours);
+        resultMap.put("provinces", provinces);
+
+        // Convert the map to JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8"); // Ensure proper encoding
+        response.getWriter().write(new Gson().toJson(resultMap));
     }
 
     /**

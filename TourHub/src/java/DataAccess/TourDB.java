@@ -64,7 +64,7 @@ public class TourDB implements DatabaseInfo {
                 float avgRating = rs.getFloat("average_Review_Rating");
                 int numOfReview = rs.getInt("number_Of_Review");
                 String totalTime = rs.getString("total_Time");
-                float price = rs.getFloat("price");
+                BigDecimal price = rs.getBigDecimal("price");
                 int slot = rs.getInt("slot");
                 String location = rs.getString("location");
                 String tourStatus = rs.getString("tour_Status");
@@ -73,7 +73,7 @@ public class TourDB implements DatabaseInfo {
                 String tourImg = rs.getString("tour_Img");
 
                 List<String> tourImgList = splitImages(tourImg);
-                Tour tour = new Tour(tourId, tourName, description, startDate, endDate, location, numOfReview, avgRating, numOfReview, totalTime, BigDecimal.ONE, slot, tourStatus, createdAt, tourImgList, companyId);
+                Tour tour = new Tour(tourId, tourName, description, startDate, endDate, location, numOfReview, avgRating, numOfReview, totalTime, price, slot, tourStatus, createdAt, tourImgList, companyId);
                 tours.add(tour);
             }
 
@@ -343,7 +343,7 @@ public class TourDB implements DatabaseInfo {
                     float avgRating = rs.getFloat("average_Review_Rating");
                     int numOfReview = rs.getInt("number_Of_Review");
                     String totalTime = rs.getString("total_Time");
-                    float price = rs.getFloat("price");
+                    BigDecimal price = rs.getBigDecimal("price");
                     int slot = rs.getInt("slot");
                     String location = rs.getString("location");
                     String tourStatus = rs.getString("tour_Status");
@@ -351,7 +351,7 @@ public class TourDB implements DatabaseInfo {
                     String tourImg = rs.getString("tour_Img");
 
                     List<String> tourImgList = splitImages(tourImg);
-                    Tour tour = new Tour(tourId, tourName, description, startDate, endDate, location, numOfReview, avgRating, numOfReview, totalTime, BigDecimal.ONE, slot, tourStatus, createdAt, tourImgList, companyId);
+                    Tour tour = new Tour(tourId, tourName, description, startDate, endDate, location, numOfReview, avgRating, numOfReview, totalTime, price, slot, tourStatus, createdAt, tourImgList, companyId);
                     tours.add(tour);
                 }
             }
@@ -397,12 +397,7 @@ public class TourDB implements DatabaseInfo {
         return false;
     }
 
-    public static void main(String[] args) {
-
-        System.out.println(new TourDB().getTotalProfit(2));
-    }
     //get all tour
-
     public static List<Tour> getAllTours() {
         List<Tour> tourList = new ArrayList<>();
         Connection con = getConnect();  // Kết nối tới database
@@ -465,5 +460,12 @@ public class TourDB implements DatabaseInfo {
         List<String> imageList = new ArrayList<>(Arrays.asList(imagesArray));
 
         return imageList;
+    }
+
+    public static void main(String[] args) {
+        List<Tour> tours = new TourDB().getToursByProviderID(2);
+        for (Tour tour : tours) {
+            System.out.println(tour.getPrice());
+        }
     }
 }

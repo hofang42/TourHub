@@ -4,26 +4,29 @@
  */
 package controller;
 
-import DataAccess.KhanhDB;
-import DataAccess.TourDB;
+import DataAccess.UserDB;
+import DataAccess.WithdrawalsDB;
 import DataAccess.hoang_UserDB;
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import model.Tour;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Withdrawals;
 
 /**
  *
- * @author LENOVO
+ * @author hoang
  */
-@WebServlet(name = "DisplaySearchServlet", urlPatterns = {"/allTour"})
-public class DisplayAllServlet extends HttpServlet {
+@WebServlet(name = "ShowWithdrawRequestServlet", urlPatterns = {"/withdraw"})
+public class ShowWithdrawRequestServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +45,10 @@ public class DisplayAllServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DisplaySearchServlet</title>");
+            out.println("<title>Servlet ShowWithdrawRequestServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DisplaySearchServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShowWithdrawRequestServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,52 +66,7 @@ public class DisplayAllServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        KhanhDB u = new KhanhDB();
-
-        // Get the sort order from the request
-        String sortOrder = request.getParameter("sortOrder");
-        if (sortOrder == null || sortOrder.isEmpty()) {
-            sortOrder = "popularity";  // Default sort by popularity
-        }
-
-        // Get the location or search query from the request
-        String location = request.getParameter("location");
-        String searchQuery = request.getParameter("querry"); // Using 'query' for consistency
-        if (location == null || location.isEmpty()) {
-            location = "All";  // Default to "All"
-        }
-
-        // Get the price range from the request
-        String priceRange = request.getParameter("priceRange");
-        int minPrice = 0;
-        int maxPrice = 0;
-
-        // Parse the price range if provided
-        if (priceRange != null && !priceRange.equals("0-0")) {
-            String[] prices = priceRange.split("-");
-            minPrice = Integer.parseInt(prices[0]);
-            maxPrice = Integer.parseInt(prices[1]);
-        }
-
-        // If a search query is provided, prioritize that over location
-        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            location = searchQuery.trim(); // Update location to search query if present
-        }
-
-        // Call the getAll method with the sorting, location, and price filters
-        List<Tour> list = u.getAllTour(sortOrder, location, minPrice, maxPrice);
-        List<Tour> tours = new TourDB().getTours();
-        request.setAttribute("data", list);
-        request.setAttribute("tours", tours);
-        response.setContentType("application/json");
-        response.getWriter().write(new Gson().toJson(tours));
-        // Pass the sortOrder, location (or search query), and priceRange back to the JSP
-        request.setAttribute("sortOrder", sortOrder);
-        request.setAttribute("location", location);
-        request.setAttribute("priceRange", priceRange);
-
-        // Forward to the search-page.jsp
-        request.getRequestDispatcher("search-page.jsp").forward(request, response);
+        request.getRequestDispatcher("payment.jsp").forward(request, response);
     }
 
     /**
@@ -122,7 +80,21 @@ public class DisplayAllServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        WithdrawalsDB withdrawalsDB = new WithdrawalsDB();
+        int companyId = 0;
+        try {
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        } catch (SQLException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        List<Withdrawals> withdrawals = new ArrayList<>();
+        try {
+            withdrawals = withdrawalsDB.getWithdrawalsByProviderId(companyId);
+        } catch (SQLException ex) {
+            Logger.getLogger(ShowWithdrawRequestServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        request.setAttribute("withdrawList", withdrawals);
+        request.getRequestDispatcher("payment.jsp").forward(request, response);
     }
 
     /**

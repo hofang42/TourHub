@@ -154,7 +154,7 @@ public class ThienDB implements DatabaseInfo {
     // Phương thức để lấy kênh chat với admin ( 12 là id của admin trong database )
     public static List<User> getAdminChat() {
         List<User> activeUsers = new ArrayList<>();
-        String query = "SELECT user_Id, first_Name, last_Name FROM [User] WHERE user_Id = 12";
+        String query = "SELECT user_Id, first_Name, last_Name FROM [User] WHERE user_Id = 1";
 
         try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();

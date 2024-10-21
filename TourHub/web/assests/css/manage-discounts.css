@@ -87,6 +87,7 @@ button:hover {
 .delete-button:hover {
     background-color: #c82333;
 }
+
 /* New CSS styles for form container and layout */
 .form-container {
     background-color: #f9f9f9;
@@ -119,6 +120,8 @@ button:hover {
     border-radius: 4px;
 }
 
+/* Styles for <select> elements */
+
 button {
     width: 100%; /* Make button full-width */
     padding: 10px;
@@ -145,4 +148,13 @@ button:hover {
 
 .back-link:hover {
     text-decoration: underline;
+}
+
+/* Additional tweaks for select */
+.form-group {
+    position: relative;
+}
+
+.form-group select::-ms-expand {
+    display: none; /* Ẩn mũi tên mặc định của IE */
 }

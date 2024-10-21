@@ -243,4 +243,92 @@ public class ReviewDB implements DatabaseInfo {
         return false;
     }
 
+    public List<Review> getUserReviews(int userId) {
+        List<Review> reviews = new ArrayList<>();
+        String sql = "SELECT * FROM Review WHERE user_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Review review = new Review();
+                    review.setReview_Id(rs.getInt("review_Id"));
+                    review.setComment(rs.getString("comment"));
+                    review.setRating_Star(rs.getInt("rating_Star"));
+                    review.setUser_Id(rs.getInt("user_Id"));
+                    review.setTour_Id(rs.getString("tour_Id"));
+                    reviews.add(review);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return reviews;
+    }
+
+    public boolean updateReview(Review review) {
+        String sql = "UPDATE Review SET comment = ?, rating_Star = ? WHERE review_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, review.getComment());
+            ps.setInt(2, review.getRating_Star());
+            ps.setInt(3, review.getReview_Id());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi
+        }
+    }
+
+    public boolean deleteReview(int reviewId) {
+        String sql = "DELETE FROM Review WHERE review_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, reviewId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Return true if a row was deleted
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false if there was an error
+        }
+    }
+
+    public boolean incrementLikes(int reviewId) {
+        String sql = "UPDATE Review SET likes = likes + 1 WHERE review_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, reviewId);
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0; // Returns true if a row was updated
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Returns false if there was an error
+        }
+    }
+
+    public int getLikeCount(int reviewId) {
+        String sql = "SELECT likes FROM Review WHERE review_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, reviewId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("likes");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if not found or error occurred
+    }
+
+    public boolean addLikeToReview(int reviewId) {
+        String sql = "UPDATE Review SET likes = likes + 1 WHERE review_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, reviewId);
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0; // Return true if the like was successfully added
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false if there was an error
+        }
+    }
 }

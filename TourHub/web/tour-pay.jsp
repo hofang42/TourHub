@@ -54,12 +54,9 @@
         ></script>
 
         <!-- Bootstrap CSS -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-            crossorigin="anonymous"
-            />
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css'>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script> 
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js'></script>
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -189,17 +186,75 @@
         <!--Page content-->
         <div class="main-container-wrapper">
             <div class="main-container">
-                <div class="tour-qr-container">
-                    <div class="tour-qr-title">
-                        Quét mã QR để thanh toán
+                <div class="display-qr">
+                    <div class="display-qr-heading">
+                        <div class="display-qr-title">
+                            Scan QR
+                        </div>
+
+                        <div class="display-qr-container">
+                            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseQR" role="button"
+                               aria-expanded="true" aria-controls="collapseQR"
+                               style="color: black; background-color: transparent; border: none;">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="tour-qr">
-                        <img class="tour-qr-img" src="" alt="">
-                        <span class="paid-content-container">
-                            Nội dung chuyển khoản:
-                            <span id="paid-content"></span>
-                        </span>
+                    <!-- Add the 'show' class to make it open by default -->
+                    <div class="collapse show" id="collapseQR" style="border-top: solid 1px rgba(197, 197, 197, 0.726);">
+                        <div class="card card-body" style="border: none; padding: 15px 0px;">
+                            <div class="tour-qr-container">
+                                <div class="tour-qr">
+                                    <img class="tour-qr-img" src="" alt="">
+                                    <span class="paid-content-container">
+                                        Transfer content:
+                                        <span id="paid-content"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="display-banking">
+                    <div class="display-banking-heading">
+                        <div class="display-banking-title">
+                            Online banking MBBank
+                        </div>
+
+                        <div class="display-banking-container">
+                            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseBK" role="button"
+                               aria-expanded="false" aria-controls="collapseBK"
+                               style="color: black; background-color: transparent; border: none;">
+                                <img class="logo-mb" src="Image/Logo MB Bank - MBB.png" alt="">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Removed 'show' class to keep it collapsed by default -->
+                    <div class="collapse" id="collapseBK" style="border-top: solid 1px rgba(197, 197, 197, 0.726);">
+                        <div class="card card-body" style="border: none; padding: 15px 0px;">
+                            <div class="banking-details">
+                                <div class="detail-item">
+                                    <span>Bank account number:</span>
+                                    <span class="value">0364173531</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Bank account name:</span>
+                                    <span class="value">PHAM DUY KHANH</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Total cost:</span>
+                                    <span class="value amount">${book.total_Cost}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Transfer content:</span>
+                                    <span class="value amount">BK${book.book_Id}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -207,7 +262,7 @@
                 <div class="total-cost-overview">
                     <div class="total-cost-heading">
                         <div class="pay-title">
-                            Giá bạn trả
+                            Total cost
                         </div>
 
                         <div class="total-cost-container">
@@ -227,11 +282,11 @@
                         <div class="card card-body" style="border: none; padding: 15px 0px;">
                             <div class="detail-price-container">
                                 <div class="detal-price-name">
-                                    
+
                                 </div>
 
                                 <div class="detail-price">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -239,32 +294,103 @@
                 </div>
 
                 <div class="continue-btn-conatiner">
-                    <button class="continue-btn">Tôi đã thanh toán</button>
+                    <button class="continue-btn">Complete Payment</button>
+                </div>
+
+                <div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+                        <div class="modal-content"> 
+                            <div class="modal-body text-center p-lg-4"> 
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#198754" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <polyline class="path check" fill="none" stroke="#198754" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+                                </svg> 
+                                <h4 class="text-success mt-3">Payment Complete!</h4> 
+                                <p class="mt-3">You have successfully book a tour.</p>
+                                <button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal" onclick="window.location.href='FinishBooking?id=${book.book_Id}'">Ok</button> 
+                            </div> 
+                        </div> 
+                    </div> 
                 </div>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             let MY_BANK = {
                 BANK_ID: "MB",
                 ACCOUNT_NO: "0364173531"
             };
-            var totalcost = "${book.total_Cost}"
+            
+            var bookingId = "${book.book_Id}";  
+            var bookingCost = "${book.total_Cost}";
+            console.log(bookingId);
+            console.log(bookingCost);
+            
+            const paidContentTest = "ABC123";
+            const paidPriceTest = "10000";
+            
+            const paidContent = "BK" + bookingId;
+            const paidPrice = bookingCost;
+
+            var totalcost = "${book.total_Cost}";
             const paid_content = document.getElementById("paid-content");
             const qr_img = document.querySelector(".tour-qr-img");
 
-            let QR = "https://img.vietqr.io/image/" + MY_BANK.BANK_ID + "-" + MY_BANK.ACCOUNT_NO + "-compact2.jpg?amount=" + totalcost + "&addInfo=noidungchuyenkhoan";
+            let QR = "https://img.vietqr.io/image/" + MY_BANK.BANK_ID + "-" + MY_BANK.ACCOUNT_NO + "-compact2.jpg?amount=" + paidPrice + "&addInfo=" + paidContent;
             qr_img.src = QR;
-            paid_content.innerHTML = "noidungchuyenkhoan";
+            paid_content.innerHTML = paidContent;
+
+            setTimeout(() => {
+                checkInterval = setInterval(() => {
+                    checkPaid(paidPrice, paidContent);
+                }, 1000);
+            }, 10000);
         });
+
+        let isSuccess = false;
+        let checkInterval = null;
+
+        async function checkPaid(price, content) {
+            // Early exit if payment is already successful\
+            clearInterval(checkInterval);
+            if (isSuccess) {
+                return;
+            }
+
+            try {
+                const response = await fetch("https://script.google.com/macros/s/AKfycby-WzjKU2NrNMSAGWGRn5_AkZ_R7C_sFavklRNNQw4G2O8GQQXPJe_ZHXthb4PTLQqZ/exec");
+                const data = await response.json();
+                const lastPaid = data.data[data.data.length - 1];
+
+                const lastPrice = lastPaid["Giá trị"];
+                const lastContent = lastPaid["Mô tả"];
+
+                console.log(lastPrice);
+                console.log(lastContent);
+                console.log(content);
+
+
+
+                // Check if the last payment matches the expected price and content
+                if (lastPrice >= price && lastContent.includes(content)) {
+                    // Mark as success and clear the interval immediately
+                    isSuccess = true;
+                    clearInterval(checkInterval);
+
+                    // Show the success modal
+                    const paymentSuccessModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+                    paymentSuccessModal.show();
+                } else {
+                    console.log("Payment not successful yet.");
+                }
+            } catch (error) {
+                console.error("Error occurred during payment check:", error);
+            }
+        }
     </script>
-    
+
     <script>
         // Giả sử booking_Detail có dạng như sau:
         var bookingDetail = "${book.booking_Detail}";

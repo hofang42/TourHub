@@ -11,17 +11,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.awt.print.Book;
 import java.io.IOException;
 import java.io.PrintWriter;
-import model.TourOption;
-import model.TourPeople;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Booking;
+
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name="OptionAdjustmentServlet", urlPatterns={"/optionAdjustment"})
-public class OptionAdjustmentServlet extends HttpServlet {
+@WebServlet(name="FinishBookingServlet", urlPatterns={"/FinishBooking"})
+public class FinishBookingServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +41,10 @@ public class OptionAdjustmentServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OptionAdjustmentServlet</title>");  
+            out.println("<title>Servlet FinishBookingServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OptionAdjustmentServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet FinishBookingServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,23 +61,27 @@ public class OptionAdjustmentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        String book_Id_raw = request.getParameter("id");
+        System.out.println(book_Id_raw);
         KhanhDB u = new KhanhDB();
-        String optionIdRaw = request.getParameter("id");
         
-        String selectedDate = request.getParameter("selectedDate");
-        System.out.println(selectedDate);
+        int book_Id = Integer.parseInt(book_Id_raw);
+        try {
+            u.updateBookingStatusToBooked(book_Id);
+        } catch (SQLException ex) {
+            Logger.getLogger(FinishBookingServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        int optionId = Integer.parseInt(optionIdRaw);
+        Booking book = new Booking();
         
-        TourOption option = u.getTourOptionById(optionId);
+        try {
+            book = u.getBookingById(book_Id);
+        } catch (SQLException ex) {
+            Logger.getLogger(FinishBookingServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        List<TourPeople> peopleList = u.getTourPeopleByOptionId(optionId);
-        
-        request.setAttribute("option", option);
-        request.setAttribute("peopleList", peopleList);
-        request.setAttribute("previousSelectedDate", selectedDate);
-        
-        request.getRequestDispatcher("/option-adjustment.jsp").forward(request, response);
+        request.setAttribute("booking", book);
+        request.getRequestDispatcher("/booked-tour.jsp").forward(request, response);
     } 
 
     /** 
