@@ -430,6 +430,7 @@ button[type="submit"]:hover {
     justify-content: center; /* Center vertically */
     align-items: center; /* Center horizontally */
     height: 100%;
+    z-index: 1000;
 }
 
 canvas {

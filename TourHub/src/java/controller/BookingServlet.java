@@ -68,14 +68,14 @@ public class BookingServlet extends HttpServlet {
         User currentUser = (User) request.getSession().getAttribute("currentUser");
 
         if (currentUser == null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("/home");
             return;
         } else {
             System.out.println("Current User ID: " + currentUser.getUser_Id());
         }
         
         BookingDB booking = new BookingDB();
-        List<Booking> bookings = booking.getUser2Booking(currentUser.getUser_Id() +1);
+        List<Booking> bookings = booking.getUser2Booking(currentUser.getUser_Id());
         request.setAttribute("bookings", bookings);
 
         // Forward the request to user-booking.jsp

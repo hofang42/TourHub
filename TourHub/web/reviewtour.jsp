@@ -36,7 +36,7 @@ f<%@ page import="java.util.List" %>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="user-chat.jsp">
                         <i class='bx bxs-message-dots'></i>
                         <span class="text">Message</span>
                     </a>
