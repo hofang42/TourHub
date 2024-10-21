@@ -5,11 +5,16 @@
 package DataAccess;
 
 import static DataAccess.BookingDB.getConnect;
+import static DataAccess.TourDB.getConnect;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.BookingDetails;
 import model.Tour;
 
@@ -342,9 +347,166 @@ public class hoang_UserDB implements DatabaseInfo {
         }
     }
 
+    public List<Tour> getTourFromQuery(String query, int currentCompanyId) {
+        List<Tour> tours = new ArrayList<>();
+        String sql = "SELECT * "
+                + "FROM Tour "
+                + "WHERE tour_Id = ? "
+                + "OR tour_Name COLLATE Vietnamese_CI_AI LIKE '%' + ? + '%' "
+                + "AND company_Id = ?;";
+
+        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            // Set the parameters for the prepared statement
+            stmt.setString(1, query);
+            stmt.setString(2, query);
+            stmt.setInt(3, currentCompanyId);
+
+            // Execute the query
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String tourId = rs.getString("tour_Id");
+                    String tourName = rs.getString("tour_Name");
+                    String description = rs.getString("tour_Description");
+                    Date startDate = rs.getDate("start_Date");
+                    Date endDate = rs.getDate("end_Date");
+                    float avgRating = rs.getFloat("average_Review_Rating");
+                    int numOfReview = rs.getInt("number_Of_Review");
+                    String totalTime = rs.getString("total_Time");
+                    BigDecimal price = rs.getBigDecimal("price");
+                    int slot = rs.getInt("slot");
+                    String location = rs.getString("location");
+                    String tourStatus = rs.getString("tour_Status");
+                    int companyId = rs.getInt("company_Id");
+                    Date createdAt = rs.getDate("created_At");
+                    String tourImg = rs.getString("tour_Img");
+
+                    List<String> tourImgList = splitImages(tourImg);
+                    // Create a new Tour object with the retrieved data
+                    Tour tour = new Tour(tourId, tourName, description, startDate, endDate, location,
+                            numOfReview, avgRating, numOfReview, totalTime, price,
+                            slot, tourStatus, createdAt, tourImgList, companyId);
+                    // Add the Tour to the list
+                    tours.add(tour);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TourDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return tours; // Return the list of Tour objects
+    }
+
+    public List<String> splitImages(String concatenatedImages) {
+        // Split the string by semicolon
+        String[] imagesArray = concatenatedImages.split(";");
+
+        // Convert the array to a List
+        List<String> imageList = new ArrayList<>(Arrays.asList(imagesArray));
+
+        return imageList;
+    }
+    // Method to retrieve all tours based on sort order, location, and price range
+
+    public List<Tour> SortProviderTour(String sortOrder, int companyId) {
+        List<Tour> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Tour WHERE 1=1 AND company_Id = ?");
+
+        // Determine sorting order based on dropdown options
+        switch (sortOrder) {
+            case "price-asc":
+                sql.append(" ORDER BY price ASC");
+                break;
+            case "price-desc":
+                sql.append(" ORDER BY price DESC");
+                break;
+            case "most-booking":
+                sql.append(" ORDER BY purchases_Time DESC"); // Default to purchases for most booking
+                break;
+            default:
+                sql.append(" ORDER BY purchases_Time DESC"); // Fallback to purchases if no valid sortOrder is provided
+                break;
+        }
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            stmt.setInt(1, companyId);
+            // Execute the query and process results
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                // Split the image URLs by ";"
+                String imageUrlStr = rs.getString("tour_Img");
+                List<String> imageUrlList = Arrays.asList(imageUrlStr.split(";"));
+
+                // Create a new Tour object using the data from the result set
+                Tour t = new Tour(
+                        rs.getString("tour_Id"), // tourId
+                        rs.getString("tour_Name"), // tourName
+                        rs.getString("tour_Description"), // tourDescription
+                        rs.getDate("start_Date"), // startDate
+                        rs.getDate("end_Date"), // endDate
+                        rs.getString("location"), // location
+                        rs.getInt("purchases_Time"), // purchasesTime
+                        rs.getDouble("average_Review_Rating"), // averageReviewRating
+                        rs.getInt("number_Of_Review"), // numberOfReview
+                        rs.getString("total_Time"), // totalTime
+                        rs.getBigDecimal("price"), // price
+                        rs.getInt("slot"), // slot
+                        rs.getString("tour_Status"), // tourStatus
+                        rs.getDate("created_At"), // createdAt
+                        imageUrlList, // tourImg
+                        rs.getInt("company_Id") // companyId
+                );
+                list.add(t);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Tour> searchTours(String searchTerm) {
+        List<Tour> tours = new ArrayList<>();
+        String query = "SELECT * FROM Tour WHERE tour_Name LIKE ?";
+
+        try (Connection connection = getConnect(); PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, "%" + searchTerm + "%"); // Set the LIKE parameter
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String tourId = rs.getString("tour_Id");
+                    String tourName = rs.getString("tour_Name");
+                    String description = rs.getString("tour_Description");
+                    Date startDate = rs.getDate("start_Date");
+                    Date endDate = rs.getDate("end_Date");
+                    float avgRating = rs.getFloat("average_Review_Rating");
+                    int numOfReview = rs.getInt("number_Of_Review");
+                    String totalTime = rs.getString("total_Time");
+                    BigDecimal price = rs.getBigDecimal("price");
+                    int slot = rs.getInt("slot");
+                    String location = rs.getString("location");
+                    String tourStatus = rs.getString("tour_Status");
+                    int companyId = rs.getInt("company_Id");
+                    Date createdAt = rs.getDate("created_At");
+                    String tourImg = rs.getString("tour_Img");
+
+                    List<String> tourImgList = splitImages(tourImg); // Assuming this method exists
+
+                    // Create a new Tour object with the retrieved data
+                    Tour tour = new Tour(tourId, tourName, description, startDate, endDate, location,
+                            numOfReview, avgRating, numOfReview, totalTime, price,
+                            slot, tourStatus, createdAt, tourImgList, companyId);
+                    // Add the Tour to the list
+                    tours.add(tour);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle exceptions properly
+        }
+        return tours;
+    }
+
     public static void main(String[] args) {
-        List<BookingDetails> tours = new hoang_UserDB().getPendingBookingDetails();
-        for (BookingDetails book : tours) {
+        List<Tour> tours = new hoang_UserDB().getTourFromQuery("Hà Nội", 2);
+        for (Tour book : tours) {
             System.out.println(book.toString());
         }
     }

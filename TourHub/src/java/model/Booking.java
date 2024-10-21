@@ -25,7 +25,7 @@ public class Booking {
     private Date tour_Date;
     private Date cancel_Date;
     private String booking_Detail;
-    private List<String> tour_Img; 
+    private List<String> tour_Img;
     private String option_Name;
 
     public Booking(int book_Id, Date created_At, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name, Date tour_Date, Date cancel_Date) {
@@ -55,6 +55,19 @@ public class Booking {
         this.booking_Detail = booking_Detail;
         this.tour_Img = tour_Img;
         this.option_Name = option_Name;
+    }
+
+    public Booking(int book_Id, Date created_At, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name, Date tour_Date, Date cancel_Date) {
+        this.book_Id = book_Id;
+        this.created_At = created_At;
+        this.slot_Order = slot_Order;
+        this.total_Cost = total_Cost;
+        this.book_Status = book_Status;
+        this.cus_Id = cus_Id;
+        this.tour_Id = tour_Id;
+        this.tour_Name = tour_Name;
+        this.tour_Date = tour_Date;
+        this.cancel_Date = cancel_Date;
     }
 
     public Booking() {
@@ -91,8 +104,6 @@ public class Booking {
     public void setCancel_Date(Date cancel_Date) {
         this.cancel_Date = cancel_Date;
     }
-
-    
 
     public int getSlot_Order() {
         return slot_Order;
@@ -165,11 +176,10 @@ public class Booking {
     public void setOption_Name(String option_Name) {
         this.option_Name = option_Name;
     }
-    
 
     @Override
     public String toString() {
         return "Booking{" + "book_Id=" + book_Id + ", created_At=" + created_At + ", slot_Order=" + slot_Order + ", total_Cost=" + total_Cost + ", book_Status=" + book_Status + ", cus_Id=" + cus_Id + ", tour_Id=" + tour_Id + ", tour_Name=" + tour_Name + ", tour_Date=" + tour_Date + ", cancel_Date=" + cancel_Date + ", booking_Detail=" + booking_Detail + '}';
     }
-    
+
 }

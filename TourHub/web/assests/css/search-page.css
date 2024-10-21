@@ -19,7 +19,7 @@ search-page * {
     background-repeat: no-repeat;
     background-position: left center;
     outline: 0;
-  }
+}
 
 .search-bar {
     width: 100%;
@@ -61,8 +61,8 @@ search-page * {
 }
 
 .pick-location-btn i {
-        margin-right: 8px;
-    }
+    margin-right: 8px;
+}
 
 .pick-location-btn p {
     margin: 0;
@@ -139,7 +139,7 @@ search-page * {
     padding: 10px;
     font-size: 15px;
 }
-    
+
 .body-container {
     padding-top: 20px;
     display: flex;
@@ -190,7 +190,7 @@ search-page * {
     display: flex;
     flex-direction: column;
     gap: 30px;
-    
+
 }
 
 .price-select {
@@ -270,7 +270,7 @@ search-page * {
     flex-direction: column;
     justify-content: space-between;
     padding: 15px;
-    gap: 10px; 
+    gap: 10px;
     width: 100%;
 }
 
@@ -303,7 +303,7 @@ search-page * {
     color: #ff0000;
     font-weight: bolder;
 }
-    
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -328,3 +328,112 @@ search-page * {
 
 /* Image/beste-reistijd-hoi-an-vietnam-2400x1350.jpg
 Image/KTG04873.jpg */
+
+.search-container {
+    position: relative;
+}
+.search-bar {
+    position: relative;
+    width: 100%;
+}
+
+.search-box {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.result-box {
+    border: 1px solid #ccc;
+    max-height: 50vh;
+    overflow-y: auto;
+    display: block; /* Show the results by default */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 1000;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.result-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.result-item div {
+    display: flex;
+    flex-direction: column;
+}
+
+.location-title,
+.activity-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.location-description,
+.activity-location {
+    font-size: 14px;
+    color: #999;
+}
+
+.result-box h3 {
+    font-size: 16px;
+    color: #ff4500;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+/* Optional: Styles for scrollbar as you had */
+.result-box::-webkit-scrollbar {
+    width: 10px;
+}
+.result-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+.result-box::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+.result-box::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+.result-box {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+#result-box li {
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Optional: Add hover effect for better UX */
+#result-box li:hover {
+    background-color: #f0f0f0; /* Change background color on hover */
+}

@@ -7,6 +7,7 @@ package controller;
 import DataAccess.ProvinceDB;
 import DataAccess.TourDB;
 import DataAccess.UserDB;
+import DataAccess.WithdrawalsDB;
 import DataAccess.hoang_UserDB;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Tour;
+import model.Withdrawals;
 
 /**
  *
@@ -104,6 +106,16 @@ public class ProviderManagementServlet extends HttpServlet {
                     Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            case "sort":
+                sort(request, response);
+            case "withdraw": {
+                try {
+                    requesrWithdrawMoney(request, response);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
         }
     }
 
@@ -270,9 +282,10 @@ public class ProviderManagementServlet extends HttpServlet {
     }
 
     public void searchTour(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String tourId = request.getParameter("tour-edit");
+        String query = request.getParameter("tour-edit");
 
         TourDB tourDB = new TourDB();
+        hoang_UserDB tourDBs = new hoang_UserDB();
         int companyId;
 
         try {
@@ -287,7 +300,7 @@ public class ProviderManagementServlet extends HttpServlet {
         }
 
         // If no tourId is provided, fetch all tours
-        if (tourId == null || tourId.trim().isEmpty()) {
+        if (query == null || query.trim().isEmpty()) {
             List<Tour> allTours = tourDB.getToursByProviderID(companyId);
             if (allTours.isEmpty()) {
                 request.setAttribute("errorMessage", "No tours available.");
@@ -297,10 +310,10 @@ public class ProviderManagementServlet extends HttpServlet {
             request.getRequestDispatcher("edit-tour.jsp").forward(request, response);
             return;
         }
-
+        System.out.println("TESTTTTTT ----- " + query);
         // Retrieve the tour details by tourId
-        Tour tourEdit = tourDB.getTourFromTourID(tourId, companyId);
-
+        List<Tour> tourEdit = tourDBs.getTourFromQuery(query, companyId);
+        System.out.println("TESTTTTTT ----- " + tourEdit.size());
         // Check if the tour was found
         if (tourEdit == null) {
             request.setAttribute("errorMessage", "No tour found with the given ID.");
@@ -310,7 +323,7 @@ public class ProviderManagementServlet extends HttpServlet {
 
         // Set the tourEdit object in request scope and forward to the edit page
         request.setAttribute("tourEdit", tourEdit);
-        Tour tourEditSession = tourEdit;
+        List<Tour> tourEditSession = tourEdit;
         request.getSession().setAttribute("tourEditSession", tourEditSession);
         request.getRequestDispatcher("mytour.jsp").forward(request, response);
     }
@@ -320,14 +333,78 @@ public class ProviderManagementServlet extends HttpServlet {
         String status = request.getParameter("status");
         TourDB tourDB = new TourDB();
         String errorMessage = "";
+
         switch (status) {
             case "Active":
                 errorMessage = tourDB.setTourStatusToActive(tourId) ? "Active Successfully" : "Active Fail";
                 break;
             case "Hidden":
                 errorMessage = tourDB.setTourStatusToHidden(tourId) ? "Hidden Successfully" : "Hidden Fail";
+                break;
+
+            default:
+                errorMessage = "Invalid Status";
+                break;
         }
+
+        // Set the error message in request attributes
         request.setAttribute("errorMessage", errorMessage);
+
+        // Use include instead of forward
+        request.getRequestDispatcher("my-tour").forward(request, response);
+    }
+
+    private void requesrWithdrawMoney(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+
+        // Retrieve the selected amount from the radio buttons
+        String amountParam = request.getParameter("amount");
+        String customAmountParam = request.getParameter("customAmount");
+
+        double withdrawMoneyDouble;
+
+        // Check if a radio button is selected, otherwise use custom amount
+        if (amountParam != null) {
+            withdrawMoneyDouble = Double.parseDouble(amountParam);
+        } else if (customAmountParam != null && !customAmountParam.isEmpty()) {
+            withdrawMoneyDouble = Double.parseDouble(customAmountParam);
+        } else {
+            // Handle case where no amount is provided
+            request.setAttribute("message", "Please select an amount to withdraw.");
+            request.getRequestDispatcher("payment.jsp").forward(request, response);
+            return;
+        }
+
+        BigDecimal bdWithdrawMoney = BigDecimal.valueOf(withdrawMoneyDouble);
+        int provider_Id = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        WithdrawalsDB withdrawalsDB = new WithdrawalsDB();
+        String message;
+
+        if (withdrawalsDB.saveWithdrawal(provider_Id, bdWithdrawMoney)) {
+            message = "Request sent, please wait for a response.";
+        } else {
+            message = "Request failed, please try again.";
+        }
+
+        request.setAttribute("message", message);
+        request.getRequestDispatcher("withdraw").forward(request, response);
+    }
+
+    private void sort(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String sortOrder = request.getParameter("sortOrder");
+        hoang_UserDB tourDB = new hoang_UserDB();
+        int companyId = 0;
+        try {
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        } catch (SQLException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // Fetch the sorted list of tours
+        List<Tour> sortedTours = tourDB.SortProviderTour(sortOrder, companyId);
+
+        // Set the sorted tours in the request scope
+        request.setAttribute("tourEdit", sortedTours);
+
+        // Forward to the JSP page to display the sorted tours
         request.getRequestDispatcher("my-tour").forward(request, response);
     }
 
@@ -381,4 +458,5 @@ public class ProviderManagementServlet extends HttpServlet {
         }
         return originalPath;
     }
+
 }

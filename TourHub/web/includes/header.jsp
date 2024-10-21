@@ -25,8 +25,7 @@
     <link rel="stylesheet" href="assests/css/bootstrap.css" />
     <link rel="stylesheet" href="assests/css/style.css" />
     <link rel="stylesheet" href="assests/css/fonts.css" />
-    <link rel="stylesheet" href="assests/css/index.css" />
-    <link rel="stylesheet" href="assests/css/search-page.css" />
+    <link rel="stylesheet" href="assests/css/index.css" />    
     <!--<link rel="stylesheet" href="assests/css/home.css" />-->
 
     <!-- Owl Carousel CSS -->
