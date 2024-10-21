@@ -38,6 +38,77 @@
                 border-radius: 5px;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             }
+            .balance-section {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+
+            .balance-box {
+                width: 100%;
+                padding: 20px;
+                text-align: center;
+                border-radius: 8px;
+                color: white;
+            }
+
+            .deposit-box {
+                background-color: #6ba8ff;
+            }
+
+            .withdraw-box {
+                background-color: #70e0b5;
+            }
+
+            .balance-box {
+                background-color: #ffcc5c;
+            }
+
+            .amount {
+                font-size: 24px;
+                margin-top: 10px;
+            }
+
+            .form {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .amount-button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .amount-button:hover {
+                background-color: #0056b3;
+            }
+
+            .custom-input {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+
+            .withdraw-button {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .withdraw-button:hover {
+                background-color: #218838;
+            }
         </style>
     </head>
     <body>
@@ -99,7 +170,7 @@
                     <li class="active">
                         <a href="payment.jsp">
                             <i class='bx bxs-credit-card'></i>
-                            <span class="text">Payment</span>
+                            <span class="text">Widthdraw</span>
                         </a>
                     </li> 
                     <li>
@@ -158,98 +229,63 @@
             <main>
                 <div class="table-data">
                     <div class="order">  
+                        <div class="head">
+                            <h3>Widthdraw money</h3>
+                        </div>
                         <c:choose>
                             <c:when test="${sessionScope.currentUser == null}">
                                 <c:redirect url="home" />
                             </c:when>
                             <c:otherwise>
                                 <div class="container py-5">
-                                    <!-- For demo purpose -->
-                                    <div class="row mb-4">
-                                    </div> <!-- End -->
+
                                     <div class="row">
                                         <div class="col-lg-6 mx-auto">
-                                            <div class="card ">
-                                                <div class="card-header">
-                                                    <div class="bg-white shadow-sm pt-4 pl-2 pr-2 pb-2">
-                                                        <!-- Credit card form tabs -->
-                                                        <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3">
-                                                            <li class="nav-item"> <a data-toggle="pill" href="#credit-card" class="nav-link active "> <i class="fas fa-credit-card mr-2"></i> Credit Card </a> </li>
-                                                            <li class="nav-item"> <a data-toggle="pill" href="#paypal" class="nav-link "> <i class="fab fa-paypal mr-2"></i> Paypal </a> </li>
-                                                            <li class="nav-item"> <a data-toggle="pill" href="#net-banking" class="nav-link "> <i class="fas fa-mobile-alt mr-2"></i> Net Banking </a> </li>
-                                                        </ul>
-                                                    </div> <!-- End -->
-                                                    <!-- Credit card form content -->
-                                                    <div class="tab-content">
-                                                        <!-- credit card info-->
-                                                        <div id="credit-card" class="tab-pane fade show active pt-3">
-                                                            <form role="form" onsubmit="event.preventDefault()">
-                                                                <div class="form-group"> <label for="username">
-                                                                        <h6>Card Owner</h6>
-                                                                    </label> <input type="text" name="username" placeholder="Card Owner Name" required class="form-control "> </div>
-                                                                <div class="form-group"> <label for="cardNumber">
-                                                                        <h6>Card number</h6>
-                                                                    </label>
-                                                                    <div class="input-group"> <input type="text" name="cardNumber" placeholder="Valid card number" class="form-control " required>
-                                                                        <div class="input-group-append"> <span class="input-group-text text-muted"> <i class="fab fa-cc-visa mx-1"></i> <i class="fab fa-cc-mastercard mx-1"></i> <i class="fab fa-cc-amex mx-1"></i> </span> </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-sm-8">
-                                                                        <div class="form-group"> <label><span class="hidden-xs">
-                                                                                    <h6>Expiration Date</h6>
-                                                                                </span></label>
-                                                                            <div class="input-group"> <input type="number" placeholder="MM" name="" class="form-control" required> <input type="number" placeholder="YY" name="" class="form-control" required> </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <div class="form-group mb-4"> <label data-toggle="tooltip" title="Three digit CV code on the back of your card">
-                                                                                <h6>CVV <i class="fa fa-question-circle d-inline"></i></h6>
-                                                                            </label> <input type="text" required class="form-control"> </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="card-footer"> <button type="button" class="subscribe btn btn-primary btn-block shadow-sm"> Confirm Payment </button>
-                                                            </form>
+                                            <div class="page">
+                                                <div class="container">
+                                                    <div class="balance-section">
+                                                        <div class="balance-box">
+                                                            Balance
+                                                            <div class="amount">10.000.000 VND</div>
                                                         </div>
-                                                    </div> <!-- End -->
-                                                    <!-- Paypal info -->
-                                                    <div id="paypal" class="tab-pane fade pt-3">
-                                                        <h6 class="pb-2">Select your paypal account type</h6>
-                                                        <div class="form-group "> <label class="radio-inline"> <input type="radio" name="optradio" checked> Domestic </label> <label class="radio-inline"> <input type="radio" name="optradio" class="ml-5">International </label></div>
-                                                        <p> <button type="button" class="btn btn-primary "><i class="fab fa-paypal mr-2"></i> Log into my Paypal</button> </p>
-                                                        <p class="text-muted"> Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website to view details of your order. </p>
-                                                    </div> <!-- End -->
-                                                    <!-- bank transfer info -->
-                                                    <div id="net-banking" class="tab-pane fade pt-3">
-                                                        <div class="form-group "> <label for="Select Your Bank">
-                                                                <h6>Select your Bank</h6>
-                                                            </label> <select class="form-control" id="ccmonth">
-                                                                <option value="" selected disabled>--Please select your Bank--</option>
-                                                                <option>Bank 1</option>
-                                                                <option>Bank 2</option>
-                                                                <option>Bank 3</option>
-                                                                <option>Bank 4</option>
-                                                                <option>Bank 5</option>
-                                                                <option>Bank 6</option>
-                                                                <option>Bank 7</option>
-                                                                <option>Bank 8</option>
-                                                                <option>Bank 9</option>
-                                                                <option>Bank 10</option>
-                                                            </select> </div>
-                                                        <div class="form-group">
-                                                            <p> <button type="button" class="btn btn-primary "><i class="fas fa-mobile-alt mr-2"></i> Proceed Payment</button> </p>
-                                                        </div>
-                                                        <p class="text-muted">Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website to view details of your order. </p>
-                                                    </div> <!-- End -->
-                                                    <!-- End -->
+                                                    </div>
+                                                    <form class="form" action="provider-management?action=withdraw" method="POST">
+                                                        <label>
+                                                            <input type="radio" name="amount" class="amount-button" value="1000000">
+                                                            1.000.000 VND
+                                                        </label>
+                                                        <label>
+                                                            <input type="radio" name="amount" class="amount-button" value="2000000">
+                                                            2.000.000 VND
+                                                        </label>
+                                                        <label>
+                                                            <input type="radio" name="amount" class="amount-button" value="5000000">
+                                                            5.000.000 VND
+                                                        </label>
+                                                        <label>
+                                                            <input type="radio" name="amount" class="amount-button" value="10000000">
+                                                            10.000.000 VND
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="customAmount" 
+                                                            class="custom-input"
+                                                            placeholder="Enter custom amount (VND)"
+                                                            />
+                                                        <button type="submit" class="withdraw-button">Withdraw</button>
+                                                    </form>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+                                </div>
+
+
+                            </c:otherwise>
+                        </c:choose>
                     </div>
+                </div>
             </main>          
             <!-- MAIN -->
         </section>
@@ -262,18 +298,18 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script>
-                                                                document.addEventListener('DOMContentLoaded', function () {
-                                                                    const burger = document.querySelector('.burger');
-                                                                    const navigation = document.querySelector('.navigation-admin');
-                                                                    const main = document.querySelector('.main-admin');
-                                                                    const profileCard = document.querySelector('.profile-card'); // Select the profile card
+            document.addEventListener('DOMContentLoaded', function () {
+                const burger = document.querySelector('.burger');
+                const navigation = document.querySelector('.navigation-admin');
+                const main = document.querySelector('.main-admin');
+                const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                                                    burger.addEventListener('click', function () {
-                                                                        navigation.classList.toggle('active');
-                                                                        main.classList.toggle('active');
-                                                                        profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                                                    });
-                                                                });
+                burger.addEventListener('click', function () {
+                    navigation.classList.toggle('active');
+                    main.classList.toggle('active');
+                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                });
+            });
 
 
 

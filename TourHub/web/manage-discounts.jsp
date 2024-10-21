@@ -230,7 +230,7 @@
                     <li>
                         <a href="payment.jsp">
                             <i class='bx bxs-credit-card'></i>
-                            <span class="text">Payment</span>
+                            <span class="text">Widthdraw</span>
                         </a>
                     </li> 
                     <li  class="active">

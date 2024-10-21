@@ -31,10 +31,8 @@ public class Tour {
     private List<String> tour_Img;
     private int company_Id;
 
-
     public Tour() {
     }
-
 
     public Tour(String tour_Id, String tour_Name, String tour_Description, Date start_Date, Date end_Date, String location, int purchases_Time, double average_Review_Rating, int number_Of_Review, String total_Time, BigDecimal price, int slot, String tour_Status, Date created_At, List<String> tour_Img, int company_Id) {
         this.tour_Id = tour_Id;
@@ -103,7 +101,6 @@ public class Tour {
     public void setLocation(String location) {
         this.location = location;
     }
-
 
     public int getPurchases_Time() {
         return purchases_Time;
@@ -184,5 +181,10 @@ public class Tour {
     public void setCompany_Id(int company_Id) {
         this.company_Id = company_Id;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Tour{" + "tour_Id=" + tour_Id + ", tour_Name=" + tour_Name + ", tour_Description=" + tour_Description + ", start_Date=" + start_Date + ", end_Date=" + end_Date + ", location=" + location + ", purchases_Time=" + purchases_Time + ", average_Review_Rating=" + average_Review_Rating + ", number_Of_Review=" + number_Of_Review + ", total_Time=" + total_Time + ", price=" + price + ", slot=" + slot + ", tour_Status=" + tour_Status + ", created_At=" + created_At + ", tour_Img=" + tour_Img + ", company_Id=" + company_Id + '}';
+    }
+
 }
