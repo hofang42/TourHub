@@ -71,8 +71,9 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 resultBox.style.display = 'none';
             }
-
+            console.log(result);
             displaySearchs(result); // Update the UI with the filtered results
+            console.log("After");
         };
     }
 });
@@ -115,7 +116,6 @@ function displayTours(city) {
     console.log(filteredTours);
     // Display filtered tours
     filteredTours.forEach(tour => {
-        console.log(tour.tour_Name, tour.tour_Img, tour.price, tour.total_Time);
         // Create the column div and set its classes
         const colDiv = document.createElement('div');
         colDiv.classList.add('col-md-6', 'col-xl-4');

@@ -199,7 +199,7 @@
                                         </div>
                                         <div class="search-container">
                                             <span class="icon">🔍</span>
-                                            <span class="search-text">Tìm <strong id="search-keyword"></strong></span>
+                                            <span class="search-text">Find <strong id="search-keyword"></strong></span>
                                             <span class="arrow"><a href="#" id="search-link">→</a></span>
                                         </div>
                                         <div class="result-box">                                               
@@ -403,8 +403,7 @@
         %>
         <script>
             const toursJson = "<%= encodedToursJson %>";
-            const tours = JSON.parse(toursJson); // Parse the JSON string  
-            console.log(tours);
+            const tours = JSON.parse(toursJson); // Parse the JSON string              
         </script>
         <script>
             // Extract the query parameter from the URL

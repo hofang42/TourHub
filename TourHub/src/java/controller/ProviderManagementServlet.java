@@ -7,6 +7,7 @@ package controller;
 import DataAccess.ProvinceDB;
 import DataAccess.TourDB;
 import DataAccess.UserDB;
+import DataAccess.WithdrawalsDB;
 import DataAccess.hoang_UserDB;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Tour;
+import model.Withdrawals;
 
 /**
  *
@@ -106,6 +108,14 @@ public class ProviderManagementServlet extends HttpServlet {
             }
             case "sort":
                 sort(request, response);
+            case "withdraw": {
+                try {
+                    requesrWithdrawMoney(request, response);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
         }
     }
 
@@ -331,6 +341,7 @@ public class ProviderManagementServlet extends HttpServlet {
             case "Hidden":
                 errorMessage = tourDB.setTourStatusToHidden(tourId) ? "Hidden Successfully" : "Hidden Fail";
                 break;
+
             default:
                 errorMessage = "Invalid Status";
                 break;
@@ -341,6 +352,41 @@ public class ProviderManagementServlet extends HttpServlet {
 
         // Use include instead of forward
         request.getRequestDispatcher("my-tour").forward(request, response);
+    }
+
+    private void requesrWithdrawMoney(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+
+        // Retrieve the selected amount from the radio buttons
+        String amountParam = request.getParameter("amount");
+        String customAmountParam = request.getParameter("customAmount");
+
+        double withdrawMoneyDouble;
+
+        // Check if a radio button is selected, otherwise use custom amount
+        if (amountParam != null) {
+            withdrawMoneyDouble = Double.parseDouble(amountParam);
+        } else if (customAmountParam != null && !customAmountParam.isEmpty()) {
+            withdrawMoneyDouble = Double.parseDouble(customAmountParam);
+        } else {
+            // Handle case where no amount is provided
+            request.setAttribute("message", "Please select an amount to withdraw.");
+            request.getRequestDispatcher("payment.jsp").forward(request, response);
+            return;
+        }
+
+        BigDecimal bdWithdrawMoney = BigDecimal.valueOf(withdrawMoneyDouble);
+        int provider_Id = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        WithdrawalsDB withdrawalsDB = new WithdrawalsDB();
+        String message;
+
+        if (withdrawalsDB.saveWithdrawal(provider_Id, bdWithdrawMoney)) {
+            message = "Request sent, please wait for a response.";
+        } else {
+            message = "Request failed, please try again.";
+        }
+
+        request.setAttribute("message", message);
+        request.getRequestDispatcher("withdraw").forward(request, response);
     }
 
     private void sort(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
