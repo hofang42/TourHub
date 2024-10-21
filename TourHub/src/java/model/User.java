@@ -40,8 +40,6 @@ public class User {
         this.first_Name = first_Name;
         this.last_Name = last_Name;
     }
-    
-    
 
     public int getUser_Id() {
         return user_Id;

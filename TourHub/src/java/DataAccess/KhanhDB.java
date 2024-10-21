@@ -19,6 +19,8 @@ import model.Tour;
 import model.TourOption;
 import model.TourPeople;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import model.Booking;
 
 /**
@@ -239,9 +241,7 @@ public class KhanhDB {
     public int getLatestBookingId() throws SQLException {
         String getId = "SELECT TOP 1 book_Id FROM [Booking] ORDER BY book_Id DESC";
 
-        try (Connection conn = UserDB.getConnect(); 
-             PreparedStatement ps = conn.prepareStatement(getId);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = UserDB.getConnect(); PreparedStatement ps = conn.prepareStatement(getId); ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) { // Kiểm tra nếu có kết quả trả về
                 return rs.getInt(1); // Trả về book_Id
@@ -268,17 +268,19 @@ public class KhanhDB {
             throw new IllegalArgumentException("Invalid format for total cost: " + totalCost);
         }
 
-        // Convert date strings to java.sql.Date
-        Date tourDateSql = convertStringToDate(tourDate);
-        Date cancelDateSql = convertStringToDate(cancelDate);
-        Date bookDateSql = convertStringToDate(bookDate);
+        // Define the date format pattern that matches your input date (e.g., "dd/MM/yyyy")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // Convert string dates to java.sql.Date using the correct format
+        Date tourDateSql = Date.valueOf(LocalDate.parse(tourDate, formatter));
+        Date cancelDateSql = (cancelDate != null && !cancelDate.isEmpty()) ? Date.valueOf(LocalDate.parse(cancelDate, formatter)) : null;
+        Date bookDateSql = Date.valueOf(LocalDate.parse(bookDate, formatter));
 
         String sql = "INSERT INTO Booking (tour_Id, tour_Date, total_Cost, book_Status, option_Id, schedule_Id, "
                 + "cus_Id, slot_Order, cancel_Date, book_Date, refund_Amount, booking_Detail) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = UserDB.getConnect(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = UserDB.getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, tourId);
             ps.setDate(2, tourDateSql);
@@ -315,48 +317,75 @@ public class KhanhDB {
     }
 
     public Booking getBookingById(int bookId) throws SQLException {
-    String sql = "SELECT b.book_Id, b.created_At, b.slot_Order, b.total_Cost, b.book_Status, " +
-                 "b.cus_Id, b.tour_Id, b.tour_Date, b.cancel_Date, b.booking_Detail, " +
-                 "toOption.option_Name, t.tour_Name, t.tour_Img " + // Include tour_Name in the select
-                 "FROM Booking b " +
-                 "JOIN TourOption toOption ON b.option_Id = toOption.option_Id " +
-                 "JOIN Tour t ON b.tour_Id = t.tour_Id " +
-                 "WHERE b.book_Id = ?";
+        String sql = "SELECT b.book_Id, b.created_At, b.slot_Order, b.total_Cost, b.book_Status, "
+                + "b.cus_Id, b.tour_Id, b.tour_Date, b.cancel_Date, b.booking_Detail, "
+                + "toOption.option_Name, t.tour_Name, t.tour_Img "
+                + // Include tour_Name in the select
+                "FROM Booking b "
+                + "JOIN TourOption toOption ON b.option_Id = toOption.option_Id "
+                + "JOIN Tour t ON b.tour_Id = t.tour_Id "
+                + "WHERE b.book_Id = ?";
 
-    Booking booking = null;
+        Booking booking = null;
 
-    try (Connection conn = UserDB.getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, bookId);  // Set the booking ID parameter
+        try (Connection conn = UserDB.getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, bookId);  // Set the booking ID parameter
 
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                // Create a new Booking object using the constructor
-                String tourImgString = rs.getString("tour_Img");
-                List<String> tourImgList = (tourImgString != null) ? Arrays.asList(tourImgString.split(",")) : new ArrayList<>();
-                
-                booking = new Booking(
-                    rs.getInt("book_Id"),
-                    rs.getDate("created_At"),
-                    rs.getInt("slot_Order"),
-                    rs.getBigDecimal("total_Cost"),
-                    rs.getString("book_Status"),
-                    rs.getInt("cus_Id"),
-                    rs.getString("tour_Id"),
-                    rs.getString("tour_Name"), // Now retrieving tour_Name
-                    rs.getDate("tour_Date"),
-                    rs.getDate("cancel_Date"),
-                    rs.getString("booking_Detail"),
-                    tourImgList,
-                    rs.getString("option_Name")
-                );
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Create a new Booking object using the constructor
+                    String tourImgString = rs.getString("tour_Img");
+                    List<String> tourImgList = (tourImgString != null) ? Arrays.asList(tourImgString.split(",")) : new ArrayList<>();
+
+                    booking = new Booking(
+                            rs.getInt("book_Id"),
+                            rs.getDate("created_At"),
+                            rs.getInt("slot_Order"),
+                            rs.getBigDecimal("total_Cost"),
+                            rs.getString("book_Status"),
+                            rs.getInt("cus_Id"),
+                            rs.getString("tour_Id"),
+                            rs.getString("tour_Name"), // Now retrieving tour_Name
+                            rs.getDate("tour_Date"),
+                            rs.getDate("cancel_Date"),
+                            rs.getString("booking_Detail"),
+                            tourImgList,
+                            rs.getString("option_Name")
+                    );
+                }
             }
         }
+
+        return booking;
     }
 
-    return booking;
-}
+    public void updateBookingStatusToBooked(int bookId) throws SQLException {
+        // SQL query to update the book_Status to 'Booked' for the specified book_Id
+        String sql = "UPDATE Booking SET book_Status = ? WHERE book_Id = ?";
 
+        try (Connection conn = UserDB.getConnect(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            // Set the parameters for the query
+            ps.setString(1, "Booked");
+            ps.setInt(2, bookId);
+
+            // Execute the update query
+            int rowsAffected = ps.executeUpdate();
+
+            // Check if any rows were updated
+            if (rowsAffected > 0) {
+                System.out.println("Booking status updated successfully.");
+            } else {
+                System.out.println("No booking found with the given ID.");
+            }
+        } catch (SQLException e) {
+            // Handle potential SQL exceptions
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
     public Integer getCusIdFromUserId(int userId) throws SQLException {
         String sql = "SELECT cus_Id FROM Customer WHERE user_Id = ?";
 
@@ -395,59 +424,89 @@ public class KhanhDB {
     public static void main(String[] args) {
         KhanhDB userDB = new KhanhDB();
 
-// Initial tourId (you can remove this if you only want to fetch the tourId dynamically)
-        String tourId = "T0000001";  // Example of a default tourId (use a real one from your database)
+//        // Initial tourId (you can remove this if you only want to fetch the tourId dynamically)
+//        String tourId = "T0000001";  // Example of a default tourId (use a real one from your database)
+//
+//        // Specify the booking details
+//        String selectedDate = "10/10/2024"; // Example of a selected date
+//        String totalCost = "500000"; // Example total cost
+//        String bookingDetail = "Nguoi lon x2"; // Example booking detail
+//        String bookStatus = "pending"; // Example booking status
+//        String optionId = "1"; // Example option ID
+//        int scheduleId = 1; // Example schedule ID
+//        int cusId = 1; // Example customer ID
+//        int slotOrder = 1; // Example slot order
+//        String tourDate = "10/10/2024"; // Example tour date
+//        String cancelDate = ""; // Example cancel date (empty since booking is pending)
+//        String bookDate = "10/10/2024"; // Example booking date
+//        BigDecimal refundAmount = BigDecimal.ZERO; // Example refund amount (zero since no cancellation yet)
+//
+//        try {
+//            // Fetch the tourId by optionId (as a string)
+//            String fetchedTourId = userDB.getTourIdByOptionId(optionId);  // Renamed to fetchedTourId to avoid conflict
+//            if (fetchedTourId != null) {
+//                tourId = fetchedTourId; // Update the tourId with the fetched one
+//                System.out.println("Tour ID for Option ID " + optionId + ": " + tourId);
+//            } else {
+//                System.out.println("No Tour found for Option ID " + optionId);
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Error retrieving tour ID: " + e.getMessage());
+//        }
+//
+//        // Now, you can use tourId in your booking process or elsewhere.
+//        try {
+//            // Import the booking using the updated tourId
+//            userDB.importBooking(tourId, selectedDate, totalCost, bookingDetail, bookStatus, optionId, scheduleId, cusId, slotOrder, tourDate, cancelDate, bookDate, refundAmount);
+//            System.out.println("Booking successfully imported.");
+//        } catch (SQLException e) {
+//            System.err.println("Error importing booking: " + e.getMessage());
+//        }
+//
+//        // Fetch the tour using the getTourById method
+//        Tour tour = userDB.getTourById(tourId);
+//
+//        if (tour != null) {
+//            // Print the tour details
+//            System.out.println(tour.getTour_Name());
+//
+//            // Fetch and print tour options for the tour
+//            List<TourOption> options = userDB.getAllTourOptionsByTourId(tourId);
+//            for (TourOption option : options) {
+//                System.out.println(option.getOption_Name());
+//            }
+//        } else {
+//            System.out.println("Tour not found for ID: " + tourId);
+//        }
+        
+        // Example date strings
+        String validDateString = "10/15/2024";   // Valid date in MM/dd/yyyy format
+        String invalidDateString = "2024-15-10"; // Invalid date format
+        String emptyDateString = "";             // Empty date string
+        String nullDateString = null;            // Null date string
 
-// Specify the booking details
-        String selectedDate = "10/10/2024"; // Example of a selected date
-        String totalCost = "500000"; // Example total cost
-        String bookingDetail = "Nguoi lon x2"; // Example booking detail
-        String bookStatus = "pending"; // Example booking status
-        String optionId = "1"; // Example option ID
-        int scheduleId = 1; // Example schedule ID
-        int cusId = 1; // Example customer ID
-        int slotOrder = 1; // Example slot order
-        String tourDate = "10/10/2024"; // Example tour date
-        String cancelDate = ""; // Example cancel date (empty since booking is pending)
-        String bookDate = "10/10/2024"; // Example booking date
-        BigDecimal refundAmount = BigDecimal.ZERO; // Example refund amount (zero since no cancellation yet)
-
+        // Convert valid date string
         try {
-            // Fetch the tourId by optionId (as a string)
-            String fetchedTourId = userDB.getTourIdByOptionId(optionId);  // Renamed to fetchedTourId to avoid conflict
-            if (fetchedTourId != null) {
-                tourId = fetchedTourId; // Update the tourId with the fetched one
-                System.out.println("Tour ID for Option ID " + optionId + ": " + tourId);
-            } else {
-                System.out.println("No Tour found for Option ID " + optionId);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error retrieving tour ID: " + e.getMessage());
+            Date validDate = userDB.convertStringToDate(validDateString);
+            System.out.println("Valid date: " + validDate);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
 
-        // Now, you can use tourId in your booking process or elsewhere.
+        // Convert invalid date string (should throw an exception)
         try {
-            // Import the booking using the updated tourId
-            userDB.importBooking(tourId, selectedDate, totalCost, bookingDetail, bookStatus, optionId, scheduleId, cusId, slotOrder, tourDate, cancelDate, bookDate, refundAmount);
-            System.out.println("Booking successfully imported.");
-        } catch (SQLException e) {
-            System.err.println("Error importing booking: " + e.getMessage());
+            Date invalidDate = userDB.convertStringToDate(invalidDateString);
+            System.out.println("Invalid date: " + invalidDate);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
 
-        // Fetch the tour using the getTourById method
-        Tour tour = userDB.getTourById(tourId);
+        // Convert empty date string (should return null)
+        Date emptyDate = userDB.convertStringToDate(emptyDateString);
+        System.out.println("Empty date: " + emptyDate);
 
-        if (tour != null) {
-            // Print the tour details
-            System.out.println(tour.getTour_Name());
-
-            // Fetch and print tour options for the tour
-            List<TourOption> options = userDB.getAllTourOptionsByTourId(tourId);
-            for (TourOption option : options) {
-                System.out.println(option.getOption_Name());
-            }
-        } else {
-            System.out.println("Tour not found for ID: " + tourId);
-        }
+        // Convert null date string (should return null)
+        Date nullDate = userDB.convertStringToDate(nullDateString);
+        System.out.println("Null date: " + nullDate);
     }
 }

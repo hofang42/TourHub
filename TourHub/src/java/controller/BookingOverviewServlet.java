@@ -137,7 +137,7 @@ public class BookingOverviewServlet extends HttpServlet {
         // Now, you can use tourId in your booking process or elsewhere.
         try {
             // Import the booking using the updated tourId
-            khanhDB.importBooking(tourId, selectedDate, totalCost, bookingDetail, bookStatus, optionId, scheduleId, cusId, slotOrder, tourDate, cancelDate, bookDate, refundAmount);
+            khanhDB.importBooking(tourId, selectedDate, totalCost, bookingDetail, bookStatus, optionId, scheduleId, cusId, slotOrder, selectedDate, cancelDate, selectedDate, refundAmount);
             System.out.println("Booking successfully imported.");           
         } catch (SQLException e) {
             System.err.println("Error importing booking: " + e.getMessage());
