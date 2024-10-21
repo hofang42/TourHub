@@ -15,7 +15,7 @@ public class Company {
     private String taxCode;
     private double balance;
     private String bankInformation;
-    private int userId;
+    private int user_Id;
 
     // Default constructor
     public Company() {
@@ -27,7 +27,7 @@ public class Company {
         this.taxCode = taxCode;
         this.balance = balance;
         this.bankInformation = bankInformation;
-        this.userId = userId;
+        this.user_Id = user_Id;
     }
 
     // Getters and Setters
@@ -63,12 +63,12 @@ public class Company {
         this.bankInformation = bankInformation;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getUser_Id() {
+        return user_Id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser_Id(int user_Id) {
+        this.user_Id = user_Id;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class Company {
                 + ", taxCode='" + taxCode + '\''
                 + ", balance=" + balance
                 + ", bankInformation='" + bankInformation + '\''
-                + ", userId=" + userId
+                + ", user_Id=" + user_Id
                 + '}';
     }
 }

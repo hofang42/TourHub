@@ -1,10 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="model.User" %>
+<%@ page import="model.FAQ" %>
 <%@ page import="DataAccess.UserDB" %>
+<%@ page import="DataAccess.FAQDB" %>
+<%@ page import="java.util.List" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <jsp:useBean id="currentUser" class="model.User" scope="session" />
-<%@include file="includes/header.jsp" %>
+<%@ include file="includes/header.jsp" %>
+
+<%
+    FAQDB faqDB = new FAQDB();
+    List<FAQ> faqs = faqDB.getAllFAQs(); // Assume this method retrieves all FAQs
+    request.setAttribute("faqs", faqs);
+%>
+
 <body>
     <!-- Page preloader-->
     <div class="page-loader"> 
@@ -148,25 +158,16 @@
                         <hr class="divider divider-decorate">
 
                         <div class="faq-section">
-                            <h5 class="faq-question">1. How do I book a flight?</h5>
-                            <p class="faq-answer">You can book a flight by visiting our flight search page, entering your travel details, and following the steps to complete your booking.</p>
-
-                            <h5 class="faq-question">2. What payment methods do you accept?</h5>
-                            <p class="faq-answer">We accept credit/debit cards, PayPal, and other available payment methods depending on your country.</p>
-
-                            <h5 class="faq-question">3. Can I cancel or change my booking?</h5>
-                            <p class="faq-answer">Yes, you can modify or cancel your booking through your account dashboard. Please note that changes or cancellations may be subject to fees.</p>
-
-                            <h5 class="faq-question">4. How can I contact customer support?</h5>
-                            <p class="faq-answer">You can reach out to our customer support team through the contact page or by calling our hotline.</p>
-
-                            <!-- Add more FAQs as needed -->
+                            <c:forEach var="faq" items="${faqs}">
+                                <h5 class="faq-question">${fn:escapeXml(faq.question)}</h5>
+                                <p class="faq-answer">${fn:escapeXml(faq.answer)}</p>
+                            </c:forEach>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <%@include file="includes/footer.jsp" %>
+        <%@ include file="includes/footer.jsp" %>
     </div>
 </body>

@@ -366,17 +366,18 @@
                                         <span class="tour-duration-text">Tour Duration | </span>
                                         <span class="tour-duration">${tour.total_Time} Hours</span>
                                     </div>
+                                </div>                       
+
+                                <div class="tour-save-share">
+                                    <button class="save-btn">
+                                        <i class="fa-regular fa-bookmark"></i>
+                                    </button>
+                                    <button class="share-btn" onclick="sharePage()">
+                                        <i class="fa-regular fa-share-from-square"></i>
+                                    </button>
+
                                 </div>
                             </div>                       
-
-                            <div class="tour-save-share">
-                                <button class="save-btn">
-                                    <i class="fa-regular fa-bookmark"></i>
-                                </button>
-                                <button class="share-btn">
-                                    <i class="fa-regular fa-share-from-square"></i>
-                                </button>
-                            </div>
                         </div>
                     </div>
 
@@ -1173,18 +1174,25 @@
     });
 </script>
 <script>
-    document.querySelectorAll('.nav-link').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+        document.querySelectorAll('.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             });
         });
-    });
-</script>
+    </script>
+    <script>
+        function sharePage() {
+            var pageUrl = encodeURIComponent(window.location.href); // Get the current page URL
+            var facebookShareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + pageUrl;
+            // Open the share URL in a new window
+            window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
+        }
+    </script>
 <script src="assests/js/searchpage-test.js"></script>
-
 </body>
 
 <%@include file="includes/footer.jsp" %>

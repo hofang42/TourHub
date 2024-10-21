@@ -103,21 +103,33 @@ public class LoginServlet extends HttpServlet {
                 request.setAttribute("message", "OTP has been sent to your email. Please verify.");
                 request.getRequestDispatcher("enterotp.jsp").forward(request, response);
                 return;
-            }
-            if (user.getUser_Status().equals("Banned")) {
+            } else if (user.getUser_Status().equals("Banned")) {
                 request.setAttribute("message", "Your account was banned");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
-            }
+            } else {
+                // User is verified, proceed with role-based logic
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", user);
 
-            // If user is verified, proceed with login
-            HttpSession session = request.getSession();
-            session.setAttribute("currentUser", user);
+                // Check if the user is a customer and has incomplete info
+                if (user.getRole().equals("Customer") && !userDB.hasCustomerInfo(user.getUser_Id())) {
+                    response.sendRedirect("customerinfo.jsp");
+                    return;
+                }
+
+                // Check if the user is a provider and has incomplete info
+                if (user.getRole().equals("Provider") && !userDB.hasCompanyInfo(user.getUser_Id())) {
+                    response.sendRedirect("companyinfo.jsp");
+                    return;
+                }
 //            request.getRequestDispatcher("/home").forward(request, response);
-            // Redirect to the homepage or user dashboard
-            response.sendRedirect("home");
-            return;  // Important to return after forward
+                // Redirect to the homepage or user dashboard
+                response.sendRedirect("home");
+                return;  // Important to return after forward
+            }
         }
+
     }
 
     private void sendOtpEmail(String to, int otp) {
