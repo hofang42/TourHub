@@ -20,11 +20,13 @@ public class Review {
     private String first_Name;
     private String last_Name;
     private List<ReviewReply> replies;
+    private int likes;
+    private int likeCount;
 
     public Review() {
     }
 
-    public Review(int review_Id, String comment, int rating_Star, int user_Id, String tour_Id, String first_Name, String last_Name, List<ReviewReply> replies) {
+    public Review(int review_Id, String comment, int rating_Star, int user_Id, String tour_Id, String first_Name, String last_Name, List<ReviewReply> replies, int likes) {
         this.review_Id = review_Id;
         this.comment = comment;
         this.rating_Star = rating_Star;
@@ -33,6 +35,23 @@ public class Review {
         this.first_Name = first_Name;
         this.last_Name = last_Name;
         this.replies = replies;
+        this.likes = likes;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public List<ReviewReply> getReplies() {

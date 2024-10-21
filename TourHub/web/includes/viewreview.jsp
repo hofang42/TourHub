@@ -73,99 +73,19 @@
                 color: #333333;
             }
 
-            /* Reply Section */
-            .reply-section {
-                margin-top: 20px;
-                padding-left: 20px;
-                border-left: 2px solid #f39c12;
-                display: none; /* Ban đầu ẩn */
-            }
-
-            .reply-item {
-                display: flex;
-                align-items: flex-start;
-                margin-bottom: 15px;
-            }
-
-            .reply-avatar {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                background-color: #e0e0e0;
-                margin-right: 10px;
-            }
-
-            .reply-content {
-                background-color: #f0f2f5;
-                padding: 10px 15px;
-                border-radius: 18px;
-                max-width: 80%;
-                font-size: 14px;
-                color: #333;
-                line-height: 1.5;
-                position: relative;
-            }
-
-            .reply-content::after {
-                content: '';
-                position: absolute;
-                top: 15px;
-                left: -8px;
-                border-width: 8px;
-                border-style: solid;
-                border-color: transparent #f0f2f5 transparent transparent;
-            }
-
-            .reply-info {
-                font-size: 12px;
-                color: #888;
-                margin-top: 5px;
-            }
-
-            .reply-button, .view-reply-button {
+            .like-button {
                 background-color: #007bff;
                 color: #fff;
-                padding: 8px 16px;
+                padding: 5px 10px;
                 border: none;
-                border-radius: 20px;
+                border-radius: 5px;
                 cursor: pointer;
-                margin-top: 15px;
                 font-size: 14px;
-            }
-
-            .reply-button:hover, .view-reply-button:hover {
-                background-color: #0056b3;
-            }
-
-            .reply-form {
-                display: none;
                 margin-top: 10px;
-                padding-left: 50px;
             }
 
-            .reply-textarea {
-                width: 100%;
-                height: 60px;
-                padding: 8px;
-                border-radius: 18px;
-                border: 1px solid #ddd;
-                margin-bottom: 10px;
-                font-size: 14px;
-                resize: none;
-            }
-
-            .reply-submit {
-                background-color: #28a745;
-                color: #fff;
-                padding: 8px 12px;
-                border: none;
-                border-radius: 20px;
-                cursor: pointer;
-                font-size: 14px;
-            }
-
-            .reply-submit:hover {
-                background-color: #218838;
+            .like-button:hover {
+                background-color: #0056b3;
             }
 
             h1 {
@@ -180,40 +100,13 @@
                 font-size: 16px;
                 color: #888;
             }
-
-            .view-reply-section {
-                text-align: right;
-                margin-top: 10px;
-            }
         </style>
-
-        <script>
-            $(document).ready(function () {
-                // Khi click vào nút View Provider Reply, toggle hiển thị phần reply và đổi tên nút
-                $(".view-reply-button").click(function () {
-                    var replySection = $(this).closest('.review-item').find(".reply-section");
-                    replySection.toggle();
-
-                    if (replySection.is(":visible")) {
-                        $(this).text("Hide Provider Reply");
-                    } else {
-                        $(this).text("View Provider Reply");
-                    }
-                });
-
-                // Khi click vào nút Reply, toggle hiển thị form nhập liệu
-                $(".reply-button").click(function () {
-                    $(this).closest('.review-footer').find(".reply-form").toggle();
-                });
-            });
-        </script>
     </head>
     <body>
 
         <div class="container-fluid">
             <div class="review-section">
 
-                <!-- Thêm phần h1 hiển thị tiêu đề "Review From User" -->
                 <h1>Review From User</h1>
 
                 <c:choose>
@@ -224,7 +117,6 @@
                                     <div class="review-header-left">
                                         <div class="review-avatar"></div>
                                         <div class="review-user-info">
-                                            <!-- Hiển thị tên đầy đủ -->
                                             <c:out value="${review.first_Name}" />
                                             <c:out value="${review.last_Name}" />
                                         </div>
@@ -240,43 +132,10 @@
                                     <c:out value="${review.comment}" />
                                 </div>
 
-                                <!-- Nút xem phần Provider Reply (Hiển thị cho tất cả mọi người) -->
-                                <div class="view-reply-section">
-                                    <button class="view-reply-button">View Provider Reply</button>
+                                <div class="like-section">
+                                    <span id="like-count-${review.review_Id}">${review.likeCount}</span> Likes
+                                    <button class="like-button" onclick="likeReview(${review.review_Id})">Like</button>
                                 </div>
-
-                                <!-- Phần Reply ban đầu ẩn đi, chỉ hiển thị khi nhấn nút -->
-                                <div class="reply-section">
-                                    <c:forEach var="reply" items="${review.replies}">
-                                        <div class="reply-item">
-                                            <div class="reply-avatar"></div>
-                                            <div>
-                                                <div class="reply-content">
-                                                    <c:out value="${reply.reply_Content}" />
-                                                </div>
-                                                <div class="reply-info">
-                                                    <em>By Provider</em>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </c:forEach>
-                                </div>
-
-                                <!-- Nút reply và form chỉ hiển thị cho Provider của tour -->
-                                <c:if test="${isProviderOfTour}">
-                                    <div class="review-footer">
-                                        <button class="reply-button">Reply</button>
-                                        <form class="reply-form" method="POST" action="ViewTourReview">
-                                            <textarea class="reply-textarea" name="reply_Content" placeholder="Your reply..."></textarea>
-
-                                            <!-- Hidden input cho reviewId và tourId để truyền giá trị đúng -->
-                                            <input type="hidden" name="reviewId" value="${review.review_Id}" />
-                                            <input type="hidden" name="tourId" value="${param.id}" />
-
-                                            <input type="submit" class="reply-submit" value="Submit Reply" />
-                                        </form>
-                                    </div>
-                                </c:if>
                             </div>
                         </c:forEach>
                     </c:when>
@@ -286,6 +145,36 @@
                 </c:choose>
             </div>
         </div>
+
+        <script>
+            function likeReview(reviewId) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'LikeReviewServlet', // Ensure this servlet handles the like functionality
+                    data: {reviewId: reviewId},
+                    success: function (response) {
+                        if (response.trim() === "Success") {
+                            // Fetch updated like count from the server
+                            $.ajax({
+                                type: 'GET',
+                                url: 'GetLikeCountServlet', // New servlet to get the like count
+                                data: {reviewId: reviewId},
+                                success: function (likeCountResponse) {
+                                    // Update the like count on the page
+                                    $('#like-count-' + reviewId).text(likeCountResponse);
+                                }
+                            });
+                            alert('You liked this review!');
+                        } else {
+                            alert('Failed to like the review. Please try again.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error liking review: ' + error);
+                    }
+                });
+            }
+        </script>
 
     </body>
 </html>

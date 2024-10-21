@@ -88,12 +88,6 @@
                         </a>
                     </li>
                 </c:if>
-                <li>
-                    <a href="reviewtour.jsp">
-                        <i class='bx bxs-star'></i>
-                        <span class="text">Review Tours</span>
-                    </a>
-                </li>
             </ul>
             <ul class="side-menu">
                 <li>
