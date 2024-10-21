@@ -588,9 +588,11 @@
                                 <span class="day-of-week" data-dayofweek="0"></span>
                                 <span class="date" data-formatteddate="0"></span>
                             </div>
+
                             <div class="date-container" data-index="1" onclick="selectDate(this)">
                                 <span class="day-of-week" data-dayofweek="1"></span>
                                 <span class="date" data-formatteddate="1"></span>
+                              
                             </div>
                             <div class="date-container" data-index="2" onclick="selectDate(this)">
                                 <span class="day-of-week" data-dayofweek="2"></span>
@@ -644,27 +646,30 @@
 
 
                         <button class="scroll-right" onclick="scrollRight()">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>                  
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>                  
 
-                <div class="tour-options-section">
-                    <c:forEach items="${tourOptions}" var="option">
-                        <div class="tour-option">
-                            <div class="tour-option-left-section">
-                                <span class="option-name">${option.option_Name}</span>
-                                <span class="option-note">${option.option_Description}</span>
-                                <a href="javascript:void(0)" class="tour-option-detail" onclick="toggle('popup5')">Xem chi tiết</a>
-                                <span class="refund-section">${option.day_Of_Week}</span>
-                            </div>
-                            <div class="tour-option-right-section">
-                                <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
-                                <div class="option-price-section">
-                                    <div class="option-price">${option.option_Price}</div>
-                                    <button class="option-pick-btn" onclick="window.location.href = 'optionAdjustment?id=${option.option_Id}'">Chọn vé</button>
+                    <div class="tour-options-section">
+                        <c:forEach items="${tourOptions}" var="option">
+                            <div class="tour-option">
+                                <div class="tour-option-left-section">
+                                    <span class="option-name">${option.option_Name}</span>
+                                    <span class="option-note">${option.option_Description}</span>
+                                    <a href="javascript:void(0)" class="tour-option-detail" onclick="toggle('popup5')">Xem chi tiết</a>
+                                    <span class="refund-section">${option.day_Of_Week}</span>
                                 </div>
-                            </div>                            
+                                <div class="tour-option-right-section">
+                                    <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
+                                    <div class="option-price-section">
+                                        <div class="option-price">${option.option_Price}</div>
+                                        <button class="option-pick-btn" 
+                                            onclick="window.location.href='optionAdjustment?id=${option.option_Id}&selectedDate=' + selectedDate.toISOString().split('T')[0]">
+                                            Chọn vé
+                                        </button>
+                                    </div>
+                                </div>                            
                         </div>
                     </c:forEach>
                 </div>

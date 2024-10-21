@@ -28,6 +28,19 @@ public class Booking {
     private List<String> tour_Img;
     private String option_Name;
 
+    public Booking(int book_Id, Date created_At, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name, Date tour_Date, Date cancel_Date) {
+        this.book_Id = book_Id;
+        this.created_At = created_At;
+        this.slot_Order = slot_Order;
+        this.total_Cost = total_Cost;
+        this.book_Status = book_Status;
+        this.cus_Id = cus_Id;
+        this.tour_Id = tour_Id;
+        this.tour_Name = tour_Name;
+        this.tour_Date = tour_Date;
+        this.cancel_Date = cancel_Date;
+    }
+
     public Booking(int book_Id, Date created_At, int slot_Order, BigDecimal total_Cost, String book_Status, int cus_Id, String tour_Id, String tour_Name, Date tour_Date, Date cancel_Date, String booking_Detail, List<String> tour_Img, String option_Name) {
         this.book_Id = book_Id;
         this.created_At = created_At;
