@@ -375,7 +375,6 @@
                                     <button class="share-btn" onclick="sharePage()">
                                         <i class="fa-regular fa-share-from-square"></i>
                                     </button>
-
                                 </div>
                             </div>                       
                         </div>
@@ -593,7 +592,7 @@
                             <div class="date-container" data-index="1" onclick="selectDate(this)">
                                 <span class="day-of-week" data-dayofweek="1"></span>
                                 <span class="date" data-formatteddate="1"></span>
-                              
+
                             </div>
                             <div class="date-container" data-index="2" onclick="selectDate(this)">
                                 <span class="day-of-week" data-dayofweek="2"></span>
@@ -647,30 +646,30 @@
 
 
                         <button class="scroll-right" onclick="scrollRight()">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>                  
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>                  
 
-                    <div class="tour-options-section">
-                        <c:forEach items="${tourOptions}" var="option">
-                            <div class="tour-option">
-                                <div class="tour-option-left-section">
-                                    <span class="option-name">${option.option_Name}</span>
-                                    <span class="option-note">${option.option_Description}</span>
-                                    <a href="javascript:void(0)" class="tour-option-detail" onclick="toggle('popup5')">Xem chi tiết</a>
-                                    <span class="refund-section">${option.day_Of_Week}</span>
+                <div class="tour-options-section">
+                    <c:forEach items="${tourOptions}" var="option">
+                        <div class="tour-option">
+                            <div class="tour-option-left-section">
+                                <span class="option-name">${option.option_Name}</span>
+                                <span class="option-note">${option.option_Description}</span>
+                                <a href="javascript:void(0)" class="tour-option-detail" onclick="toggle('popup5')">Xem chi tiết</a>
+                                <span class="refund-section">${option.day_Of_Week}</span>
+                            </div>
+                            <div class="tour-option-right-section">
+                                <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
+                                <div class="option-price-section">
+                                    <div class="option-price">${option.option_Price}</div>
+                                    <button class="option-pick-btn" 
+                                            onclick="window.location.href = 'optionAdjustment?id=${option.option_Id}&selectedDate=' + selectedDate.toISOString().split('T')[0]">
+                                        Chọn vé
+                                    </button>
                                 </div>
-                                <div class="tour-option-right-section">
-                                    <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
-                                    <div class="option-price-section">
-                                        <div class="option-price">${option.option_Price}</div>
-                                        <button class="option-pick-btn" 
-                                            onclick="window.location.href='optionAdjustment?id=${option.option_Id}&selectedDate=' + selectedDate.toISOString().split('T')[0]">
-                                            Chọn vé
-                                        </button>
-                                    </div>
-                                </div>                            
+                            </div>                            
                         </div>
                     </c:forEach>
                 </div>
@@ -1174,24 +1173,24 @@
     });
 </script>
 <script>
-        document.querySelectorAll('.nav-link').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    document.querySelectorAll('.nav-link').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
             });
         });
-    </script>
-    <script>
-        function sharePage() {
-            var pageUrl = encodeURIComponent(window.location.href); // Get the current page URL
-            var facebookShareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + pageUrl;
-            // Open the share URL in a new window
-            window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
-        }
-    </script>
+    });
+</script>
+<script>
+    function sharePage() {
+        var pageUrl = encodeURIComponent(window.location.href); // Get the current page URL
+        var facebookShareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + pageUrl;
+        // Open the share URL in a new window
+        window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
+    }
+</script>
 <script src="assests/js/searchpage-test.js"></script>
 </body>
 

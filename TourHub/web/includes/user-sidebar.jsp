@@ -18,7 +18,7 @@
                 </a>
             </li>
             <li>
-            <a href="user-wishlist.jsp">
+            <a href="wishlist">
                 <i class='bx bxs-dashboard' ></i>
                 <span class="text">My wishlist tour</span>
             </a>
@@ -63,7 +63,7 @@
             </li>
         </c:if>
         <li>
-            <a href="user-notification.jsp">
+            <a href="notifications">
                 <i class='bx bxs-dashboard' ></i>
                 <span class="text">Notification</span>
             </a>
