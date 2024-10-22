@@ -22,6 +22,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import model.Booking;
+import model.TourDetailDescription;
+import model.TourOptionDetail;
 
 /**
  *
@@ -146,6 +148,44 @@ public class KhanhDB {
         }
         return tour; // Return the Tour object or null if not found
     }
+    
+    public TourDetailDescription getTourDetailDescriptionByTourId(String tourId) {
+        TourDetailDescription tourDetailDescription = null;
+        String sql = "SELECT * FROM TourDetailDescription WHERE tour_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, tourId); // Set the tourId parameter
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                // Split the string fields by ";" to create lists
+                List<String> experiencesList = Arrays.asList(rs.getString("experiences").split(";"));
+                List<String> languageServiceList = Arrays.asList(rs.getString("language_Service").split(";"));
+                List<String> suggestionList = Arrays.asList(rs.getString("suggestion").split(";"));
+                List<String> additionalInfoList = Arrays.asList(rs.getString("additional_Information").split(";"));
+                List<String> tourItineraryList = Arrays.asList(rs.getString("tour_Itinerary").split(";"));
+
+                // Create a new TourDetailDescription object with the extracted data
+                tourDetailDescription = new TourDetailDescription(
+                        rs.getString("tour_Id"), // tourId
+                        experiencesList, // experiences
+                        languageServiceList, // languageService
+                        suggestionList, // suggestion
+                        rs.getString("contact_Number"), // contactNumber
+                        additionalInfoList, // additionalInformation
+                        tourItineraryList // tourItinerary
+                );
+
+                // Optionally set the detail_Id if needed
+                tourDetailDescription.setDetailId(rs.getInt("detail_Id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tourDetailDescription; // Return the TourDetailDescription object or null if not found
+    }
+
 
     public List<TourOption> getAllTourOptionsByTourId(String tourId) {
         List<TourOption> options = new ArrayList<>();
@@ -207,6 +247,31 @@ public class KhanhDB {
             e.printStackTrace();
         }
         return option;  // Return the TourOption object
+    }
+    
+    public List<TourOptionDetail> getTourOptionDetailsByOptionId(int optionId) {
+        List<TourOptionDetail> optionDetails = new ArrayList<>();
+        String sql = "SELECT toc.detail_Description, toc.category_Id, toc.detail_Id, toc.option_Id " +
+                     "FROM TourOptionDetail toc " +
+                     "WHERE toc.option_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, optionId);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                TourOptionDetail detail = new TourOptionDetail(
+                        rs.getInt("detail_Id"),
+                        rs.getInt("option_Id"),
+                        rs.getInt("category_Id"),
+                        rs.getString("detail_Description")
+                );
+                optionDetails.add(detail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return optionDetails;
     }
 
     public List<TourPeople> getTourPeopleByOptionId(int optionId) {
@@ -480,33 +545,34 @@ public class KhanhDB {
 //        }
         
         // Example date strings
-        String validDateString = "10/15/2024";   // Valid date in MM/dd/yyyy format
-        String invalidDateString = "2024-15-10"; // Invalid date format
-        String emptyDateString = "";             // Empty date string
-        String nullDateString = null;            // Null date string
-
-        // Convert valid date string
-        try {
-            Date validDate = userDB.convertStringToDate(validDateString);
-            System.out.println("Valid date: " + validDate);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-
-        // Convert invalid date string (should throw an exception)
-        try {
-            Date invalidDate = userDB.convertStringToDate(invalidDateString);
-            System.out.println("Invalid date: " + invalidDate);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        // Convert empty date string (should return null)
-        Date emptyDate = userDB.convertStringToDate(emptyDateString);
-        System.out.println("Empty date: " + emptyDate);
-
-        // Convert null date string (should return null)
-        Date nullDate = userDB.convertStringToDate(nullDateString);
-        System.out.println("Null date: " + nullDate);
+//        String validDateString = "10/15/2024";   // Valid date in MM/dd/yyyy format
+//        String invalidDateString = "2024-15-10"; // Invalid date format
+//        String emptyDateString = "";             // Empty date string
+//        String nullDateString = null;            // Null date string
+//
+//        // Convert valid date string
+//        try {
+//            Date validDate = userDB.convertStringToDate(validDateString);
+//            System.out.println("Valid date: " + validDate);
+//        } catch (IllegalArgumentException e) {
+//            System.out.println(e.getMessage());
+//        }
+//
+//        // Convert invalid date string (should throw an exception)
+//        try {
+//            Date invalidDate = userDB.convertStringToDate(invalidDateString);
+//            System.out.println("Invalid date: " + invalidDate);
+//        } catch (IllegalArgumentException e) {
+//            System.out.println("Error: " + e.getMessage());
+//        }
+//
+//        // Convert empty date string (should return null)
+//        Date emptyDate = userDB.convertStringToDate(emptyDateString);
+//        System.out.println("Empty date: " + emptyDate);
+//
+//        // Convert null date string (should return null)
+//        Date nullDate = userDB.convertStringToDate(nullDateString);
+//        System.out.println("Null date: " + nullDate);
+        
     }
 }
