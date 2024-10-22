@@ -314,30 +314,32 @@
                                             </div>
                                         </div>
                                     </div>   
+                                    <div class="head">
+                                        <h3>Booking</h3>
+                                    </div>
+                                    <table class="withdraw-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Withdraw Money</th>
+                                                <th>Request Date</th>
+                                                <th>Respond Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:if test="${not empty requestScope.withdrawalses}">
+                                                <c:forEach var="withdrawal" items="${requestScope.withdrawalses}">
+                                                    <tr>
+                                                        <td>${withdrawal.withdrawMoney}</td>
+                                                        <td>${withdrawal.requestDate}</td>
+                                                        <td>${withdrawal.respondDate}</td>
+                                                        <td class="status-${withdrawal.status.toLowerCase()}">${withdrawal.status}</td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:if>
 
-                                                            <!--                                    <table class="withdraw-table">
-                                                                                                    <thead>
-                                                                                                        <tr>
-                                                                                                            <th>Withdraw Money</th>
-                                                                                                            <th>Request Date</th>
-                                                                                                            <th>Respond Date</th>
-                                                                                                            <th>Status</th>
-                                                                                                        </tr>
-                                                                                                    </thead>
-                                                                                                    <tbody>
-                                                            <c:if test="${not empty sessionScope.withdrawalses}">
-                                                                <c:forEach var="withdrawal" items="${sessionScope.withdrawalses}">
-                                                                    <tr>
-                                                                        <td>${withdrawal.withdraw_money}</td>
-                                                                        <td>${withdrawal.request_Date}</td>
-                                                                        <td>${withdrawal.respond_Date}</td>
-                                                                        <td class="status-${withdrawal.status.toLowerCase()}">${withdrawal.status}</td>
-                                                                    </tr>
-                                                                </c:forEach>
-                                                            </c:if>
-                
-                                                        </tbody>
-                                                    </table>-->
+                                        </tbody>
+                                    </table>
                                 </div> <!-- Missing closing div tag corrected here -->
                             </c:otherwise>
                         </c:choose>
@@ -425,25 +427,26 @@
 //            $(function () {
 //                $('[data-toggle="tooltip"]').tooltip()
 //            })
+            // Keep track of sort directions for each column
+            let sortDirection = [true, true, true, true];  // Default to ascending for all columns
+
             function sortTable(columnIndex) {
-                let table = document.getElementById("withdrawTable");
-                let rows = Array.from(table.getElementsByTagName("tr")).slice(1); // Get all rows except the header
-                let isAscending = sortDirection[columnIndex]; // Check current sort direction for this column
+                let table = document.querySelector(".withdraw-table");
+                let tbody = table.querySelector("tbody");
+                let rows = Array.from(tbody.getElementsByTagName("tr"));
+                let isAscending = sortDirection[columnIndex];  // Check current sort direction for this column
 
                 let sortedRows = rows.sort((a, b) => {
                     let valA = a.getElementsByTagName("td")[columnIndex].textContent.trim();
                     let valB = b.getElementsByTagName("td")[columnIndex].textContent.trim();
 
-                    // Handle different types of sorting
-                    if (columnIndex === 0) {  // ID column: numeric sorting
-                        valA = parseInt(valA) || 0;
-                        valB = parseInt(valB) || 0;
-                    } else if (columnIndex === 2 || columnIndex === 3) {  // Request Date and Respond Date columns: date sorting
+                    // Handle different types of sorting based on the column index
+                    if (columnIndex === 0) {  // Withdraw Money column: numeric sorting
+                        valA = parseFloat(valA.replace(/[^\d.-]/g, '')) || 0;
+                        valB = parseFloat(valB.replace(/[^\d.-]/g, '')) || 0;
+                    } else if (columnIndex === 1 || columnIndex === 2) {  // Request Date and Respond Date columns: date sorting
                         valA = new Date(valA);
                         valB = new Date(valB);
-                    } else if (columnIndex === 1) {  // Withdraw Money column: numeric sorting
-                        valA = parseFloat(valA.replace(/[^\d.-]/g, '')) || 0;  // Remove non-numeric characters for cost
-                        valB = parseFloat(valB.replace(/[^\d.-]/g, '')) || 0;
                     }
 
                     // Compare values
@@ -456,13 +459,13 @@
                     return 0;
                 });
 
-                // Append sorted rows back into the table
-                let tbody = table.getElementsByTagName("tbody")[0];
+                // Remove existing rows and append sorted rows back to the table
+                tbody.innerHTML = '';
                 for (let row of sortedRows) {
                     tbody.appendChild(row);
                 }
 
-                // Toggle the sort direction for the next click
+                // Toggle sort direction for the next click
                 sortDirection[columnIndex] = !isAscending;
             }
         </script>

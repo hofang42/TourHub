@@ -235,7 +235,7 @@ public class ProviderManagementServlet extends HttpServlet {
             // Remove the image from the list
             images.remove(imageToRemove);
 
-            // Update the tour's images in the database
+            // Update the tour's images in the database with the updated list
             hoangDB.updateTourImages(tourId, images);
 
             // Success, return 200 OK status
@@ -485,10 +485,9 @@ public class ProviderManagementServlet extends HttpServlet {
         List<Tour> sortedTours = tourDB.SortProviderTour(sortOrder, companyId);
 
         // Set the sorted tours in the request scope
-        request.setAttribute("tourEdit", sortedTours);
-
+        request.getSession().setAttribute("tourEdit", sortedTours);
         // Forward to the JSP page to display the sorted tours
-        request.getRequestDispatcher("my-tour").forward(request, response);
+        request.getRequestDispatcher("mytour.jsp").forward(request, response);
     }
 
     public void showBalancePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
@@ -514,7 +513,7 @@ public class ProviderManagementServlet extends HttpServlet {
         System.out.println("SIZE" + withdrawalses.size());
         request.setAttribute("withdrawalses", withdrawalses);
         request.setAttribute("balance", formattedBalance);
-
+        System.out.println("TESTTTT" + withdrawalses + formattedBalance);
         request.getRequestDispatcher("payment.jsp").forward(request, response);
 
     }
