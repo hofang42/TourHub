@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author hoang
@@ -13,7 +15,7 @@ public class Company {
     // Fields corresponding to the columns in the Company table
     private int companyId;
     private String taxCode;
-    private double balance;
+    private BigDecimal balance;
     private String bankInformation;
     private int user_Id;
 
@@ -22,12 +24,12 @@ public class Company {
     }
 
     // Parameterized constructor
-    public Company(int companyId, String taxCode, double balance, String bankInformation, int userId) {
+    public Company(int companyId, String taxCode, BigDecimal balance, String bankInformation, int userId) {
         this.companyId = companyId;
         this.taxCode = taxCode;
         this.balance = balance;
         this.bankInformation = bankInformation;
-        this.user_Id = user_Id;
+        this.user_Id = userId;
     }
 
     // Getters and Setters
@@ -47,11 +49,11 @@ public class Company {
         this.taxCode = taxCode;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

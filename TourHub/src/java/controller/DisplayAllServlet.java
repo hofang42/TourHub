@@ -5,6 +5,7 @@
 package controller;
 
 import DataAccess.KhanhDB;
+import DataAccess.ProvinceDB;
 import DataAccess.TourDB;
 import DataAccess.hoang_UserDB;
 import com.google.gson.Gson;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import model.Province;
 import model.Tour;
 
 /**
@@ -64,7 +66,7 @@ public class DisplayAllServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         KhanhDB u = new KhanhDB();
-
+        ProvinceDB provinceDB = new ProvinceDB();
         // Get the sort order from the request
         String sortOrder = request.getParameter("sortOrder");
         if (sortOrder == null || sortOrder.isEmpty()) {
@@ -73,6 +75,7 @@ public class DisplayAllServlet extends HttpServlet {
 
         // Get the location or search query from the request
         String location = request.getParameter("location");
+        String name;
         String searchQuery = request.getParameter("querry"); // Using 'query' for consistency
         if (location == null || location.isEmpty()) {
             location = "All";  // Default to "All"
@@ -89,12 +92,14 @@ public class DisplayAllServlet extends HttpServlet {
             minPrice = Integer.parseInt(prices[0]);
             maxPrice = Integer.parseInt(prices[1]);
         }
-
+        List<Province> provinces = provinceDB.getProvinceByQuery(location);
         // If a search query is provided, prioritize that over location
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
             location = searchQuery.trim(); // Update location to search query if present
         }
-
+//        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+//            name = searchQuery.trim(); // Update location to search query if present
+//        }
         // Call the getAll method with the sorting, location, and price filters
         List<Tour> list = u.getAllTour(sortOrder, location, minPrice, maxPrice);
         List<Tour> tours = new TourDB().getTours();
@@ -102,6 +107,7 @@ public class DisplayAllServlet extends HttpServlet {
         request.setAttribute("tours", tours);
         response.setContentType("application/json");
         response.getWriter().write(new Gson().toJson(tours));
+        response.getWriter().write(new Gson().toJson(provinces));
         // Pass the sortOrder, location (or search query), and priceRange back to the JSP
         request.setAttribute("sortOrder", sortOrder);
         request.setAttribute("location", location);

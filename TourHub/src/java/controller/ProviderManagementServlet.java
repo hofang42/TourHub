@@ -10,6 +10,7 @@ import DataAccess.UserDB;
 import DataAccess.WithdrawalsDB;
 import DataAccess.hoang_UserDB;
 import com.google.gson.Gson;
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -22,11 +23,15 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Tour;
@@ -115,6 +120,20 @@ public class ProviderManagementServlet extends HttpServlet {
                     Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            case "remove-image": {
+                try {
+                    removeImage(request, response);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            case "show-withdraw-page": {
+                try {
+                    showBalancePage(request, response);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
 
         }
     }
@@ -175,7 +194,58 @@ public class ProviderManagementServlet extends HttpServlet {
         }
         Tour tourEdit = new TourDB().getTourFromTourID(tourId, companyId);
         request.setAttribute("tourEdit", tourEdit);
+        request.setAttribute("tourEditImages", tourEdit.getTour_Img());
         request.getRequestDispatcher("edit-tour-page.jsp").forward(request, response);
+    }
+
+    private void removeImage(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+        // Get parameters from the request
+        String tourId = request.getParameter("tourId");
+        String imageToRemove = request.getParameter("imageToRemove");
+
+        if (tourId == null || imageToRemove == null) {
+            // Bad request: missing required parameters
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        TourDB tourDB = new TourDB();
+        hoang_UserDB hoangDB = new hoang_UserDB();
+
+        try {
+            // Fetch the tour by ID
+            Tour tour = tourDB.getTourFromTourID(tourId);
+
+            if (tour == null) {
+                // Tour not found
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            // Get the current list of images
+            List<String> images = tour.getTour_Img();
+
+            // Check if the image exists in the list
+            if (!images.contains(imageToRemove)) {
+                // Image not found in the list
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            // Remove the image from the list
+            images.remove(imageToRemove);
+
+            // Update the tour's images in the database
+            hoangDB.updateTourImages(tourId, images);
+
+            // Success, return 200 OK status
+            response.setStatus(HttpServletResponse.SC_OK);
+
+        } catch (Exception e) {
+            // Log the exception and return 500 status
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
     private void saveEditTour(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException {
@@ -260,8 +330,21 @@ public class ProviderManagementServlet extends HttpServlet {
             oldTour.setSlot(newSlot);
             isUpdated = true;
         }
-        if (!newImageFilenames.isEmpty() && !newImageFilenames.equals(oldTour.getTour_Img())) {
-            oldTour.setTour_Img(newImageFilenames);
+        if (!newImageFilenames.isEmpty()) {
+            // Fetch the existing list of images from the old tour
+            List<String> existingImages = oldTour.getTour_Img();
+
+            // Check if existingImages is null, and initialize it if necessary
+            if (existingImages == null) {
+                existingImages = new ArrayList<>();
+            }
+
+            // Convert existing and new images into a set to remove duplicates
+            Set<String> uniqueImages = new HashSet<>(existingImages);
+            uniqueImages.addAll(newImageFilenames); // Add all new images
+
+            // Set the updated list (convert the set back to a list)
+            oldTour.setTour_Img(new ArrayList<>(uniqueImages));
             isUpdated = true;
         }
 
@@ -370,7 +453,7 @@ public class ProviderManagementServlet extends HttpServlet {
         } else {
             // Handle case where no amount is provided
             request.setAttribute("message", "Please select an amount to withdraw.");
-            request.getRequestDispatcher("payment.jsp").forward(request, response);
+            request.getRequestDispatcher("provider-management?action=show-withdraw-page").forward(request, response);
             return;
         }
 
@@ -386,7 +469,7 @@ public class ProviderManagementServlet extends HttpServlet {
         }
 
         request.setAttribute("message", message);
-        request.getRequestDispatcher("withdraw").forward(request, response);
+        request.getRequestDispatcher("provider-management?action=show-withdraw-page").forward(request, response);
     }
 
     private void sort(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -406,6 +489,34 @@ public class ProviderManagementServlet extends HttpServlet {
 
         // Forward to the JSP page to display the sorted tours
         request.getRequestDispatcher("my-tour").forward(request, response);
+    }
+
+    public void showBalancePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        hoang_UserDB hoangDB = new hoang_UserDB();
+        WithdrawalsDB withdrawalsDB = new WithdrawalsDB();
+        int companyId = 0;
+        try {
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        } catch (SQLException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+            // Optionally redirect or set error messages here
+        }
+
+        BigDecimal balance = hoangDB.getBalanceByCompanyId(companyId);
+        if (balance == null) {
+            balance = BigDecimal.ZERO; // Avoid null balance issue
+        }
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        String formattedBalance = currencyFormat.format(balance);
+
+        List<Withdrawals> withdrawalses = withdrawalsDB.getWithdrawalsByProviderId(companyId);
+        System.out.println("SIZE" + withdrawalses.size());
+        request.setAttribute("withdrawalses", withdrawalses);
+        request.setAttribute("balance", formattedBalance);
+
+        request.getRequestDispatcher("payment.jsp").forward(request, response);
+
     }
 
     /**

@@ -103,6 +103,7 @@ public class ProvinceDB {
         return provinces;
     }
 
+    
     public static void main(String[] args) {
         List<Province> provinces = new ProvinceDB().getProvinceByVisitCount();
         for (Province pro : provinces) {

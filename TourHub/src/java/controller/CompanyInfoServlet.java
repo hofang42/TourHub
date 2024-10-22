@@ -38,7 +38,7 @@ public class CompanyInfoServlet extends HttpServlet {
         company.setTaxCode(taxCode);
         company.setBankInformation(bankInformation);
         company.setUser_Id(user.getUser_Id());
-        company.setBalance(0); // Initial balance
+        company.setBalance(BigDecimal.ZERO); // Initial balance
 
         // Save company details to the database
         UserDB companyDB = new UserDB();

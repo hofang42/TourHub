@@ -18,17 +18,35 @@ public class BookingDetails {
     private int slotOrder;
     private String bookStatus;
     private double totalCost;
+    private Date bookDate;
 
-    public BookingDetails() {
-    }
-
-    public BookingDetails(int bookId, String tourName, String customerName, int slotOrder, String bookStatus, double totalCost) {
+//    public BookingDetails(int bookId, String tourName, String customerName, int slotOrder, String bookStatus, double totalCost) {
+//        this.bookId = bookId;
+//        this.tourName = tourName;
+//        this.customerName = customerName;
+//        this.slotOrder = slotOrder;
+//        this.bookStatus = bookStatus;
+//        this.totalCost = totalCost;
+//    }
+    public BookingDetails(int bookId, String tourName, String customerName, int slotOrder, String bookStatus, double totalCost, Date bookDate) {
         this.bookId = bookId;
         this.tourName = tourName;
         this.customerName = customerName;
         this.slotOrder = slotOrder;
         this.bookStatus = bookStatus;
         this.totalCost = totalCost;
+        this.bookDate = bookDate;
+    }
+
+    public Date getBookDate() {
+        return bookDate;
+    }
+
+    public void setBookDate(Date bookDate) {
+        this.bookDate = bookDate;
+    }
+
+    public BookingDetails() {
     }
 
     public int getBookId() {

@@ -81,15 +81,14 @@ public class BookingOverviewServlet extends HttpServlet {
 
         // Get cusId from the User object
         int cusId = 0; // Assuming user_Id corresponds to cusId
-        
+
         try {
-            int userId = 1; // Example user ID
+            int userId = userDB.getUserFromSession(session).getUser_Id(); // Example user ID
             cusId = khanhDB.getCusIdFromUserId(userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-         
         // Get and validate parameters
         String selectedDate = request.getParameter("selectedDate");
         String totalCost = request.getParameter("totalCost");
@@ -100,7 +99,7 @@ public class BookingOverviewServlet extends HttpServlet {
         System.out.println("Total Cost: " + totalCost);
         System.out.println("Booking Detail: " + bookingDetail);
         System.out.println("Option ID: " + optionId);
-        
+
         if (selectedDate == null || totalCost == null || bookingDetail == null || optionId == null) {
             // Redirect to an error page if any required parameter is missing
             response.sendRedirect(request.getContextPath() + "/error.jsp?message=Missing parameters");
@@ -133,31 +132,31 @@ public class BookingOverviewServlet extends HttpServlet {
         String cancelDate = "";
         String bookDate = selectedDate;
         BigDecimal refundAmount = BigDecimal.ZERO;
-        
+
         // Now, you can use tourId in your booking process or elsewhere.
         try {
             // Import the booking using the updated tourId
             khanhDB.importBooking(tourId, selectedDate, totalCost, bookingDetail, bookStatus, optionId, scheduleId, cusId, slotOrder, selectedDate, cancelDate, selectedDate, refundAmount);
-            System.out.println("Booking successfully imported.");           
+            System.out.println("Booking successfully imported.");
         } catch (SQLException e) {
             System.err.println("Error importing booking: " + e.getMessage());
         }
-        
+
         //Get booking id, cần chỉnh lại cách lấy, vẫn bị trùng
-        int bookingId = 0;             
+        int bookingId = 0;
         try {
             bookingId = khanhDB.getLatestBookingId();
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(BookingOverviewServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         //Check booking id
         if (bookingId != -1) {
             System.out.println("Booking inserted with ID: " + bookingId);
         } else {
             System.out.println("Failed to retrieve booking ID.");
         }
-        
+
         //Get booking by id
         Booking book = new Booking();
         try {
@@ -165,9 +164,9 @@ public class BookingOverviewServlet extends HttpServlet {
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(BookingOverviewServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         System.out.println(book.toString());
-        
+
         request.setAttribute("book", book);
         request.getRequestDispatcher("/booking-overview.jsp").forward(request, response);
     }

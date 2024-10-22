@@ -16,8 +16,9 @@
     </head>
     <body>
         <!-- SIDEBAR -->
+
        <%@include file="includes/user-sidebar.jsp" %>
-       
+
         <section id="content">
             <nav>
                 <i class='bx bx-menu' ></i>

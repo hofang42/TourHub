@@ -114,7 +114,6 @@
                 font-size: 16px;
                 border-radius: 20px;
                 border: 1px solid #ccc;
-                margin-bottom: 10px;
             }
 
             .result-box {
@@ -200,7 +199,165 @@
                 scrollbar-width: thin;
                 scrollbar-color: #888 #f1f1f1;
             }
+            .popup {
+                display: none; /* Ẩn popup ban đầu */
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                opacity: 0;
+                transition: opacity 0.4s ease; /* Hiệu ứng mở popup mượt */
+            }
+
+            .popup-content {
+                position: relative;
+                background-color: #fff;
+                margin: 10% auto;
+                padding: 20px;
+                width: 80%;
+                max-width: 800px;
+                border-radius: 10px;
+                max-height: 80vh; /* Giới hạn chiều cao của popup */
+                overflow-y: auto; /* Thêm thanh cuộn nếu nội dung quá dài */
+                opacity: 0;
+                transform: translateY(-50px);
+                transition: opacity 0.4s ease, transform 0.4s ease; /* Hiệu ứng popup trượt lên */
+            }
+
+            .popup.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .popup-content.show {
+                opacity: 1;
+                transform: translateY(0); /* Trượt popup vào vị trí ban đầu */
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 20px;
+                font-size: 24px;
+                cursor: pointer;
+                color: #333;
+            }
+            /* CSS cho thẻ đánh giá */
+            .review-item {
+                display: flex;
+                flex-direction: column;
+                padding: 15px;
+                margin-bottom: 10px;
+                background-color: #fff;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                width: 100%;
+                max-width: 800px;
+                transition: all 0.3s ease;
+            }
+
+            .review-item:hover {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .review-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .review-user {
+                font-weight: bold;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .review-stars {
+                color: #f39c12;
+                font-size: 16px;
+                margin-top: 5px;
+            }
+
+            .review-text {
+                font-size: 14px;
+                line-height: 1.6;
+                color: #555;
+                margin-top: 10px;
+            }
+
+            /* Nút xem tất cả đánh giá */
+            .view-review a {
+                font-size: 14px;
+                color: #007bff;
+                cursor: pointer;
+                text-decoration: underline;
+            }
+
+            .view-review a:hover {
+                color: #0056b3;
+            }
+
+            /* Hiệu ứng khi hiển thị popup */
+            .popup {
+                display: none;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                opacity: 0;
+                transition: opacity 0.4s ease;
+            }
+
+            .popup.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .popup-content {
+                position: relative;
+                background-color: #fff;
+                margin: 15% auto;
+                padding: 20px;
+                width: 80%;
+                max-width: 800px;
+                border-radius: 10px;
+                max-height: 80vh;
+                overflow-y: auto;
+                transform: translateY(-50px);
+                opacity: 0;
+                transition: all 0.4s ease;
+            }
+
+            .popup-content.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 20px;
+                font-size: 24px;
+                cursor: pointer;
+                color: #333;
+            }
+
         </style>
+        
+        <script>
+            function toggle(popupId) {
+                var popup = document.getElementById(popupId);
+                popup.style.display = popup.style.display === "block" ? "none" : "block";
+            }
+        </script>
     </head>
 </html>
 
@@ -257,7 +414,7 @@
             </div>
         </div>
     </div>
-    <div class="page">
+    <div class="page" id="blur">
         <!-- Page Header-->
         <header class="section page-header">
             <!-- RD Navbar-->
@@ -315,7 +472,7 @@
             </div>
         </header>
 
-        <div id="blur">
+        <div>
             <div class="search-bar">
                 <input
                     class="search-box"
@@ -482,7 +639,7 @@
                             <span class="average-rating-point">${tour.average_Review_Rating}</span>
 
                             <div class="rank">
-                                <span class="rank-type">Xuất sắc</span>
+                                <span class="rank-type">Excellent</span>
                                 <br>
                                 <span class="number-rating">Từ ${tour.number_Of_Review} đánh giá</span>
                             </div>
@@ -491,9 +648,9 @@
                         <div class="map">
                             <i class="fa-solid fa-map-location-dot"></i>
                             <div class="map-content">
-                                <span class="view-map">Xem bản đồ</span>
+                                <span class="view-map">Show map</span>
                                 <br>
-                                <span>Hoà Vang</span>
+                                <span>${tour.location}</span>
                             </div>
 
                         </div>
@@ -501,21 +658,18 @@
 
                     <div class="left-section-below">
                         <div class="experiment">
-                            <h5>Bạn sẽ trải nghiệm</h5>
+                            <h5>What You'll Experience</h5>
                             <ul>
-                                <li>Tận hưởng khung cảnh tuyệt vời của đỉnh Bà Nà đứng trên cầu Vàng, một trong những chiếc cầu đẹp nhất thế giới</li>
-                                <li>Ngắm nhìn vẻ đẹp hùng vĩ của núi Chúa từ buồng cáp treo</li>
-                                <li>Ghé thăm làng Pháp với những khu vườn theo kiến trúc Pháp tinh tế</li>
-                                <li>Vui chơi thoả thích tại công viên Fantasy Park</li>
+                                <c:forEach var="experience" items="${tourDetailDescription.experiences}">
+                                    <li>${experience}</li>
+                                    </c:forEach>
                             </ul>
-                            <a href="javascript:void(0)" class="view-more-experiment" onclick="toggle('popup3')">Đọc
-                                thêm</a>
+                            <a href="javascript:void(0)" class="view-more-experiment" onclick="toggle('popup3')">Read More</a>
                         </div>
                         <div class="split"></div>
 
                         <div class="more-information">
-                            <a href="javascript:void(0)" onclick="toggle('popup2')">Thông tin liên hệ, Tiện ích, Dịch vụ
-                                ngôn ngữ và nhiều thông tin khác</a>
+                            <a href="javascript:void(0)" onclick="toggle('popup2')">Contacts, Facilities, Service Language and More</a>
                         </div>
                     </div>
                 </div>
@@ -523,57 +677,89 @@
                 <div class="tour-detail-right-section">
                     <div class="price-section">
                         <div class="price">
-                            <span class="start-from">Bắt đầu từ</span>
+                            <span class="start-from">Start From</span>
                             <h4>${tour.price}</h4>
                         </div>
 
-                        <button class="find-tour-btn">Tìm tour</button>
+                        <button class="find-tour-btn">Find Options</button>
                     </div>
 
                     <div class="view-review">
-                        <span class="view-review-content">Ấn tượng từ những du khách khác</span>
-                        <a href="#">Xem tất cả đánh giá</a>
+
+                        <span class="view-review-content">What Travelers Say</span>
+                        <a href="#" id="viewAllReviewsBtn">See All Reviews</a>
+                  
                     </div>
 
+                    <!-- Popup để hiển thị tất cả các đánh giá -->
+                    <div id="reviewPopup" class="popup">
+                        <div class="popup-content">
+                            <span class="close-btn" id="closePopup">&times;</span>
+                            <h2>Tất cả đánh giá</h2>
+
+                            <div class="all-reviews">
+                                <c:forEach var="review" items="${allReviews}">
+                                    <div class="review-item">
+                                        <div class="review-header">
+                                            <div class="review-user">${review.first_Name} ${review.last_Name}</div>
+                                        </div>
+
+                                        <div class="review-stars">
+                                            <c:forEach var="i" begin="1" end="${review.rating_Star}">
+                                                ★
+                                            </c:forEach>
+                                        </div>
+
+                                        <div class="review-text">${review.comment}</div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="highlight-review">
-                        <div class="review-info">
-                            <span class="reviewer">Nguyen</span>
-                            <span class="rating">10/10</span>
+                        <div class="review-list">
+                            <c:choose>
+                                <c:when test="${not empty reviews}">
+                                    <c:forEach var="review" items="${reviews}">
+                                        <div class="review-item">
+                                            <p><strong>Người đánh giá:</strong> ${review.first_Name} ${review.last_Name}</p>
+                                            <p><strong>Bình luận:</strong> ${review.comment}</p>
+                                            <p><strong>Số sao:</strong> ${review.rating_Star} / 5</p>
+                                        </div>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="no-review">Không có review nào cho tour này.</div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
-                        <div class="review-content">
-                            <span>Hướng dẫn viên và tài xế nhiệt tình,
-                                vui vẻ, chu đáo. Đưa rước đúng giờ,
-                                sẽ tiếp tục book dịch vụ Traveloka
-                                nếu có nhu cầu.</span>
-                        </div>
+
                     </div>
                 </div>
             </div>
 
             <div class="tour-itinerary">
-                <h4>Lịch trình tour</h4>
+                <h4>Tour Itinerary</h4>
                 <span>
                     <ul>
-                        <li>07:30-17:00 Đón khác</li>
-                        <li>Đến Bà Nà Hills, di chuyển bằng cáp treo </li>
-                        <li>Tham quan Bà Nà Hills và check in cầu vàng, vườn Le Jardin D'Amour, chùa Linh Ứng, hầm rượu Debay </li>
-                        <li>Di chuyển tiếp bằng cáp treo lên đến đỉnh núi </li>
-                        <li>Dùng bữa trưa trên đỉnh Núi Chúa </li>
-                        <li>Tiếp tục khám phá Bà Nà </li>
-                        <li>Ra về bằng cáp treo</li>
+                        <c:forEach var="itinerary" items="${tourDetailDescription.tourItinerary}">
+                            <li>${itinerary}</li>
+                            </c:forEach>
                     </ul>
                 </span>
-                <a href="javascript:void(0)" onclick="toggle('popup4')">Xem lịch trình đầy đủ</a>
+                <a href="javascript:void(0)" onclick="toggle('popup4')">See Complete Itinerary</a>
             </div>
 
             <div class="tour-booking">
-                <h4>Có vé trống cho bạn</h4>
+                <h4>Available Ticket(s) for You</h4>
 
                 <div class="date-picking">
                     <button class="calendar" onclick="openCalendar(); toggle('blur');">
                         <i class="fa-solid fa-calendar-days"></i>
-                        Xem lịch
+                        See Calendar
                     </button>
 
                     <input type="text" id="calendarInput" style="display: none;" />
@@ -674,7 +860,10 @@
                     </c:forEach>
                 </div>
             </div>
-            <jsp:include page="/ViewTourReview?id=${tour.tour_Id}" />
+            <jsp:include page="CommentServlet">
+                <jsp:param name="tourId" value="${tourId}" />
+            </jsp:include>
+
             <div class="tour-rating">
 
             </div>
@@ -713,50 +902,42 @@
     </div>
     <!--        Popup2-->
     <div id="popup2">
-        <h3>Thêm thông tin</h3>
+        <h3>More Information</h3>
         <div class="information-wrapper">
             <div class="language-service">
-                <h4>Dịch vụ ngôn ngữ</h4>
-                <span>Dịch vụ có sẵn: Tiếng Việt</span>
+                <h4>Service Language(s)</h4>
+                <span>Service available in:</span>
+                <ul>
+                    <c:forEach var="language" items="${tourDetailDescription.languageService}">
+                        <li>${language}</li>
+                        </c:forEach>
+                </ul>
             </div>
 
             <div class="suitable">
-                <h4>Phù hợp với</h4>
-                <span>Đam mê nghiên cứu, Khám phá văn hoá, Gia đình vui vẻ, Ẩm thực châu Á</span>
+                <h4>Suitable for</h4>
+                <ul>
+                    <c:forEach var="suggestion" items="${tourDetailDescription.suggestion}">
+                        <li>${suggestion}</li>
+                        </c:forEach>
+                </ul>
             </div>
 
             <div class="contact-information">
-                <h4>Liên hệ đối tác:</h4>
-                <span>+84787204299</span>
+                <h4>Contact Partner:</h4>
+                <ul>
+                    <li>+${tourDetailDescription.contactNumber}</li>
+                </ul>
+
             </div>
 
             <div class="extra-information">
-                <h4>Thông tin thêm</h4>
+                <h4>Additional Information</h4>
                 <span>
                     <ul>
-                        <li>Dịch vụ đón trả miễn phí cho khách ở tại trung tâm thành phố Đà Nẵng.</li>
-                        <li>Phí đón trả khách sẽ được áp dụng nếu khách có nguyện vọng được đón trả tại những địa điểm
-                            sau:</li>
-                        <ol>
-                            <li>Dải resort từ Hyatt Regency Danang Resort and Spa đến Grandvrio Ocean Resort Danang:
-                                200.000 VND/1 chiều/nhóm</li>
-                            <li>Khách sạn Danang Golden Bay, Citadines Blue Cove Danang: 200.000 VND/1 chiều/nhóm</li>
-                            <li>InterContinental Đà Nẵng Sun Peninsula Resort: 300.000/chiều/xe 4 chỗ, 350.000/chiều/xe
-                                7 chỗ, 400.000 VND/chiều/xe 16 chỗ</li>
-                            <li>Thừa Thiên - Huế, Khu vực Lăng Cô: 750.000/chiều/xe 4 chỗ, 1.000.000/chiều/xe 7 chỗ,
-                                1.300.000 VND/chiều/xe 16 chỗ</li>
-                            <li>hành phố Huế: 1.100.000/chiều/xe 4 chỗ, 1.200.000/chiều/xe 7 chỗ, 1.800.000 VND/chiều/xe
-                                16 chỗ</li>
-                            <li>Thành phố Hội An: 250.000/chiều/xe 4 chỗ, 350.000/chiều/xe 7 chỗ, 400.000 VND/chiều/xe
-                                16 chỗ</li>
-                            <li>Sân bay Quốc tế Đà Nẵng: 100.000 VND/1 chiều/nhóm</li>
-                        </ol>
-                        <li>Nhà cung cấp tour sẽ liên hệ với bạn để xác nhận phí đón trả. Phí sẽ được thu trực tiếp bởi
-                            tài xế khi kết thúc tour.</li>
-                        <li>
-                            Đối với tour ghép: Trong trường hợp khách không yêu cầu dịch vụ đưa đón, vui lòng có mặt tại
-                            Khách sạn Novotel Hotel (36 Bạch Đằng, Đà Nẵng) trong khoảng 08:15 – 08:30 để khởi hành
-                            tour. </li>
+                        <c:forEach var="info" items="${tourDetailDescription.additionalInformation}">
+                            <li>${info}</li>
+                            </c:forEach>
                     </ul>
                 </span>
             </div>
@@ -765,66 +946,55 @@
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup2')">
         </button>
     </div>
-    <!--        Popup3-->
+    <!--Popup3-->
     <div id="popup3">
-        <h3>Bạn sẽ trải nghiệm</h3>
+        <h3>What You'll Experience</h3>
         <div class="experiment-wrapper">
             <ul>
-                <li>Tận hưởng khung cảnh tuyệt vời của đỉnh Bà Nà đứng trên cầu Vàng, một trong những chiếc cầu đẹp nhất
-                    thế giới</li>
-                <li>Ngắm nhìn vẻ đẹp hùng vĩ của núi Chúa từ buồng cáp treo</li>
-                <li>Ghé thăm làng Pháp với những khu vườn theo kiến trúc Pháp tinh tế</li>
-                <li>Vui chơi thoả thích tại công viên Fantasy Park</li>
+                <c:forEach var="experience" items="${tourDetailDescription.experiences}">
+                    <li>${experience}</li>
+                    </c:forEach>
             </ul>
 
-            <span>Bà Nà Hills là khu phức hợp giải trí và resort lớn nhất tại Việt Nam. Cùng nhau đi tour và xả láng cả
-                ngày tại Bà Nà Hills ngay nào! Tận hưởng không khí mát lạnh cùng phong cảnh tuyệt vời, ăn hết mình với
-                đủ loại ẩm thực và chơi hết sức với những lễ hội và các hoạt động giải trí đa dạng diễn ra hằng ngày,
-                tất cả đều ngay tại đây!</span>
-
-            <img src="assests/images/new-image/jojo1.jpg" alt="">
-            <span>Tận hưởng bầu không khí mát lạnh khi bạn "lướt" mây lên đến đỉnh Bà Nà </span>
-
-            <img src="assests/images/new-image/jojo2.jpg" alt="">
-            <span>Đừng quên "đua tốc độ" và tham gia rất nhiều trò chơi hấp dẫn khác tại Bà Nà nhé! </span>
-
-            <img src="assests/images/new-image/jojo3.jpg" alt="">
-            <span>Ngắm nhìn Bà Nà lấp lánh trong ánh đèn khi hoàng hôn buông xuống</span>
+            <!--            <span>Bà Nà Hills là khu phức hợp giải trí và resort lớn nhất tại Việt Nam. Cùng nhau đi tour và xả láng cả
+                            ngày tại Bà Nà Hills ngay nào! Tận hưởng không khí mát lạnh cùng phong cảnh tuyệt vời, ăn hết mình với
+                            đủ loại ẩm thực và chơi hết sức với những lễ hội và các hoạt động giải trí đa dạng diễn ra hằng ngày,
+                            tất cả đều ngay tại đây!</span>
+            
+                        <img src="assests/images/new-image/jojo1.jpg" alt="">
+                        <span>Tận hưởng bầu không khí mát lạnh khi bạn "lướt" mây lên đến đỉnh Bà Nà </span>
+            
+                        <img src="assests/images/new-image/jojo2.jpg" alt="">
+                        <span>Đừng quên "đua tốc độ" và tham gia rất nhiều trò chơi hấp dẫn khác tại Bà Nà nhé! </span>
+            
+                        <img src="assests/images/new-image/jojo3.jpg" alt="">
+                        <span>Ngắm nhìn Bà Nà lấp lánh trong ánh đèn khi hoàng hôn buông xuống</span>-->
         </div>
 
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup3')"></button>
-    </button>
-</div>
-<!--        Popup4-->
-<div id="popup4">
-    <h3>Lịch trình tour</h3>
-
-    <div class="tour-itinerary-wrapper">
-        <ul>
-            <li>07:30-17:00 Đón khách </li>
-            <li>Đến Bà Nà Hills, di chuyển bằng cáp treo </li>
-            <li>Tham quan Bà Nà Hills và check in cầu vàng, vườn Le Jardin D'Amour, chùa Linh Ứng, hầm rượu Debay
-            </li>
-            <li>Di chuyển tiếp bằng cáp treo lên đến đỉnh núi </li>
-            <li>Dùng bữa trưa trên đỉnh Núi Chúa </li>
-            <li>Tiếp tục khám phá Bà Nà </li>
-            <li>Ra về bằng cáp treo</li>
-            <li>Trở về trung tâm Đà Nẵng</li>
-            <li>Kết thúc tour. </li>
-        </ul>
     </div>
+    <!--        Popup4-->
+    <div id="popup4">
+        <h3>Tour Itinerary</h3>
+        <div class="tour-itinerary-wrapper">
+            <ul>
+                <c:forEach var="itinerary" items="${tourDetailDescription.tourItinerary}">
+                    <li>${itinerary}</li>
+                    </c:forEach>
+            </ul>
+        </div>
 
-    <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup4')"></button>
-</button>
-</div>
+        <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup4')"></button>
+    </button>
+    </div>
 <!--        Popup5-->
 <div id="popup5">
-    <h4>(Dành cho khách Việt Nam) Tour ghép - Khởi hành từ Đà Nẵng (Kèm bữa trưa)</h4>
+    <h4>Tour ghép</h4>
     <div class="tour-option-detail-wrapper">
         <div class="tour-time-popup">
             <span>
                 Thời lượng tour:
-                - 9,5 giờ
+                ${tour.total_Time}
             </span>
 
             <span>
@@ -875,8 +1045,6 @@
                     Bữa ăn:
 
                     1 buffet trưa
-                    Có lựa chọn chay
-                    1 chai nước
                     Phương tiện di chuyển:
 
                     Xe có máy điều hoà để đưa đón và trung chuyển
@@ -885,13 +1053,7 @@
                     Vé vào cửa
                     Bảo hiểm du lịch
                     Hướng dẫn viên nói tiếng Việt - Anh
-                    Cáp treo hai chiều
-                    Quà tặng đặc biệt từ nhà cung cấp tour
-                    Giá không bao gồm
-                    Chi phí cá nhân
-                    Tiền tip
-                    Dịch vụ không kèm trong tour
-                    Thức ăn và thức uống không kèm trong tour
+
                 </span>
                 <h4 id="scrollspyHeading2">Second heading</h4>
                 <span>
@@ -906,10 +1068,6 @@
                 <span>
                     Nếu đặt chỗ của bạn đã được xác nhận, nhân viên điều hành tour sẽ liên hệ với bạn qua điện thoại
                     ít nhất 24 giờ trước khi tour bắt đầu.
-                    Nếu nhân viên điều hành tour không liên hệ với bạn trong khoảng thời gian đó, vui lòng liên hệ
-                    với nhà điều hành tour qua số điện thoại trên voucher của bạn.
-                    Xuất trình voucher Traveloka hợp lệ của bạn (không phải giấy chứng nhận thanh toán hay hóa đơn)
-                    trên điện thoại cho nhân viên điều hành tour.
                 </span>
                 <h4 id="scrollspyHeading4">Fourth heading</h4>
                 <span>
@@ -917,11 +1075,6 @@
                     Yêu cầu hoàn tiền muộn nhất là 2 ngày trước ngày đi đã chọn của bạn để nhận được 100% hoàn tiền.
                     Đặt chỗ của bạn sẽ không được hoàn lại nếu bạn yêu cầu hoàn tiền ít hơn 2 ngày trước ngày đi đã
                     chọn.
-                    Số tiền hoàn lại cuối cùng sẽ không bao gồm phí dịch vụ, phiếu giảm giá và / hoặc phí chuyển
-                    khoản ngân hàng mã duy nhất.
-                    Để hủy đặt chỗ của bạn và yêu cầu hoàn tiền, vui lòng truy cập mục Đặt chỗ của tôi. Trong phần
-                    Quản lý đặt chỗ, chạm vào Hoàn tiền và thực hiện theo quy trình gửi hoàn tiền (có trên Ứng dụng
-                    Traveloka phiên bản 3.18 trở lên hoặc trang web Traveloka trên máy tính).
                 </span>
                 <h4 id="scrollspyHeading5">Fifth heading</h4>
                 <span>
@@ -931,26 +1084,6 @@
                     hành tour sau: 18 Th04, 30 Th04, 1 Th05, 31 Th08 – 3 Th09 2024.
                     Dịch vụ đón trả miễn phí cho khách ở tại trung tâm thành phố Đà Nẵng.
                     Phí đón trả khách sẽ được áp dụng nếu khách có nguyện vọng được đón trả tại những địa điểm sau:
-                    1.
-                    Dải resort từ Hyatt Regency Danang Resort and Spa đến Grandvrio Ocean Resort Danang: 200.000
-                    VND/1 chiều/nhóm
-                    2.
-                    Khách sạn Danang Golden Bay, Citadines Blue Cove Danang: 200.000 VND/1 chiều/nhóm
-                    3.
-                    InterContinental Đà Nẵng Sun Peninsula Resort: 300.000/chiều/xe 4 chỗ, 350.000/chiều/xe 7 chỗ,
-                    400.000 VND/chiều/xe 16 chỗ
-                    4.
-                    Thừa Thiên - Huế, Khu vực Lăng Cô: 750.000/chiều/xe 4 chỗ, 1.000.000/chiều/xe 7 chỗ, 1.300.000
-                    VND/chiều/xe 16 chỗ
-                    5.
-                    Thành phố Huế: 1.100.000/chiều/xe 4 chỗ, 1.200.000/chiều/xe 7 chỗ, 1.800.000 VND/chiều/xe 16 chỗ
-                    6.
-                    Thành phố Hội An: 250.000/chiều/xe 4 chỗ, 350.000/chiều/xe 7 chỗ, 400.000 VND/chiều/xe 16 chỗ
-                    7.
-                    Sân bay Quốc tế Đà Nẵng: 100.000 VND/1 chiều/nhóm
-                    8.
-                    Nhà cung cấp tour sẽ liên hệ với bạn để xác nhận phí đón trả. Phí sẽ được thu trực tiếp bởi tài
-                    xế khi kết thúc tour.
                 </span>
             </div>
         </div>
@@ -958,7 +1091,32 @@
     <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup5')"></button>
 </button>
 </div>
+                
 
+<!--    <div id="popup5" class="popup">
+        <div class="popup-content">
+            <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup5')">Close</button>
+
+             Dynamic content of the popup 
+            <div class="tour-option-detail-wrapper">
+                <c:forEach items="${optionDetails}" var="detail">
+                    <div>
+                        <h4>Category: 
+                            <c:choose>
+                                <c:when test="${detail.categoryId == 1}">Price Includes</c:when>
+                                <c:when test="${detail.categoryId == 2}">Meals</c:when>
+                                <c:when test="${detail.categoryId == 3}">Transport</c:when>
+                                <c:when test="${detail.categoryId == 4}">Additional Services/Items</c:when>
+                                <c:when test="${detail.categoryId == 5}">Price Excludes</c:when>
+                            </c:choose>
+                        </h4>
+                        <span>${detail.detailDescription}</span>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+    </div>-->
+                
 <div class="tour-content">
 
 
@@ -969,6 +1127,33 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!--<script>
+    function fetchDetails(optionId) {
+        // Construct the URL using window.location.origin
+        const origin = window.location.origin;
+        var url = origin + `/Project_SWP/getTourOptionDetails?optionId=` + optionId;
+        console.log("Fetching from url: " + url);
+        // Fetch data from the server
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Update the content of the popup with the fetched data
+                document.getElementById('popup5').innerHTML = data;
+                toggle('popup5'); // Assuming toggle function is defined to show/hide the popup
+            })
+            .catch(error => {
+                console.error("Fetch error: ", error);
+                alert("Failed to load tour option details.");
+            });
+    }
+</script>-->
+
 <script>
         function toggle(action) {
             var blur = document.getElementById('blur');
@@ -1055,7 +1240,7 @@
     // Function để hiển thị 14 ngày với ngày hiện tại hoặc đã chọn ở giữa
     // Function để hiển thị 14 ngày với ngày hiện tại hoặc đã chọn ở giữa
     function displayDateRange(centerDate) {
-        const daysOfWeek = ['Chu nhat', 'Thu hai', 'Thu ba', 'Thu tu', 'Thu nam', 'Thu sau', 'Thu bay'];
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         // Tìm tất cả các phần tử .date-container
         let dateContainers = document.querySelectorAll('.date-container');
@@ -1091,13 +1276,13 @@
 
 
     const daysMapping = {
-        'Chu nhat': 0,
-        'Thu hai': 1,
-        'Thu ba': 2,
-        'Thu tu': 3,
-        'Thu nam': 4,
-        'Thu sau': 5,
-        'Thu bay': 6
+        'Sunday': 0,
+        'Monday': 1,
+        'Tuesday': 2,
+        'Wednesday': 3,
+        'Thursday': 4,
+        'Friday': 5,
+        'Saturday': 6
     };
 
 
@@ -1191,6 +1376,45 @@
         window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
     }
 </script>
+
+<script>
+    // Mở popup khi nhấn vào "Xem tất cả đánh giá"
+    document.getElementById("viewAllReviewsBtn").addEventListener("click", function (event) {
+        event.preventDefault();
+        var popup = document.getElementById("reviewPopup");
+        var popupContent = document.querySelector(".popup-content");
+
+        popup.classList.add("show");
+        setTimeout(function () {
+            popupContent.classList.add("show");
+        }, 100); // Delay để popup hiện ra mượt mà
+    });
+
+    // Đóng popup khi nhấn vào nút đóng (x)
+    document.getElementById("closePopup").addEventListener("click", function () {
+        var popup = document.getElementById("reviewPopup");
+        var popupContent = document.querySelector(".popup-content");
+
+        popupContent.classList.remove("show");
+        setTimeout(function () {
+            popup.classList.remove("show");
+        }, 400); // Thời gian đóng tương ứng với thời gian hiệu ứng
+    });
+
+    // Đóng popup khi nhấn bên ngoài popup
+    window.addEventListener("click", function (event) {
+        var popup = document.getElementById("reviewPopup");
+        var popupContent = document.querySelector(".popup-content");
+
+        if (event.target == popup) {
+            popupContent.classList.remove("show");
+            setTimeout(function () {
+                popup.classList.remove("show");
+            }, 400); // Thời gian đóng tương ứng với thời gian hiệu ứng
+        }
+    });
+</script>
+
 <script src="assests/js/searchpage-test.js"></script>
 </body>
 
