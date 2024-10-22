@@ -7,12 +7,18 @@ package DataAccess;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import model.Message;
+import model.Notification;
 import model.ReportError;
+import model.Tour;
 import model.User;
+import model.Wishlist;
+import java.util.Date;
 
 /**
  *
@@ -35,6 +41,160 @@ public class ThienDB implements DatabaseInfo {
         return null;
     }
 
+    public User getCustomer(int userId) {
+        String query = "SELECT u.user_Id, u.password, u.first_Name, u.last_Name, u.phone, u.email, u.address, u.created_At, u.user_Status, u.role, u.avatar, c.cus_Birth "
+                + "FROM [User] u "
+                + "JOIN Customer c ON u.user_Id = c.user_Id "
+                + "WHERE u.user_Id = ?";
+
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setUser_Id(rs.getInt("user_Id"));
+                    user.setPassword(rs.getString("password"));
+                    user.setFirst_Name(rs.getString("first_Name"));
+                    user.setLast_Name(rs.getString("last_Name"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setEmail(rs.getString("email"));
+                    user.setAddress(rs.getString("address"));
+                    user.setCreated_At(rs.getDate("created_At"));
+                    user.setUser_Status(rs.getString("user_Status"));
+                    user.setRole(rs.getString("role"));
+                    user.setAvatar(rs.getString("avatar"));
+                    user.setCus_Birth(rs.getDate("cus_Birth"));  // Ngày sinh của Customer
+
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching user: " + e);
+        }
+        return null;
+    }
+
+    public boolean updateCustomer(User user) {
+        boolean result = false;
+
+        String updateUserSQL = "UPDATE [User] SET first_Name = ?, last_Name = ?, email = ?, phone = ?, address = ?, avatar = ? WHERE user_Id = ?";
+        String updateCustomerSQL = "UPDATE Customer SET cus_Birth = ? WHERE user_Id = ?";
+
+        try (Connection conn = getConnect()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmtUser = conn.prepareStatement(updateUserSQL)) {
+                stmtUser.setString(1, user.getFirst_Name());
+                stmtUser.setString(2, user.getLast_Name());
+                stmtUser.setString(3, user.getEmail());
+                stmtUser.setString(4, user.getPhone());
+                stmtUser.setString(5, user.getAddress());
+                stmtUser.setString(6, user.getAvatar());
+                stmtUser.setInt(7, user.getUser_Id());
+                stmtUser.executeUpdate();
+            }
+
+            try (PreparedStatement stmtCustomer = conn.prepareStatement(updateCustomerSQL)) {
+                if (user.getCus_Birth() != null) {
+                    stmtCustomer.setDate(1, new java.sql.Date(user.getCus_Birth().getTime())); // Correct conversion
+                } else {
+                    stmtCustomer.setNull(1, java.sql.Types.DATE);
+                }
+                stmtCustomer.setInt(2, user.getUser_Id());
+                stmtCustomer.executeUpdate();
+            }
+
+            conn.commit();
+            result = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public User getProvider(int userId) {
+        String query = "SELECT u.user_Id, u.password, u.first_Name, u.last_Name, u.phone, u.email, u.address, u.created_At, u.user_Status, u.role, u.avatar, "
+                + "c.tax_Code, c.balance, c.bank_Information "
+                + "FROM [User] u "
+                + "JOIN Company c ON u.user_Id = c.user_Id "
+                + "WHERE u.user_Id = ?";
+
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setInt(1, userId);  // Set giá trị cho tham số user_Id trong query
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setUser_Id(rs.getInt("user_Id"));
+                    user.setPassword(rs.getString("password"));
+                    user.setFirst_Name(rs.getString("first_Name"));
+                    user.setLast_Name(rs.getString("last_Name"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setEmail(rs.getString("email"));
+                    user.setAddress(rs.getString("address"));
+                    user.setCreated_At(rs.getDate("created_At"));
+                    user.setUser_Status(rs.getString("user_Status"));
+                    user.setRole(rs.getString("role"));
+                    user.setAvatar(rs.getString("avatar"));
+
+                    // Thêm thông tin từ bảng Company
+                    user.setTax_Code(rs.getString("tax_Code"));
+                    user.setBalance(rs.getBigDecimal("balance"));
+                    user.setBank_Information(rs.getString("bank_Information"));
+
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching user with company info: " + e);
+        }
+        return null;
+    }
+    
+    public boolean updateProvider(User user) {
+        boolean result = false;
+
+        String updateUserSQL = "UPDATE [User] SET first_Name = ?, last_Name = ?, email = ?, phone = ?, address = ?, avatar = ? WHERE user_Id = ?";
+        String updateCompanySQL = "UPDATE Company SET tax_Code = ?, balance = ?, bank_Information = ? WHERE user_Id = ?";
+
+        try (Connection conn = getConnect()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmtUser = conn.prepareStatement(updateUserSQL)) {
+                stmtUser.setString(1, user.getFirst_Name());
+                stmtUser.setString(2, user.getLast_Name());
+                stmtUser.setString(3, user.getEmail());
+                stmtUser.setString(4, user.getPhone());
+                stmtUser.setString(5, user.getAddress());
+                stmtUser.setString(6, user.getAvatar());
+                stmtUser.setInt(7, user.getUser_Id());
+                stmtUser.executeUpdate();
+            }
+
+            try (PreparedStatement stmtCompany = conn.prepareStatement(updateCompanySQL)) {
+                // Gán giá trị cho các tham số
+                stmtCompany.setString(1, user.getTax_Code());
+                stmtCompany.setBigDecimal(2, user.getBalance()); // Đảm bảo rằng bạn có getter cho balance
+                stmtCompany.setString(3, user.getBank_Information());
+                stmtCompany.setInt(4, user.getUser_Id());
+                stmtCompany.executeUpdate();
+            }
+
+            conn.commit();
+            result = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     public void banAccount(int userId) throws Exception {
         String sql = "UPDATE [User] SET user_Status = 'Banned' WHERE user_Id = ?";
         try (Connection conn = getConnect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -49,6 +209,57 @@ public class ThienDB implements DatabaseInfo {
             pstmt.setInt(1, userId);
             pstmt.executeUpdate();
         }
+    }
+
+    public static List<Tour> getPendingTours() {
+        List<Tour> tourList = new ArrayList<>();
+        String sql = "SELECT * FROM Tour WHERE tour_Status = 'Pending'";
+
+        // Get the connection from your getConnect() method
+        Connection con = getConnect();
+
+        if (con == null) {
+            System.out.println("Unable to establish a database connection.");
+            return tourList; // Return an empty list if connection failed
+        }
+
+        try (PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                // Create a Tour object from the result set
+                Tour tour = new Tour();
+                tour.setTour_Id(rs.getString("tour_Id"));
+                tour.setTour_Name(rs.getString("tour_Name"));
+                tour.setTour_Description(rs.getString("tour_Description"));
+                tour.setStart_Date(rs.getDate("start_Date"));
+                tour.setEnd_Date(rs.getDate("end_Date"));
+                tour.setLocation(rs.getString("location"));
+                tour.setPurchases_Time(rs.getInt("purchases_Time"));
+                tour.setAverage_Review_Rating(rs.getDouble("average_Review_Rating"));
+                tour.setNumber_Of_Review(rs.getInt("number_Of_Review"));
+                tour.setTotal_Time(rs.getString("total_Time"));
+                tour.setPrice(rs.getBigDecimal("price"));
+                tour.setSlot(rs.getInt("slot"));
+                tour.setTour_Status(rs.getString("tour_Status"));
+                tour.setCreated_At(rs.getDate("created_At"));
+                tour.setCompany_Id(rs.getInt("company_Id"));
+                // Add the Tour object to the list
+                tourList.add(tour);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while fetching tours: " + e.getMessage());
+        } finally {
+            // Ensure the connection is closed after usage
+            try {
+                if (con != null && !con.isClosed()) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+
+        return tourList;
     }
 
     public void cancelTour(String tourId) throws SQLException {
@@ -150,11 +361,11 @@ public class ThienDB implements DatabaseInfo {
 
         return activeUsers;
     }
-    
+
     // Phương thức để lấy kênh chat với admin ( 12 là id của admin trong database )
     public static List<User> getAdminChat() {
         List<User> activeUsers = new ArrayList<>();
-        String query = "SELECT user_Id, first_Name, last_Name FROM [User] WHERE user_Id = 1";
+        String query = "SELECT user_Id, first_Name, last_Name FROM [User] WHERE role = 'Admin'";
 
         try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
@@ -229,4 +440,84 @@ public class ThienDB implements DatabaseInfo {
         return messages;
     }
 
+    /**
+     * Cập nhật đường dẫn avatar cho người dùng.
+     *
+     * @param userId ID của người dùng
+     * @param avatarPath Đường dẫn của avatar (ví dụ: "/images/avatar.jpg")
+     * @return true nếu cập nhật thành công, ngược lại trả về false
+     */
+    public static boolean updateUserAvatar(int userId, String avatarPath) {
+        String sql = "UPDATE [User] SET avatar = ? WHERE user_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, avatarPath);
+            stmt.setInt(2, userId);
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error updating avatar: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public int getCusIdFromUserId(int user_Id) {
+        int cus_Id = -1;
+        String query = "SELECT cus_Id FROM Customer WHERE user_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, user_Id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                cus_Id = rs.getInt("cus_Id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cus_Id;
+    }
+
+    // Function to fetch wishlist items from the database
+    public List<Wishlist> getWishlistFromDB(int cus_Id) {
+        List<Wishlist> wishlistItems = new ArrayList<>();
+        String sql = "SELECT w.wish_Id, w.cus_Id, w.tour_Id, t.tour_Name FROM Wishlist w inner join Tour t "
+                + "on w.tour_Id = t.tour_Id where cus_Id = ?"; // Replace with your actual table name and query
+
+        try (Connection con = getConnect(); // Assuming you have this utility
+                 PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            stmt.setInt(1, cus_Id);
+
+            while (rs.next()) {
+                Wishlist wishlist = new Wishlist();
+                wishlist.setWish_Id(rs.getInt("wish_Id"));
+                wishlist.setCus_Id(rs.getInt("cus_Id"));
+                wishlist.setTour_Id(rs.getString("tour_Id"));
+                wishlist.setTour_Name(rs.getString("tour_Name"));
+
+                wishlistItems.add(wishlist);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return wishlistItems;
+    }
+
+//    public List<Notification> fetchNotifications(int userId) {
+//        List<Notification> notifications = null;
+//        try {
+//            // Kết nối đến cơ sở dữ liệu
+//            Connection connection = DriverManager.getConnection("jdbc:sqlserver://<server>:<port>;databaseName=<database>;user=<username>;password=<password>");
+//            NotificationDAO notificationDAO = new NotificationDAO(connection);
+//            notifications = notificationDAO.getNotificationsByUserId(userId);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return notifications;
+//    }
 }

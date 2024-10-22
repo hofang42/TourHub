@@ -175,7 +175,7 @@
                                             <article class="event-default-wrap">
                                                 <div class="event-default">
                                                     <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                        <img src="./assests/images/provinces/bacninh.png" alt="Tour Name" style="width: 100%; height: auto;">
+                                                        <img src="./assests/images/tour-images/${tour.tour_Img[0]}" alt="Tour Name" style="width: 100%; height: auto;">
                                                         <div class="event-default-caption">
                                                             <a href="edit-tour-page.jsp" class="button button-xs button-secondary button-nina tour-visit-count" data-id="${tour.tour_Id}" style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                 Edit

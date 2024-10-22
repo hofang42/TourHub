@@ -101,7 +101,7 @@ public class ProviderAnalysServlet extends HttpServlet {
         float totalProfitThisMonth = tourDB.getTotalProfit(companyId);
         int visitToday = tourDB.getTodayVisit(companyId); // Assuming getVisitsByDate accepts a date
         int bookingThisMonth = bookingDB.getTotalBookingThisMonth(companyId); // Use dateInput if available
-        List<BookingDetails> bookings = bookingDB.getPendingBookingDetails(); // Consider if you need to filter this by date as well
+        List<BookingDetails> bookings = bookingDB.getBookingDetails(companyId); // Consider if you need to filter this by date as well
 
         // After parsing the dateString
         if (dateString != null && !dateString.isEmpty()) {

@@ -90,7 +90,7 @@
                         </a>
                     </li>                       
                     <li>
-                        <a href="payment.jsp">
+                        <a href="provider-management?action=show-withdraw-page">
                             <i class='bx bxs-credit-card'></i>
                             <span class="text">Widthdraw</span>
                         </a>
@@ -204,7 +204,7 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                         <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                            <img src="./assests/images/provinces/danang.jpg" alt="${tourEdit.tour_Name}" style="width: 100%; height: auto;">
+                                                            <img src="./assests/images/tour-images/${tourEdit.tour_Img[0]}" alt="${tourEdit.tour_Name}" style="width: 100%; height: auto;">
                                                             <div class="event-default-caption">
                                                                 <!-- Ensure tourId is valid -->
                                                                 <a href="provider-management?action=edit-tour&tourId=${tourEdit.tour_Id}" 
@@ -261,7 +261,7 @@
                                                                 </c:otherwise>
                                                             </c:choose>
                                                             <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                                <img src="./assests/images/provinces/danang.jpg" alt="${tour.tour_Name}" style="width: 100%; height: auto;">
+                                                                <img src="./assests/images/tour-images/${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="width: 100%; min-height: 250px; max-height: 250px">
                                                                 <div class="event-default-caption">
                                                                     <!-- Ensure tourId is valid -->
                                                                     <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 

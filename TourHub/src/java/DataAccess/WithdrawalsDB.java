@@ -74,11 +74,12 @@ public class WithdrawalsDB implements DatabaseInfo {
             while (resultSet.next()) {
                 // Assuming you have a WithdrawalRequest class to represent a withdrawal request
                 Withdrawals withdrawal = new Withdrawals();
-                withdrawal.setId(resultSet.getInt("id")); // Adjust based on your column names
+                withdrawal.setId(resultSet.getInt("withdrawals_Id")); // Adjust based on your column names
                 withdrawal.setProviderId(resultSet.getInt("provider_Id"));
                 withdrawal.setWithdrawMoney(resultSet.getBigDecimal("withdraw_money"));
                 withdrawal.setStatus(resultSet.getString("status")); // Adjust as necessary
-                withdrawal.setRequestDate(resultSet.getDate("request_date")); // Adjust as necessary
+                withdrawal.setRequestDate(resultSet.getDate("request_Date")); // Adjust as necessary
+                withdrawal.setRespondDate(resultSet.getDate("respond_Date")); // Take the respond date
 
                 withdrawals.add(withdrawal);
             }
@@ -88,5 +89,12 @@ public class WithdrawalsDB implements DatabaseInfo {
         }
 
         return withdrawals;
+    }
+
+    public static void main(String[] args) throws SQLException {
+        List<Withdrawals> tours = new WithdrawalsDB().getWithdrawalsByProviderId(2);
+        for (Withdrawals book : tours) {
+            System.out.println(book.toString());
+        }
     }
 }
