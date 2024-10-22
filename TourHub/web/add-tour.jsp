@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="assests/css/style_profile.css">       
         <link href="assests/css/customer.css" rel="stylesheet" >      
         <link href="assests/css/provider_analysis.css" rel="stylesheet"/>        
-
+        <link rel="stylesheet" href="assests/css/bootstrap.css" />
 
         <title>Analytic</title>
         <style>
@@ -172,11 +172,13 @@
                             </div>
                             <div class="form-group required">
                                 <label for="start_Date">Start Date: <span style="color: red;">*</span></label>
-                                <input type="date" class="form-control" id="start_Date" name="start_Date" required onchange="calculateDuration()">
+                                <input type="date" class="form-control" id="start_Date" name="start_Date" required onchange="validateDates()">
+                                <span id="startDateError" style="color: red; display: none;">Start date cannot be in the past.</span>
                             </div>
                             <div class="form-group required">
                                 <label for="end_Date">End Date: <span style="color: red;">*</span></label>
-                                <input type="date" class="form-control" id="end_Date" name="end_Date" required onchange="calculateDuration()">
+                                <input type="date" class="form-control" id="end_Date" name="end_Date" required onchange="validateDates()">
+                                <span id="endDateError" style="color: red; display: none;">End date cannot be in the past.</span>
                             </div>
                             <div class="form-group required">
                                 <label for="total_Time">Duration</label>
@@ -286,6 +288,34 @@
                     // Reset the fields if either date is missing
                     document.getElementById("day").value = 0;
                     document.getElementById("night").value = 0;
+                }
+            }
+            function validateDates() {
+                const startDateInput = document.getElementById('start_Date');
+                const endDateInput = document.getElementById('end_Date');
+                const startDateError = document.getElementById('startDateError');
+                const endDateError = document.getElementById('endDateError');
+
+                const today = new Date().setHours(0, 0, 0, 0); // Today's date without time
+
+                // Convert input values to date objects
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                // Validate start date
+                if (startDateInput.value && startDate < today) {
+                    startDateError.style.display = 'block';
+                    startDateInput.value = ''; // Clear invalid date
+                } else {
+                    startDateError.style.display = 'none';
+                }
+
+                // Validate end date
+                if (endDateInput.value && endDate < today) {
+                    endDateError.style.display = 'block';
+                    endDateInput.value = ''; // Clear invalid date
+                } else {
+                    endDateError.style.display = 'none';
                 }
             }
         </script>

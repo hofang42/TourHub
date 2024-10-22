@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="assests/css/home.css" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.text.Normalizer" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%--<jsp:useBean id="currentUser" class="model.User" scope="session" />--%>
 <body>
     <!-- Page preloader-->
@@ -288,39 +289,30 @@
                     </div>
                     <div class="col-12">
                         <div class="container-coupon flex-wrap justify-content-center">
-                            <div class="coupon-card">
-                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
-                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
-                                <di class="coupon-row">
-                                    <span class="cpnCode">STEALDEAL20</span>
-                                    <span class="cpnBtn">Copy Code</span>
-                                </di>
-                                <p>Valid Till: 20Dec, 2021</p>
-                                <div class="circle1"></div>
-                                <div class="circle2"></div>
-                            </div>
-                            <div class="coupon-card">
-                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
-                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
-                                <di class="coupon-row">
-                                    <span class="cpnCode">STEALDEAL20</span>
-                                    <span class="cpnBtn">Copy Code</span>
-                                </di>
-                                <p>Valid Till: 20Dec, 2021</p>
-                                <div class="circle1"></div>
-                                <div class="circle2"></div>
-                            </div>
-                            <div class="coupon-card">
-                                <img src="https://i.postimg.cc/KvTqpZq9/uber.png" class="logo">
-                                <h3>20% flat off on all rides within the city<br>using HDFC Credit Card</h3>
-                                <di class="coupon-row">
-                                    <span class="cpnCode">STEALDEAL20</span>
-                                    <span class="cpnBtn">Copy Code</span>
-                                </di>
-                                <p>Valid Till: 20Dec, 2021</p>
-                                <div class="circle1"></div>
-                                <div class="circle2"></div>
-                            </div>
+                            <!-- Loop through each discount and corresponding tour in the discountWithTour list -->
+                            <c:forEach var="item" items="${sessionScope.discountWithTour}">
+                                <c:set var="discount" value="${item.discount}" />
+                                <c:set var="tour" value="${item.tour}" />
+
+                                <div class="coupon-card">   
+                                    <img src="assests/images/tour-images/${tour.tour_Img[0]}" class="logo">
+                                    <h3>
+                                        ${discount.description}<br>
+                                        ${discount.percent_Discount}% flat off on ${tour.tour_Name}<br>
+                                        Use coupon: ${discount.code}
+                                    </h3>
+                                    <div class="coupon-row">
+                                        <span class="cpnCode">${discount.code}</span>
+                                        <span class="cpnBtn" onclick="copyToClipboard('${discount.code}')">Copy Code</span>
+                                    </div>
+                                    <p>Valid Till: 
+                                        <!-- Format the endDay date using JSTL -->
+                                        <fmt:formatDate value="${discount.end_Day}" pattern="dd MMM, yyyy" />
+                                    </p>
+                                    <div class="circle1"></div>
+                                    <div class="circle2"></div>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
                 </div>
@@ -328,49 +320,35 @@
         </section> 
         <section class="section section-lg text-center bg-gray-lighter novi-background bg-cover">
             <div class="container container-bigger">
-                <h3>testimonials</h3>
+                <h3>Lasted Comments</h3>
                 <div class="divider divider-decorate"></div>
                 <!-- Owl Carousel-->
-                <div class="owl-carousel owl-layout-1" data-items="1" data-dots="true" data-nav="true" data-stage-padding="0" data-loop="true" data-margin="30" data-mouse-drag="false" data-autoplay="true">
-                    <article class="quote-boxed">
-                        <div class="quote-boxed-aside"><img class="quote-boxed-image" src="assests/images/quote-user-1-210x210.jpg" alt="" width="210" height="210"/>
-                        </div>
-                        <div class="quote-boxed-main">
-                            <div class="quote-boxed-text">
-                                <p>I wanted to thank you very much for planning the trip to France for my boyfriend and me. It was amazing and exceeded my expectations! We had a wonderful time and were very pleased with the accommodations in Paris and Bayeux. Our private/small tour guides were fantastic! I appreciate all the effort to get us to the Eiffel Tower finally. </p>
-                            </div>
-                            <div class="quote-boxed-meta">
-                                <p class="quote-boxed-cite">Ann McMillan</p>
-                                <p class="quote-boxed-small">Regular Customer</p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="quote-boxed">
-                        <div class="quote-boxed-aside"><img class="quote-boxed-image" src="assests/images/quote-user-2-210x210.jpg" alt="" width="210" height="210"/>
-                        </div>
-                        <div class="quote-boxed-main">
-                            <div class="quote-boxed-text">
-                                <p>I had a marvelous time in our travels to Madagascar, Zimbabwe and Botswana, I had just wonderful experiences.I loved the location of the Gorges Camp as I felt like it was only the time we got to see real and rural Africans and how they truly lived. The service was amazing and everyone was very attentive!</p>
-                            </div>
-                            <div class="quote-boxed-meta">
-                                <p class="quote-boxed-cite">Debra Ortega</p>
-                                <p class="quote-boxed-small">Regular Customer</p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="quote-boxed">
-                        <div class="quote-boxed-aside"><img class="quote-boxed-image" src="assests/images/quote-user-3-210x210.jpg" alt="" width="210" height="210"/>
-                        </div>
-                        <div class="quote-boxed-main">
-                            <div class="quote-boxed-text">
-                                <p>Just wanted to say many, many thanks for helping me set up an amazing Costa Rican adventure! My nephew and I had a blast! All of the accommodations were perfect as were the activities that we did (canopy, coffee tour, hikes, fishing, and massages!) We have such fond memories and can't thank you enough!</p>
-                            </div>
-                            <div class="quote-boxed-meta">
-                                <p class="quote-boxed-cite">Samantha Smith</p>
-                                <p class="quote-boxed-small">Regular Customer</p>
-                            </div>
-                        </div>
-                    </article>
+                <div class="owl-carousel owl-layout-1" data-items="1" data-dots="true" data-nav="true" data-stage-padding="0" data-loop="" data-margin="30" data-mouse-drag="false" data-autoplay="">
+                    <c:forEach var="reviewData" items="${reviewWithTourImages}">
+                        <!-- Extract the review and the tour image from the map -->
+                        <c:set var="review" value="${reviewData.review}" />
+                        <c:set var="tour" value="${reviewData.tour}" />
+                        <a href="SearchTourByIdServlet?tourId=${tour.tour_Id}">
+                            <article class="quote-boxed">
+                                <div class="quote-boxed-aside">
+
+                                    <img class="quote-boxed-image" src="assests/images/tour-images/${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="width: 20vw; height: 20vh;" />
+
+                                </div>
+                                <div class="quote-boxed-main">
+                                    <div class="quote-boxed-text">
+                                        <p>
+                                            ${review.comment}
+                                        </p>
+                                    </div>
+                                    <div class="quote-boxed-meta">
+                                        <p class="quote-boxed-cite">${review.first_Name} ${review.last_Name}</p>
+                                    </div>
+                                </div>
+                            </article>
+                        </a>
+                    </c:forEach>
+
                 </div>
             </div>
         </section>
@@ -384,7 +362,7 @@
                                 <h3 class="box-cta-title">Buy a tour without leaving your home</h3>
                                 <p>Using our website, you can book any tour just in a couple of clicks.</p>
                             </div>
-                            <div class="box-cta-inner"><a class="button button-secondary button-nina" href="#">Book Now</a></div>
+                            <div class="box-cta-inner"><a class="button button-secondary button-nina" href="allTour">Book Now</a></div>
                         </div>
                     </div>
                 </div>

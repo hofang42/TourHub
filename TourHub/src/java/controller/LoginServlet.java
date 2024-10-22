@@ -114,7 +114,7 @@ public class LoginServlet extends HttpServlet {
 
                 // Check if the user is a customer and has incomplete info
                 if (user.getRole().equals("Customer") && !userDB.hasCustomerInfo(user.getUser_Id())) {
-                    response.sendRedirect("customerinfo.jsp");
+                    response.sendRedirect("customerInfo.jsp");
                     return;
                 }
 

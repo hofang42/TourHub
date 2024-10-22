@@ -75,7 +75,7 @@ public class BookingServlet extends HttpServlet {
         }
         
         BookingDB booking = new BookingDB();
-        List<Booking> bookings = booking.getUser2Booking(currentUser.getUser_Id() +1);
+        List<Booking> bookings = booking.getUser2Booking(currentUser.getUser_Id());
         request.setAttribute("bookings", bookings);
 
         // Forward the request to user-booking.jsp

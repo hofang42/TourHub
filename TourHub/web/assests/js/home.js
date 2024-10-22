@@ -86,7 +86,7 @@ function displaySearchs(result) {
         const content = result.map(item => {
             return `<li onclick="selectInput('${item.tour_Id}')" style="display: flex; align-items: center; margin-bottom: 10px;">
                         <div style="flex-shrink: 0;">
-                            <img src="assests/images/tour-images/${item.tour_Img}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
+                            <img src="assests/images/tour-images/${item.tour_Img[0]}" alt="${item.tour_Name}" style="width: 100px; height: 100px; object-fit: cover;">
                         </div>
                         <span style="margin-left: 15px; font-size: 18px;">${item.tour_Name}</span>
                     </li>`;
@@ -132,7 +132,7 @@ function displayTours(city) {
         const figure = document.createElement('figure');
         figure.classList.add('event-default-image');
         const img = document.createElement('img');
-        img.src = "assests/images/tour-images/" + tour.tour_Img;
+        img.src = "assests/images/tour-images/" + tour.tour_Img[0];
         img.alt = tour.tour_Name;
         img.width = 570;
         img.height = 370;
