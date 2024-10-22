@@ -127,8 +127,8 @@ public class ManagementServlet extends HttpServlet {
 
     protected void viewTourList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        TourDB tour = new TourDB();
-        List<Tour> tourList = tour.getAllTours();
+        ThienDB tour = new ThienDB();
+        List<Tour> tourList = tour.getPendingTours();
         request.setAttribute("data", tourList);
         request.setAttribute("type", "tour");
         System.out.println("Day là" + tourList);

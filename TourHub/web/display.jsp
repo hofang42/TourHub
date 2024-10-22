@@ -135,71 +135,11 @@
 
     </head>
     <body>
-        <!-- SIDEBAR -->
-        <section id="sidebar">
-            <a href="index.jsp" class="brand">
-                <i class='bx bxs-smile'></i>
-                <span class="text">TourHub</span>
-            </a>
-            <ul class="side-menu top">
-                <li>
-                    <a href="dashboard">
-                        <i class='bx bxs-dashboard' ></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="manage.jsp">
-                        <i class='bx bxs-shopping-bag-alt' ></i>
-                        <span class="text">System Management</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-message-dots' ></i>
-                        <span class="text">Message</span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="side-menu">
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-cog' ></i>
-                        <span class="text">Settings</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="logout" class="logout">
-                        <i class='bx bxs-log-out-circle' ></i>
-                        <span class="text">Logout</span>
-                    </a>
-                </li>
-            </ul>
-        </section>
-        <!-- SIDEBAR -->
-
-
-
+        <%@include file="includes/admin-sidebar.jsp" %>
         <!-- CONTENT -->
         <section id="content">
             <!-- NAVBAR -->
-            <nav>
-                <i class='bx bx-menu' ></i>
-                <a href="#" class="nav-link"></a>
-                <form action="#">
-                    <div class="form-input">
-                        <input type="search" placeholder="Searching for tour...">
-                        <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
-                    </div>
-                </form>
-                <input type="checkbox" id="switch-mode" hidden>
-                <label for="switch-mode" class="switch-mode"></label>
-                <a href="#" class="notification">
-                    <i class='bx bxs-bell' ></i>
-                    <!-- <span class="num">8</span> -->
-                </a>
-
-            </nav>
+            <%@include file="includes/admin-navbar.jsp" %>
             <!-- NAVBAR -->
 
             <!-- MAIN -->
@@ -207,6 +147,9 @@
                 <div class="table-data">
                     <div class="order">
                         <c:choose>
+                            <c:when test="${currentUser == null || (currentUser != null && currentUser.role != 'Admin')}">
+                                <c:redirect url="home" />
+                            </c:when>
                             <c:when test="${type == 'user'}">
                                 <h3>User Management</h3>
                                 <table>
