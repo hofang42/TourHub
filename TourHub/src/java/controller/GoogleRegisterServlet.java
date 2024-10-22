@@ -49,14 +49,14 @@ public class GoogleRegisterServlet extends HttpServlet {
             UserDB customerDB = new UserDB();
             if (!customerDB.hasCustomerInfo(user.getUser_Id())) {
                 // Nếu chưa có thông tin customer thì điều hướng tới customerinfo.jsp
-                response.sendRedirect("customerinfo.jsp");
+                response.sendRedirect("customerInfo.jsp");
             } else {
                 response.sendRedirect("home");
             }
         } else if ("provider".equalsIgnoreCase(role)) {
             if (!userDB.hasCompanyInfo(user.getUser_Id())) {
                 // Nếu chưa có thông tin company thì điều hướng tới companyinfo.jsp
-                response.sendRedirect("companyinfo.jsp");
+                response.sendRedirect("companyInfo.jsp");
             } else {
                 response.sendRedirect("home");
             }

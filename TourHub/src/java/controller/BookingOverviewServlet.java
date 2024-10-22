@@ -83,7 +83,7 @@ public class BookingOverviewServlet extends HttpServlet {
         int cusId = 0; // Assuming user_Id corresponds to cusId
         
         try {
-            int userId = 1; // Example user ID
+            int userId = userDB.getUserFromSession(session).getUser_Id(); // Example user ID
             cusId = khanhDB.getCusIdFromUserId(userId);
         } catch (SQLException e) {
             e.printStackTrace();
