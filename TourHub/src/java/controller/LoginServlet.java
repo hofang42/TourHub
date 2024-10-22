@@ -120,7 +120,7 @@ public class LoginServlet extends HttpServlet {
 
                 // Check if the user is a provider and has incomplete info
                 if (user.getRole().equals("Provider") && !userDB.hasCompanyInfo(user.getUser_Id())) {
-                    response.sendRedirect("companyinfo.jsp");
+                    response.sendRedirect("companyInfo.jsp");
                     return;
                 }
 //            request.getRequestDispatcher("/home").forward(request, response);

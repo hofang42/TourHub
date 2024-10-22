@@ -4,9 +4,16 @@
 <html>
 <head>
     <title>Complete Your Registration</title>
+    <script>
+        function showError(message) {
+            // Hiển thị popup thông báo lỗi
+            alert(message);
+        }
+    </script>
 </head>
 <%
     User currentUser = (User) session.getAttribute("currentUser");
+    String errorMessage = (String) request.getAttribute("errorMessage");
     if (currentUser == null) {
         // If session doesn't have the user, redirect to login
         response.sendRedirect("login.jsp");
@@ -37,11 +44,12 @@
                         </div>
                         <div class="form-group">
                             <label for="role">Select Role:</label>
-                            <select name="role" id="role" class="form-control" required>
+                            <select name="role" id="role" class="form-control" required style="height: 100px;">
                                 <option value="Provider">Provider</option>
                                 <option value="Customer">Customer</option>
                             </select>
                         </div>
+
                         <div class="form-group text-center">
                             <input type="submit" class="button button-sm button-secondary" value="Complete Registration"/>
                         </div>
@@ -50,6 +58,13 @@
             </div>
         </div>
     </section>
+
+    <%-- Kiểm tra nếu có thông báo lỗi --%>
+    <% if (errorMessage != null) { %>
+        <script>
+            showError('<%= errorMessage %>');
+        </script>
+    <% } %>
 
     <%@include file="includes/footer.jsp" %> <!-- Reuse common footer and scripts -->
 </body>
