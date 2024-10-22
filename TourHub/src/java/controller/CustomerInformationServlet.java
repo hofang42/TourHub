@@ -90,10 +90,12 @@ public class CustomerInformationServlet extends HttpServlet {
         try {
             book = khanhDB.getBookingById(converttedBookId);
             // Phản hồi thành công về client
+            
         } catch (SQLException ex) {
             Logger.getLogger(CustomerInformationServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        System.out.println(book.toString());
         
         response.setContentType("text/plain");
         response.getWriter().write("Thông tin liên hệ đã được nhận!");

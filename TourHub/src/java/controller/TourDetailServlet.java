@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import model.Review;
 import model.Tour;
+import model.TourDetailDescription;
 import model.TourOption;
 
 /**
@@ -73,8 +74,11 @@ public class TourDetailServlet extends HttpServlet {
 
         // Lấy danh sách TourOption
         List<TourOption> tourOptions = u.getAllTourOptionsByTourId(rawTourId);
-        request.setAttribute("tourOptions", tourOptions);
-
+      
+        request.setAttribute("tourOptions", tourOptions); // Thêm tourOptions vào request
+      
+        TourDetailDescription description = u.getTourDetailDescriptionByTourId(rawTourId);
+        request.setAttribute("tourDetailDescription", description); // Thêm tourOptions vào request
         // Lấy review từ database bằng ReviewDB
         ReviewDB reviewDB = new ReviewDB();
         List<Review> allReviews = reviewDB.getReviewsByTourId(rawTourId);

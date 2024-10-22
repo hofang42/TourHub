@@ -167,7 +167,7 @@ public class UserDB implements DatabaseInfo {
         try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, company.getTaxCode());
             stmt.setString(2, company.getBankInformation());
-            stmt.setDouble(3, company.getBalance());
+            stmt.setBigDecimal(3, company.getBalance());
             stmt.setInt(4, company.getUser_Id());
             stmt.executeUpdate();
         }

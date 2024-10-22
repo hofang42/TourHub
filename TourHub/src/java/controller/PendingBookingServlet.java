@@ -5,6 +5,8 @@
 package controller;
 
 import DataAccess.BookingDB;
+import DataAccess.CompanyDB;
+import DataAccess.UserDB;
 import DataAccess.hoang_UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,7 +55,16 @@ public class PendingBookingServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         hoang_UserDB bookingManager = new hoang_UserDB();
-        List<BookingDetails> bookings = bookingManager.getPendingBookingDetails();        
+        int companyId;
+        try {
+            // Fetch the provider Id from user session
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        } catch (SQLException ex) {
+            Logger.getLogger(SearchTourByIdServlet.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        List<BookingDetails> bookings = bookingManager.getBookingDetails(companyId);
+        System.out.println(bookings.size());
         request.getSession().setAttribute("bookings", bookings);
         request.getRequestDispatcher("provider-booking.jsp").forward(request, response);
     }

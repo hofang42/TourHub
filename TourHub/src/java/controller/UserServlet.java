@@ -4,6 +4,7 @@
  */
 package controller;
 
+import DataAccess.ThienDB;
 import DataAccess.UserDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,9 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
@@ -53,20 +57,11 @@ public class UserServlet extends HttpServlet {
         }
 
         switch (action.toLowerCase()) {
-            case "login":
-                //handleLogin(request, response);
+            case "updatecustomer":
+                handleUpdateCustomer(request, response);
                 break;
-            case "log out":
-                //handleLogout(request, response);
-                break;
-            case "signup":
-                //handleSignUp(request, response);
-                break;
-            case "db":
-                //handleDashBoard(request, response);
-                break;
-            case "update":
-                handleUpdate(request, response);
+            case "updateprovider":
+                handleUpdateProvider(request, response);
                 break;
             case "updatepass":
                 handleUpdatePassword(request, response);
@@ -86,34 +81,79 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void handleUpdate(HttpServletRequest request, HttpServletResponse response)
+    private void handleUpdateCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int userId = Integer.parseInt(request.getParameter("userId"));
-        String rawPassword = request.getParameter("password");
-        String email = request.getParameter("email");
+
+        User currentUser = (User) request.getSession().getAttribute("currentUser");
+
+        int userId = currentUser.getUser_Id();
+        String rawPassword = currentUser.getPassword();
+        String email = currentUser.getEmail();
+        String role = currentUser.getRole();
+        String avatar = currentUser.getAvatar();
+
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
-        String role = request.getParameter("role");
-        System.out.println(firstName + lastName);
-        // Tạo một đối tượng User
-        String hashedPassword = Encrypt.toSHA256(rawPassword);
-        User user = new User(userId, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", role, null);
+        String birth_str = request.getParameter("birthday");
+        Date cus_Birth = null;
 
-        // Cập nhật thông tin người dùng trong cơ sở dữ liệu
-        UserDB userDB = new UserDB();
-        boolean isUpdated = userDB.updateUser(user);
+        if (birth_str != null && !birth_str.isEmpty()) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                // Chuyển đổi từ String sang java.util.Date
+                java.util.Date utilDate = dateFormat.parse(birth_str);
+                // Chuyển đổi từ java.util.Date sang java.sql.Date
+                cus_Birth = new java.sql.Date(utilDate.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        User user = new User(userId, rawPassword, firstName, lastName, phone, email, address, "verified", role, avatar, cus_Birth, currentUser.getCreated_At());
+
+        ThienDB userDB = new ThienDB();
+        boolean isUpdated = userDB.updateCustomer(user);
 
         if (isUpdated) {
-            // Nếu cập nhật thành công, lưu thông tin mới vào session
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-
-            // Chuyển hướng trở lại trang thông tin người dùng
             response.sendRedirect("user-profile.jsp");
         } else {
-            // Xử lý nếu cập nhật thất bại
+            response.sendRedirect("user-updateinfo.jsp?error=UpdateFailed");
+        }
+    }
+
+    private void handleUpdateProvider(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        User currentUser = (User) request.getSession().getAttribute("currentUser");
+
+        int userId = currentUser.getUser_Id();
+        String rawPassword = currentUser.getPassword();
+        String email = currentUser.getEmail();
+        String role = currentUser.getRole();
+        String avatar = currentUser.getAvatar();
+        BigDecimal balance = currentUser.getBalance();
+
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String address = request.getParameter("address");
+        String phone = request.getParameter("phone");
+        String tax_Code = request.getParameter("taxcode");
+        String bank_Information = request.getParameter("bankInfo");
+
+        User user = new User(userId, rawPassword, firstName, lastName, phone, email, address, currentUser.getCreated_At(), "verified", role, avatar, tax_Code, balance, bank_Information);
+
+        ThienDB userDB = new ThienDB();
+        boolean isUpdated = userDB.updateProvider(user);
+
+        if (isUpdated) {
+            HttpSession session = request.getSession();
+            session.setAttribute("currentUser", user);
+            response.sendRedirect("user-profile.jsp");
+        } else {
             response.sendRedirect("user-updateinfo.jsp?error=UpdateFailed");
         }
     }

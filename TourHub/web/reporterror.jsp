@@ -159,11 +159,12 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="reportType">Report Type:</label>
-                                        <select class="form-control" id="reportType" name="reportType" required>
+                                        <select class="form-control" id="reportType" name="reportType" required style="height: 100px;">
                                             <option value="bug">Bug</option>
                                             <option value="feedback">Feedback</option>
                                             <option value="other">Other</option>
                                         </select>
+
                                     </div>
                                     <button type="submit" class="button button-secondary button-nina">Submit Report</button>
                                 </form>

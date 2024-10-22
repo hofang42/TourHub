@@ -3,6 +3,8 @@
 <%@ page import="DataAccess.UserDB"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="utils.MoneyFormatter" %>
 <jsp:useBean id="currentUser" class="model.User" scope="session" />
 <!DOCTYPE html>
 <html lang="en">
@@ -187,7 +189,7 @@
                     </a>
                 </li>   
                 <li>
-                    <a href="payment.jsp">
+                    <a href="provider-management?action=show-withdraw-page">
                         <i class='bx bxs-credit-card'></i>
                         <span class="text">Widthdraw</span>
                     </a>
@@ -269,7 +271,7 @@
             <div class="table-data">
                 <div class="order">
                     <div class="head">
-                        <h3>Pending Booking</h3>
+                        <h3>Booking</h3>
                         <input type="text" id="searchInput" placeholder="Search bookings...">
                     </div>
                     <!-- Message Display -->
@@ -290,37 +292,46 @@
                                     <!--<th>ID  <i class='bx bx-filter'></i></th>-->  
                                     <th onclick="sortTable(0)">ID  <i class='bx bx-filter'></i></th>  
                                     <th onclick="sortTable(1)">Tour Name <i class='bx bx-filter'></i></th>                           
-                                    <th onclick="sortTable(2)">Customer Name<i class='bx bx-filter'></i></th>                            
-                                    <th onclick="sortTable(3)">Slot<i class='bx bx-filter'></i></th>                            
-                                    <th onclick="sortTable(4)">Status</th>                            
-                                    <th onclick="sortTable(5)">Total Cost<i class='bx bx-filter'></i></th>  
-                                    <th>Manage</th>  
+                                    <th onclick="sortTable(2)">Customer Name<i class='bx bx-filter'></i></th>  
+                                    <th onclick="sortTable(3)">Booked Date<i class='bx bx-filter'></i></th>  
+                                    <th onclick="sortTable(4)">Slot<i class='bx bx-filter'></i></th>                            
+                                    <th onclick="sortTable(5)">Status</th>                            
+                                    <th onclick="sortTable(6)">Total Cost<i class='bx bx-filter'></i></th>  
+                                    <!--<th>Manage</th>-->  
                                 </tr>
                             </thead>
                             <tbody id="product_list">
                                 <c:forEach items="${sessionScope.bookings}" var="booking">
                                     <c:set var="id" value="${id + 1}"></c:set>
                                         <tr>   
-                                            <td>${id}</td>
-                                        <!--<td>${booking.bookId}</td>-->
+                                            <td>${id}</td>                                        
                                         <td>${booking.tourName}</td>
                                         <td>${booking.customerName}</td>
+                                        <td>${booking.bookDate}</td>
                                         <td>${booking.slotOrder}</td>
                                         <td style="color:
                                             <c:choose>
                                                 <c:when test="${booking.bookStatus == 'Pending'}">#FFCC00</c:when>
+                                                <c:when test="${booking.bookStatus == 'Booked'}">#00ff00</c:when>
+                                                <c:when test="${booking.bookStatus == 'Cancelled'}">#FF0000</c:when>
+                                                <c:when test="${booking.bookStatus == 'Refunded'}">#FFA500</c:when>
                                                 <c:otherwise>black</c:otherwise>
                                             </c:choose>">
                                             ${booking.bookStatus}
                                         </td>
-                                        <td>${booking.totalCost} VND</td>                                        
                                         <td>
-                                            <form action="pending-bookings" method="POST" style="display: inline;">
-                                                <input type="hidden" name="bookingId" value="${booking.bookId}">
-                                                <button type="submit" name="action" value="accept" class="btn-accept">Accept</button>
-                                                <button type="submit" name="action" value="reject" class="btn-reject">Reject</button>
-                                            </form>
+                                            <c:if test="${booking.totalCost != null}">
+                                                ${MoneyFormatter.formatToVietnameseCurrency(booking.totalCost)} <!-- Call the formatter -->
+                                            </c:if>
                                         </td>
+
+                                        <!--                                        <td>
+                                                                                    <form action="pending-bookings" method="POST" style="display: inline;">
+                                                                                        <input type="hidden" name="bookingId" value="${booking.bookId}">
+                                                                                        <button type="submit" name="action" value="accept" class="btn-accept">Accept</button>
+                                                                                        <button type="submit" name="action" value="reject" class="btn-reject">Reject</button>
+                                                                                    </form>
+                                                                                </td>-->
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -374,19 +385,45 @@
                                             return str.split('').map(char => diacriticsMap[char] || char).join('');
                                         }
 
-// Search Functionality with Diacritics Removal
+//                                        document.getElementById('searchInput').addEventListener('keyup', function () {
+//                                            let input = removeDiacritics(document.getElementById('searchInput').value.toLowerCase());
+//                                            let rows = document.getElementById('product_list').getElementsByTagName('tr');
+//
+//                                            for (let i = 0; i < rows.length; i++) {
+//                                                let cells = rows[i].getElementsByTagName('td');
+//                                                let rowMatches = false; // Flag to determine if the row should be shown
+//
+//                                                for (let j = 0; j < cells.length; j++) {
+//                                                    let cellText = removeDiacritics(cells[j].textContent.toLowerCase());
+//
+//                                                    // Check if the cell contains the search input
+//                                                    if (cellText.includes(input)) {
+//                                                        rowMatches = true;
+//                                                        break; // No need to check other cells if one matches
+//                                                    }
+//                                                }
+//
+//                                                // Show or hide the row based on whether it matched the search input
+//                                                if (rowMatches) {
+//                                                    rows[i].style.display = '';
+//                                                } else {
+//                                                    rows[i].style.display = 'none';
+//                                                }
+//                                            }
+//                                        });
                                         document.getElementById('searchInput').addEventListener('keyup', function () {
                                             let input = removeDiacritics(document.getElementById('searchInput').value.toLowerCase());
                                             let rows = document.getElementById('product_list').getElementsByTagName('tr');
 
+                                            // Loop through each row in the table body
                                             for (let i = 0; i < rows.length; i++) {
-                                                let tourName = removeDiacritics(rows[i].getElementsByTagName('td')[1].textContent.toLowerCase());
-                                                let customerName = removeDiacritics(rows[i].getElementsByTagName('td')[2].textContent.toLowerCase());
-                                                let status = removeDiacritics(rows[i].getElementsByTagName('td')[4].textContent.toLowerCase());
-                                                let totalCost = rows[i].getElementsByTagName('td')[5].textContent.replace(/[^\d.-]/g, ''); // Extract numbers for cost search
+                                                let cells = rows[i].getElementsByTagName('td');
 
-                                                // Check if input matches tour name, customer name, status, or total cost
-                                                if (tourName.includes(input) || customerName.includes(input) || status.includes(input) || totalCost.includes(input)) {
+                                                // Check the specific column for "Slot" (column index 4)
+                                                let slotCell = removeDiacritics(cells[4].textContent.toLowerCase());
+
+                                                // Show the row if the input matches the slot, otherwise hide it
+                                                if (slotCell.includes(input)) {
                                                     rows[i].style.display = '';
                                                 } else {
                                                     rows[i].style.display = 'none';
@@ -404,9 +441,15 @@
                                                 let valA = a.getElementsByTagName("td")[columnIndex].textContent.trim();
                                                 let valB = b.getElementsByTagName("td")[columnIndex].textContent.trim();
 
-                                                // If sorting by numbers (like total cost or slot order)
-                                                if (columnIndex === 3 || columnIndex === 5) {
-                                                    valA = parseFloat(valA.replace(/[^\d.-]/g, '')) || 0; // Remove non-numeric characters
+                                                // Handle different types of sorting
+                                                if (columnIndex === 0) {  // ID column: numeric sorting
+                                                    valA = parseInt(valA) || 0;
+                                                    valB = parseInt(valB) || 0;
+                                                } else if (columnIndex === 3) {  // Booked Date column: date sorting
+                                                    valA = new Date(valA);
+                                                    valB = new Date(valB);
+                                                } else if (columnIndex === 6) {  // Total Cost column: numeric sorting
+                                                    valA = parseFloat(valA.replace(/[^\d.-]/g, '')) || 0;  // Remove non-numeric characters for cost
                                                     valB = parseFloat(valB.replace(/[^\d.-]/g, '')) || 0;
                                                 }
 
@@ -429,36 +472,6 @@
                                             // Toggle the sort direction for the next click
                                             sortDirection[columnIndex] = !isAscending;
                                         }
-
-//                                        function acceptBooking(bookId) {
-//                                            console.log("Accepting booking ID:", bookId); // Debugging line
-//
-//                                            if (!bookId) {
-//                                                console.error('No booking ID provided');
-//                                                return;
-//                                            }
-//
-//                                            fetch(`/Project_SWP/bookings?bookId=${bookId}`, {
-//                                                method: 'POST',
-//                                                headers: {
-//                                                    'Content-Type': 'application/json'
-//                                                }
-//                                            })
-//                                                    .then(response => {
-//                                                        if (!response.ok) {
-//                                                            throw new Error('Network response was not ok. Status: ' + response.status);
-//                                                        }
-//                                                        return response.json();
-//                                                    })
-//                                                    .then(data => {
-//                                                        console.log(data.message);
-//                                                        // Optionally refresh the table or update the UI
-//                                                    })
-//                                                    .catch(error => {
-//                                                        console.error('There was a problem with the fetch operation:', error);
-//                                                    });
-//                                        }
-
 
                                         function refreshPage() {
                                             // Reload the current page
