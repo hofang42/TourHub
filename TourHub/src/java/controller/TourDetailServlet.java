@@ -71,6 +71,8 @@ public class TourDetailServlet extends HttpServlet {
         List<TourOption> tourOptions = u.getAllTourOptionsByTourId(rawTourId);
         request.setAttribute("tourOptions", tourOptions); // Thêm tourOptions vào request
         
+        System.out.println(tourOptions);
+        
         TourDetailDescription description = u.getTourDetailDescriptionByTourId(rawTourId);
         request.setAttribute("tourDetailDescription", description); // Thêm tourOptions vào request
 

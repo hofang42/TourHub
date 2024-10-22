@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import model.User;
 import model.Booking;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -65,7 +68,7 @@ public class BookingOverviewServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         HttpSession session = request.getSession();
         UserDB userDB = new UserDB();
         KhanhDB khanhDB = new KhanhDB();
@@ -81,7 +84,7 @@ public class BookingOverviewServlet extends HttpServlet {
 
         // Get cusId from the User object
         int cusId = 0; // Assuming user_Id corresponds to cusId
-        
+
         try {
             int userId = userDB.getUserFromSession(session).getUser_Id(); // Example user ID
             cusId = khanhDB.getCusIdFromUserId(userId);
@@ -89,21 +92,30 @@ public class BookingOverviewServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-         
         // Get and validate parameters
-        String selectedDate = request.getParameter("selectedDate");
+        String selectedDateString = request.getParameter("selectedDate");
         String totalCost = request.getParameter("totalCost");
         String bookingDetail = request.getParameter("bookingDetail");
-        String optionId = request.getParameter("optionId");
+        String optionIdString = request.getParameter("optionId");
 
-        System.out.println("Selected Date: " + selectedDate);
+        System.out.println("Selected Date: " + selectedDateString);
         System.out.println("Total Cost: " + totalCost);
         System.out.println("Booking Detail: " + bookingDetail);
-        System.out.println("Option ID: " + optionId);
-        
-        if (selectedDate == null || totalCost == null || bookingDetail == null || optionId == null) {
+        System.out.println("Option ID: " + optionIdString);
+
+        if (selectedDateString == null || totalCost == null || bookingDetail == null || optionIdString == null) {
             // Redirect to an error page if any required parameter is missing
             response.sendRedirect(request.getContextPath() + "/error.jsp?message=Missing parameters");
+            return;
+        }
+
+        // Convert optionId from String to int
+        int optionId = 0; // Initialize optionId
+        try {
+            optionId = Integer.parseInt(optionIdString); // Convert String to int
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/error.jsp?message=Invalid Option ID format");
             return;
         }
 
@@ -111,7 +123,7 @@ public class BookingOverviewServlet extends HttpServlet {
 
         try {
             // Fetch the tourId by optionId
-            tourId = khanhDB.getTourIdByOptionId("1");
+            tourId = khanhDB.getTourIdByOptionId(String.valueOf(optionId)); // Call with String representation if needed
             if (tourId == null) {
                 // Redirect to an error page if no tour is found for the given optionId
                 response.sendRedirect(request.getContextPath() + "/error.jsp?message=No Tour found for Option ID " + optionId);
@@ -127,51 +139,77 @@ public class BookingOverviewServlet extends HttpServlet {
         String bookStatus = "Pending";
 
         // Fetch the tourId by optionId (as a string)
-        int scheduleId = 1;
         int slotOrder = 1;
-        String tourDate = selectedDate;
+        String tourDate = selectedDateString; // Keep this as String for now
         String cancelDate = "";
-        String bookDate = selectedDate;
+        String bookDate = selectedDateString;
         BigDecimal refundAmount = BigDecimal.ZERO;
-        
+
+        // Convert selectedDateString to java.sql.Date
+        java.sql.Date sqlDate = null;
+        try {
+            sqlDate = (java.sql.Date) convertStringToSqlDate(selectedDateString); // Use the convertStringToSqlDate method
+        } catch (ParseException e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/error.jsp?message=Invalid date format");
+            return;
+        }
+
+        int scheduleId = 0;
+        try {
+            scheduleId = khanhDB.getScheduleId(optionId, sqlDate); // Use sqlDate instead of selectedDateString
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(BookingOverviewServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
         // Now, you can use tourId in your booking process or elsewhere.
         try {
             // Import the booking using the updated tourId
-            khanhDB.importBooking(tourId, selectedDate, totalCost, bookingDetail, bookStatus, optionId, scheduleId, cusId, slotOrder, selectedDate, cancelDate, selectedDate, refundAmount);
+            khanhDB.importBooking(tourId, selectedDateString, totalCost, bookingDetail, bookStatus, String.valueOf(optionId), scheduleId, cusId, slotOrder, selectedDateString, cancelDate, selectedDateString, refundAmount);
             System.out.println("Booking successfully imported.");           
         } catch (SQLException e) {
             System.err.println("Error importing booking: " + e.getMessage());
         }
-        
-        //Get booking id, cần chỉnh lại cách lấy, vẫn bị trùng
+
+        // Get booking id, cần chỉnh lại cách lấy, vẫn bị trùng
         int bookingId = 0;             
         try {
             bookingId = khanhDB.getLatestBookingId();
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(BookingOverviewServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
-        //Check booking id
+
+        // Check booking id
         if (bookingId != -1) {
             System.out.println("Booking inserted with ID: " + bookingId);
         } else {
             System.out.println("Failed to retrieve booking ID.");
         }
-        
-        //Get booking by id
+
+        // Get booking by id
         Booking book = new Booking();
         try {
             book = khanhDB.getBookingById(bookingId);
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(BookingOverviewServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         System.out.println(book.toString());
-        
+
         request.setAttribute("book", book);
         request.getRequestDispatcher("/booking-overview.jsp").forward(request, response);
     }
 
+    public static Date convertStringToSqlDate(String dateStr) throws ParseException {
+        // Định dạng ngày dựa trên chuỗi nhập vào
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        // Chuyển đổi chuỗi ngày thành java.util.Date
+        java.util.Date parsedDate = dateFormat.parse(dateStr);
+
+        // Chuyển từ java.util.Date sang java.sql.Date
+        return new java.sql.Date(parsedDate.getTime());
+    }
     /**
      * Handles the HTTP <code>POST</code> method.
      *
