@@ -45,6 +45,9 @@ public class CustomerInfoServlet extends HttpServlet {
             response.sendRedirect("error.jsp"); // Redirect to error page on failure
             return;
         }
+        
+        user.setCus_Birth(java.sql.Date.valueOf(birthDate));
+        session.setAttribute("currentUser", user);
 
         // Redirect to homepage or customer dashboard after successful update
         response.sendRedirect("home");

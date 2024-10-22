@@ -4,7 +4,7 @@
  */
 package model;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 public class Notification {
     private int notificationId;
@@ -21,6 +21,11 @@ public class Notification {
         this.dateSent = dateSent;
         this.isRead = isRead;
     }
+
+    public Notification() {
+    }
+    
+    
 
     // Getters and Setters
     public int getNotificationId() {
