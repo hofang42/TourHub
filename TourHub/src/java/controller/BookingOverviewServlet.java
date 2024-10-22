@@ -101,9 +101,11 @@ public class BookingOverviewServlet extends HttpServlet {
         System.out.println("Selected Date: " + selectedDateString);
         System.out.println("Total Cost: " + totalCost);
         System.out.println("Booking Detail: " + bookingDetail);
+
         System.out.println("Option ID: " + optionIdString);
 
         if (selectedDateString == null || totalCost == null || bookingDetail == null || optionIdString == null) {
+
             // Redirect to an error page if any required parameter is missing
             response.sendRedirect(request.getContextPath() + "/error.jsp?message=Missing parameters");
             return;
@@ -145,6 +147,7 @@ public class BookingOverviewServlet extends HttpServlet {
         String bookDate = selectedDateString;
         BigDecimal refundAmount = BigDecimal.ZERO;
 
+
         // Convert selectedDateString to java.sql.Date
         java.sql.Date sqlDate = null;
         try {
@@ -167,26 +170,33 @@ public class BookingOverviewServlet extends HttpServlet {
             // Import the booking using the updated tourId
             khanhDB.importBooking(tourId, selectedDateString, totalCost, bookingDetail, bookStatus, String.valueOf(optionId), scheduleId, cusId, slotOrder, selectedDateString, cancelDate, selectedDateString, refundAmount);
             System.out.println("Booking successfully imported.");           
+
         } catch (SQLException e) {
             System.err.println("Error importing booking: " + e.getMessage());
         }
 
+
         // Get booking id, cần chỉnh lại cách lấy, vẫn bị trùng
         int bookingId = 0;             
+
         try {
             bookingId = khanhDB.getLatestBookingId();
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(BookingOverviewServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
+
         // Check booking id
+
         if (bookingId != -1) {
             System.out.println("Booking inserted with ID: " + bookingId);
         } else {
             System.out.println("Failed to retrieve booking ID.");
         }
 
+
         // Get booking by id
+
         Booking book = new Booking();
         try {
             book = khanhDB.getBookingById(bookingId);

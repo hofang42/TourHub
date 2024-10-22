@@ -199,6 +199,157 @@
                 scrollbar-width: thin;
                 scrollbar-color: #888 #f1f1f1;
             }
+            .popup {
+                display: none; /* Ẩn popup ban đầu */
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                opacity: 0;
+                transition: opacity 0.4s ease; /* Hiệu ứng mở popup mượt */
+            }
+
+            .popup-content {
+                position: relative;
+                background-color: #fff;
+                margin: 10% auto;
+                padding: 20px;
+                width: 80%;
+                max-width: 800px;
+                border-radius: 10px;
+                max-height: 80vh; /* Giới hạn chiều cao của popup */
+                overflow-y: auto; /* Thêm thanh cuộn nếu nội dung quá dài */
+                opacity: 0;
+                transform: translateY(-50px);
+                transition: opacity 0.4s ease, transform 0.4s ease; /* Hiệu ứng popup trượt lên */
+            }
+
+            .popup.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .popup-content.show {
+                opacity: 1;
+                transform: translateY(0); /* Trượt popup vào vị trí ban đầu */
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 20px;
+                font-size: 24px;
+                cursor: pointer;
+                color: #333;
+            }
+            /* CSS cho thẻ đánh giá */
+            .review-item {
+                display: flex;
+                flex-direction: column;
+                padding: 15px;
+                margin-bottom: 10px;
+                background-color: #fff;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                width: 100%;
+                max-width: 800px;
+                transition: all 0.3s ease;
+            }
+
+            .review-item:hover {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .review-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .review-user {
+                font-weight: bold;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .review-stars {
+                color: #f39c12;
+                font-size: 16px;
+                margin-top: 5px;
+            }
+
+            .review-text {
+                font-size: 14px;
+                line-height: 1.6;
+                color: #555;
+                margin-top: 10px;
+            }
+
+            /* Nút xem tất cả đánh giá */
+            .view-review a {
+                font-size: 14px;
+                color: #007bff;
+                cursor: pointer;
+                text-decoration: underline;
+            }
+
+            .view-review a:hover {
+                color: #0056b3;
+            }
+
+            /* Hiệu ứng khi hiển thị popup */
+            .popup {
+                display: none;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                opacity: 0;
+                transition: opacity 0.4s ease;
+            }
+
+            .popup.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .popup-content {
+                position: relative;
+                background-color: #fff;
+                margin: 15% auto;
+                padding: 20px;
+                width: 80%;
+                max-width: 800px;
+                border-radius: 10px;
+                max-height: 80vh;
+                overflow-y: auto;
+                transform: translateY(-50px);
+                opacity: 0;
+                transition: all 0.4s ease;
+            }
+
+            .popup-content.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 20px;
+                font-size: 24px;
+                cursor: pointer;
+                color: #333;
+            }
+
         </style>
         
         <script>
@@ -381,7 +532,6 @@
                                     <button class="share-btn" onclick="sharePage()">
                                         <i class="fa-regular fa-share-from-square"></i>
                                     </button>
-
                                 </div>
                             </div>                       
                         </div>
@@ -535,22 +685,58 @@
                     </div>
 
                     <div class="view-review">
+
                         <span class="view-review-content">What Travelers Say</span>
-                        <a href="#">See All Reviews</a>
+                        <a href="#" id="viewAllReviewsBtn">See All Reviews</a>
+                  
                     </div>
 
+                    <!-- Popup để hiển thị tất cả các đánh giá -->
+                    <div id="reviewPopup" class="popup">
+                        <div class="popup-content">
+                            <span class="close-btn" id="closePopup">&times;</span>
+                            <h2>Tất cả đánh giá</h2>
+
+                            <div class="all-reviews">
+                                <c:forEach var="review" items="${allReviews}">
+                                    <div class="review-item">
+                                        <div class="review-header">
+                                            <div class="review-user">${review.first_Name} ${review.last_Name}</div>
+                                        </div>
+
+                                        <div class="review-stars">
+                                            <c:forEach var="i" begin="1" end="${review.rating_Star}">
+                                                ★
+                                            </c:forEach>
+                                        </div>
+
+                                        <div class="review-text">${review.comment}</div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="highlight-review">
-                        <div class="review-info">
-                            <span class="reviewer">Nguyen</span>
-                            <span class="rating">10/10</span>
+                        <div class="review-list">
+                            <c:choose>
+                                <c:when test="${not empty reviews}">
+                                    <c:forEach var="review" items="${reviews}">
+                                        <div class="review-item">
+                                            <p><strong>Người đánh giá:</strong> ${review.first_Name} ${review.last_Name}</p>
+                                            <p><strong>Bình luận:</strong> ${review.comment}</p>
+                                            <p><strong>Số sao:</strong> ${review.rating_Star} / 5</p>
+                                        </div>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="no-review">Không có review nào cho tour này.</div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
-                        <div class="review-content">
-                            <span>Hướng dẫn viên và tài xế nhiệt tình,
-                                vui vẻ, chu đáo. Đưa rước đúng giờ,
-                                sẽ tiếp tục book dịch vụ Traveloka
-                                nếu có nhu cầu.</span>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -684,7 +870,10 @@
                     </c:forEach>
                 </div>
             </div>
-            <jsp:include page="/ViewTourReview?id=${tour.tour_Id}" />
+            <jsp:include page="CommentServlet">
+                <jsp:param name="tourId" value="${tourId}" />
+            </jsp:include>
+
             <div class="tour-rating">
 
             </div>
@@ -1204,6 +1393,45 @@
         window.open(facebookShareUrl, 'facebook-share-dialog', 'width=626,height=436');
     }
 </script>
+
+<script>
+    // Mở popup khi nhấn vào "Xem tất cả đánh giá"
+    document.getElementById("viewAllReviewsBtn").addEventListener("click", function (event) {
+        event.preventDefault();
+        var popup = document.getElementById("reviewPopup");
+        var popupContent = document.querySelector(".popup-content");
+
+        popup.classList.add("show");
+        setTimeout(function () {
+            popupContent.classList.add("show");
+        }, 100); // Delay để popup hiện ra mượt mà
+    });
+
+    // Đóng popup khi nhấn vào nút đóng (x)
+    document.getElementById("closePopup").addEventListener("click", function () {
+        var popup = document.getElementById("reviewPopup");
+        var popupContent = document.querySelector(".popup-content");
+
+        popupContent.classList.remove("show");
+        setTimeout(function () {
+            popup.classList.remove("show");
+        }, 400); // Thời gian đóng tương ứng với thời gian hiệu ứng
+    });
+
+    // Đóng popup khi nhấn bên ngoài popup
+    window.addEventListener("click", function (event) {
+        var popup = document.getElementById("reviewPopup");
+        var popupContent = document.querySelector(".popup-content");
+
+        if (event.target == popup) {
+            popupContent.classList.remove("show");
+            setTimeout(function () {
+                popup.classList.remove("show");
+            }, 400); // Thời gian đóng tương ứng với thời gian hiệu ứng
+        }
+    });
+</script>
+
 <script src="assests/js/searchpage-test.js"></script>
 </body>
 

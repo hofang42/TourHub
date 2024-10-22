@@ -11,6 +11,7 @@ import model.Company;
 import model.User;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 
 @WebServlet(name = "CompanyInfoServlet", urlPatterns = {"/updateCompanyInfo"})
@@ -37,7 +38,7 @@ public class CompanyInfoServlet extends HttpServlet {
         company.setTaxCode(taxCode);
         company.setBankInformation(bankInformation);
         company.setUser_Id(user.getUser_Id());
-        company.setBalance(0); // Initial balance
+        company.setBalance(BigDecimal.ZERO); // Initial balance
 
         // Save company details to the database
         UserDB companyDB = new UserDB();
@@ -48,6 +49,11 @@ public class CompanyInfoServlet extends HttpServlet {
             response.sendRedirect("error.jsp"); // Redirect to error page on failure
             return;
         }
+        
+        user.setTax_Code(taxCode);
+        user.setBank_Information(bankInformation);
+        user.setBalance(BigDecimal.valueOf(0));
+        session.setAttribute("currentUser", user);
 
         // Redirect to homepage or provider dashboard after successful update
         response.sendRedirect("home");

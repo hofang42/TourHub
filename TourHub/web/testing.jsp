@@ -1,65 +1,57 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger Chat Integration</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-        }
-    </style>
+    <title>Notifications</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <!-- Facebook Messenger Chat Plugin -->
-    <div id="fb-root"></div>
+    <h1>Notifications</h1>
+    <div id="notificationList">
+        <!-- Notifications will be displayed here -->
+    </div>
+
     <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId            : 'YOUR_APP_ID', // Replace with your Facebook App ID
-          autoLogAppEvents : true,
-          xfbml            : true,
-          version          : 'v17.0' // Use the latest SDK version
-        });
-      };
+        const userId = 11;  // Replace with the actual logged-in user ID
 
-      (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
+        // Function to fetch and display notifications
+        function fetchNotifications() {
+            $.ajax({
+                url: 'checkNotifications',
+                type: 'GET',
+                dataType: 'json',  // Expect JSON response
+                data: { user_Id: userId },
+                success: function(response) {
+                    $('#notificationList').empty();  // Clear the notification list
+                    
+                    if (response.length > 0) {
+                        // If there are notifications, display them
+                        response.forEach(notification => {
+                            $('#notificationList').append(
+                                `<div>
+                                    <strong>ID:</strong> ${notification.notificationId} <br>
+                                    <strong>Message:</strong> ${notification.message} <br>
+                                    <strong>Date Sent:</strong> ${notification.dateSent} <br>
+                                    <strong>Status:</strong> ${notification.isRead ? 'Read' : 'Unread'}
+                                 </div><br>`
+                            );
+                        });
+                    } else {
+                        $('#notificationList').append('<p>No new notifications.</p>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching notifications:', error);
+                }
+            });
+        }
+
+        // Poll for new notifications every 5 seconds
+        setInterval(fetchNotifications, 5000);
+
+        // Initial fetch on page load
+        fetchNotifications();
     </script>
-
-    <div class="fb-customerchat"
-        attribution="setup_tool"
-        page_id="120820724456656"  <!-- Your Page ID here -->
-        theme_color="#0084ff"
-        logged_in_greeting="Hi! How can we help you?"
-        logged_out_greeting="Hi! How can we help you?">
-    </div>
-
-    <!-- Main Content -->
-    <div class="container">
-        <h1>Welcome to Our Website</h1>
-        <p>Feel free to chat with us using Messenger!</p>
-    </div>
 </body>
 </html>
+
