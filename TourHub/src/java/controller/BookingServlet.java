@@ -5,6 +5,7 @@
 package controller;
 
 import DataAccess.BookingDB;
+import DataAccess.ThienDB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -67,15 +68,11 @@ public class BookingServlet extends HttpServlet {
         // Assuming you have logic to get the current user bookings from DB
         User currentUser = (User) request.getSession().getAttribute("currentUser");
 
-        if (currentUser == null) {
-            response.sendRedirect("/home");
-            return;
-        } else {
-            System.out.println("Current User ID: " + currentUser.getUser_Id());
-        }
-        
+        System.out.println("Current User ID: " + currentUser.getUser_Id());
+        ThienDB book = new ThienDB();
+        int cus_Id = book.getCusIdFromUserId(currentUser.getUser_Id());
         BookingDB booking = new BookingDB();
-        List<Booking> bookings = booking.getUser2Booking(currentUser.getUser_Id() +1);
+        List<Booking> bookings = booking.getUser2Booking(cus_Id);
         request.setAttribute("bookings", bookings);
 
         // Forward the request to user-booking.jsp
