@@ -21,7 +21,8 @@
         <link rel="stylesheet" href="assests/css/style_profile.css">       
         <link href="assests/css/customer.css" rel="stylesheet" >      
         <link href="assests/css/provider_analysis.css" rel="stylesheet"/>        
-
+        <link rel="stylesheet" href="assests/css/bootstrap.css" />
+        <!--<link rel="stylesheet" href="assests/css/style.css" />-->
 
         <title>Analytic</title>
         <style>
@@ -34,6 +35,11 @@
                 padding: 30px;
                 border-radius: 5px;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            .image-tour img {
+                width: 400px;  /* Set a fixed width */
+                height: 250px; /* Set a fixed height to create a rectangle */
+                object-fit: cover; /* Ensure the image fills the space without distortion */
             }
         </style>
     </head>
@@ -212,6 +218,32 @@
                                         <label for="status">Status:</label>
                                         <input type="text" class="form-control" id="status" name="status" value="${tour.tour_Status}" readonly>
                                     </div>
+                                    <div class="form-group required">
+                                        <label for="tour_Img">Tour Images: <span style="color: red;">*</span></label>
+                                        <input type="file" class="form-control-file" id="tour_Img" name="tour_Img" multiple>
+                                        <small class="form-text text-muted">Upload image files (JPG, PNG, etc.), each not exceeding 2MB.</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tour_Img">Tour Images:</label>
+                                        <!-- Only display the div if tourEditImages is not empty -->
+                                        <c:if test="${not empty tourEditImages}">                                            
+                                            <div id="tourImagesContainer" class="d-flex flex-wrap">
+                                                <c:forEach var="image" items="${tourEditImages}">
+                                                    <figure class="event-default-image" style="max-width: 400px; margin: 10px; position: relative;">
+                                                        <img src="./assests/images/tour-images/${image}" alt="${tour.tour_Name}" style="width: 100%; min-height: 250px; max-height: 250px; display: block;" />
+                                                        <div class="event-default-caption" style="position: absolute; top: 10px; right: 10px;">
+                                                            <button class="btn btn-danger" 
+                                                                    onclick="removeImage('${tour.tour_Id}', '${image}')"
+                                                                    style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px;">
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    </figure>
+                                                </c:forEach>
+                                            </div>
+                                        </c:if>
+                                    </div>
+
                                     <button type="submit" class="btn btn-primary btn-block">Save</button>
                                 </form>
                             </c:otherwise>
@@ -230,87 +262,22 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
-                                            document.addEventListener('DOMContentLoaded', function () {
-                                                const burger = document.querySelector('.burger');
-                                                const navigation = document.querySelector('.navigation-admin');
-                                                const main = document.querySelector('.main-admin');
-                                                const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                                                        document.addEventListener('DOMContentLoaded', function () {
+                                                                            const burger = document.querySelector('.burger');
+                                                                            const navigation = document.querySelector('.navigation-admin');
+                                                                            const main = document.querySelector('.main-admin');
+                                                                            const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                                burger.addEventListener('click', function () {
-                                                    navigation.classList.toggle('active');
-                                                    main.classList.toggle('active');
-                                                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                                });
-                                            });
+                                                                            burger.addEventListener('click', function () {
+                                                                                navigation.classList.toggle('active');
+                                                                                main.classList.toggle('active');
+                                                                                profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                                                            });
+                                                                        });
 
 
         </script>
-        <script>
-            function reloadData() {
-                var date = document.getElementById("date").value;
-                $.ajax({
-                    url: "/Project_SWP/provider-analys",
-                    type: "POST",
-                    data: {
-                        date: date
-                    },
-                    success: function (data) {
-                        // Assuming 'data' is a JSON object
-                        document.querySelector("#totalVisitValue").innerHTML = data.totalVisitATour || 0;
-                        document.querySelector("#visitTodayValue").innerHTML = data.visitToday || 0;
-                        document.querySelector("#bookingThisMonthValue").innerHTML = data.bookingThisMonth || 0;
-                    }
-                });
-            }
-            function calculateDuration() {
-                // Get the values of the start and end dates
-                var startDate = document.getElementById("start_Date").value;
-                var endDate = document.getElementById("end_Date").value;
-
-                console.log("Start Date:", startDate);
-                console.log("End Date:", endDate);
-
-                // Reset the fields by default
-                document.getElementById("day").value = 0;
-                document.getElementById("night").value = 0;
-
-                // Check if both dates are provided
-                if (startDate && endDate) {
-                    // Parse the dates into Date objects
-                    var start = new Date(startDate);
-                    var end = new Date(endDate);
-
-                    // Normalize to midnight to prevent issues with time zones
-                    start.setHours(0, 0, 0, 0);
-                    end.setHours(0, 0, 0, 0);
-
-                    // Calculate the difference in time (milliseconds)
-                    var diffTime = end - start;
-
-                    console.log("Time Difference (milliseconds):", diffTime);
-
-                    // Check if end date is before start date
-                    if (diffTime < 0) {
-                        alert("End date cannot be before start date.");
-                        return; // Exit the function early
-                    }
-
-                    // Convert the time difference to days (1 day = 24*60*60*1000 milliseconds)
-                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    console.log("Difference in Days:", diffDays);
-
-                    // Set the day and night values
-                    document.getElementById("day").value = diffDays; // Total days
-                    document.getElementById("night").value = Math.max(0, diffDays - 1); // Nights = days - 1
-                    console.log(diffDays);
-                }
-            }
-            // Automatically call calculateDuration when the page loads
-            window.onload = function () {
-                calculateDuration();
-            }
-        </script>
+        <script src="./assests/js/edit-tour.js"></script>
 
         <script src="dist/js/theme.min.js"></script>
     </body>

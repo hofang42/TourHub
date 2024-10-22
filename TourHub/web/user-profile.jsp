@@ -85,7 +85,9 @@
     </head>
     <body>
         <!-- SIDEBAR -->
+
         <%@include file="includes/user-sidebar.jsp" %>
+
         <!-- SIDEBAR -->
         <!-- CONTENT -->
         <section id="content">

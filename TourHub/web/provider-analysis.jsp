@@ -98,7 +98,7 @@
                         <li><a href="#">Feature 3</a></li>
                     </ul>
                     <li>
-                        <a href="payment.jsp">
+                        <a href="provider-management?action=show-withdraw-page">
                             <i class='bx bxs-credit-card'></i>
                             <span class="text">Widthdraw</span>
                         </a>
