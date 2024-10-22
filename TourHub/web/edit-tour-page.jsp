@@ -226,7 +226,7 @@
                                     <div class="form-group">
                                         <label for="tour_Img">Tour Images:</label>
                                         <!-- Only display the div if tourEditImages is not empty -->
-                                        <c:if test="${not empty tourEditImages}">                                            
+                                        <c:if test="${not empty tourEditImages}">
                                             <div id="tourImagesContainer" class="d-flex flex-wrap">
                                                 <c:forEach var="image" items="${tourEditImages}">
                                                     <figure class="event-default-image" style="max-width: 400px; margin: 10px; position: relative;">
@@ -243,6 +243,7 @@
                                             </div>
                                         </c:if>
                                     </div>
+
 
                                     <button type="submit" class="btn btn-primary btn-block">Save</button>
                                 </form>

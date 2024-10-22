@@ -5,24 +5,25 @@
 package model;
 
 import java.math.BigDecimal;
-
+import java.sql.Date;
 /**
- *
+ *  
  * @author LENOVO
  */
 public class TourOption {
-    private int option_Id;          // From TourOption table
-    private String tour_Id;         // From TourOption table (CHAR(8) so String is used)
-    private String option_Name;     // From TourOption table
-    private BigDecimal option_Price;          // From TourOption table (option_Price)
-    private String option_Description;    // From TourOption table (option_Description)
-    private String day_Of_Week;      // From TourSchedule table (day_Of_Week)
-    private int available_Slots;    // From TourSchedule table (available_Slots)
+    private int option_Id;                // From TourOption table
+    private String tour_Id;               // From TourOption table (CHAR(8) so String is used)
+    private String option_Name;           // From TourOption table
+    private BigDecimal option_Price;      // From TourOption table (option_Price)
+    private String option_Description;     // From TourOption table (option_Description)
+    private String day_Of_Week;           // From TourSchedule table (day_Of_Week)
+    private int available_Slots;          // From TourSchedule table (available_Slots)
+    private Date tour_Date;                // From TourSchedule table (tour_Date)
 
     public TourOption() {
     }
 
-    public TourOption(int option_Id, String tour_Id, String option_Name, BigDecimal option_Price, String option_Description, String day_Of_Week, int available_Slots) {
+    public TourOption(int option_Id, String tour_Id, String option_Name, BigDecimal option_Price, String option_Description, String day_Of_Week, int available_Slots, Date tour_Date) {
         this.option_Id = option_Id;
         this.tour_Id = tour_Id;
         this.option_Name = option_Name;
@@ -30,8 +31,10 @@ public class TourOption {
         this.option_Description = option_Description;
         this.day_Of_Week = day_Of_Week;
         this.available_Slots = available_Slots;
+        this.tour_Date = tour_Date; // Set the tour_Date
     }
 
+    // Getters and Setters
     public int getOption_Id() {
         return option_Id;
     }
@@ -88,7 +91,18 @@ public class TourOption {
         this.available_Slots = available_Slots;
     }
 
-    
+    public Date getTour_Date() {
+        return tour_Date; // Getter for tour_Date
+    }
+
+    public void setTour_Date(Date tour_Date) {
+        this.tour_Date = tour_Date; // Setter for tour_Date
+    }
+
+    @Override
+    public String toString() {
+        return "TourOption{" + "option_Id=" + option_Id + ", tour_Id=" + tour_Id + ", option_Name=" + option_Name + ", option_Price=" + option_Price + ", option_Description=" + option_Description + ", day_Of_Week=" + day_Of_Week + ", available_Slots=" + available_Slots + ", tour_Date=" + tour_Date + '}';
+    }
     
     
 }

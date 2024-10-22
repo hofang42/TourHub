@@ -512,7 +512,7 @@ public class hoang_UserDB implements DatabaseInfo {
 
     public void updateTourImages(String tourId, List<String> updatedImages) throws SQLException {
         // Convert the list of images into a comma-separated string
-        String updatedImageString = String.join(",", updatedImages);
+        String updatedImageString = String.join(";", updatedImages);
 
         // SQL update query
         String sql = "UPDATE Tour SET tour_Img = ? WHERE tour_Id = ?";

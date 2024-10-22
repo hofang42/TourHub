@@ -22,6 +22,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import model.Booking;
+import model.TourDetailDescription;
+import model.TourOptionDetail;
 
 /**
  *
@@ -146,67 +148,154 @@ public class KhanhDB {
         }
         return tour; // Return the Tour object or null if not found
     }
+    
+    public TourDetailDescription getTourDetailDescriptionByTourId(String tourId) {
+        TourDetailDescription tourDetailDescription = null;
+        String sql = "SELECT * FROM TourDetailDescription WHERE tour_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, tourId); // Set the tourId parameter
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                // Split the string fields by ";" to create lists
+                List<String> experiencesList = Arrays.asList(rs.getString("experiences").split(";"));
+                List<String> languageServiceList = Arrays.asList(rs.getString("language_Service").split(";"));
+                List<String> suggestionList = Arrays.asList(rs.getString("suggestion").split(";"));
+                List<String> additionalInfoList = Arrays.asList(rs.getString("additional_Information").split(";"));
+                List<String> tourItineraryList = Arrays.asList(rs.getString("tour_Itinerary").split(";"));
+
+                // Create a new TourDetailDescription object with the extracted data
+                tourDetailDescription = new TourDetailDescription(
+                        rs.getString("tour_Id"), // tourId
+                        experiencesList, // experiences
+                        languageServiceList, // languageService
+                        suggestionList, // suggestion
+                        rs.getString("contact_Number"), // contactNumber
+                        additionalInfoList, // additionalInformation
+                        tourItineraryList // tourItinerary
+                );
+
+                // Optionally set the detail_Id if needed
+                tourDetailDescription.setDetailId(rs.getInt("detail_Id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tourDetailDescription; // Return the TourDetailDescription object or null if not found
+    }
+
 
     public List<TourOption> getAllTourOptionsByTourId(String tourId) {
         List<TourOption> options = new ArrayList<>();
         String sql = "SELECT tourOpt.option_Id, tourOpt.tour_Id, tourOpt.option_Name, tourOpt.option_Price, tourOpt.option_Description, "
-                + "ts.day_Of_Week, ts.available_Slots "
+                + "ts.day_Of_Week, ts.available_Slots, ts.tour_Date "  // Lấy thêm tour_Date
                 + "FROM TourOption tourOpt "
                 + "LEFT JOIN TourSchedule ts ON tourOpt.option_Id = ts.option_Id "
-                + "WHERE tourOpt.tour_Id = ?"; // Use the correct field names
+                + "WHERE tourOpt.tour_Id = ?";  // Sử dụng đúng tên trường
 
         try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, tourId); // Set the tourId as a parameter (since it's CHAR(8), treat as String)
+            stmt.setString(1, tourId);  // Đặt tham số tourId
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                // Create a new TourOption object using the result set
+                // Tạo một đối tượng TourOption mới từ kết quả truy vấn
                 TourOption option = new TourOption(
-                        rs.getInt("option_Id"), // optionId from TourOption
-                        rs.getString("tour_Id"), // tourId from TourOption
-                        rs.getString("option_Name"), // optionName from TourOption
-                        rs.getBigDecimal("option_Price"), // price from TourOption
-                        rs.getString("option_Description"), // description from TourOption
-                        rs.getString("day_Of_Week"), // dayOfWeek from TourSchedule
-                        rs.getInt("available_Slots") // availableSlots from TourSchedule
+                        rs.getInt("option_Id"),             // optionId từ TourOption
+                        rs.getString("tour_Id"),            // tourId từ TourOption
+                        rs.getString("option_Name"),        // optionName từ TourOption
+                        rs.getBigDecimal("option_Price"),   // price từ TourOption
+                        rs.getString("option_Description"), // description từ TourOption
+                        rs.getString("day_Of_Week"),        // dayOfWeek từ TourSchedule
+                        rs.getInt("available_Slots"),       // availableSlots từ TourSchedule
+                        rs.getDate("tour_Date")             // Lấy thêm tour_Date từ TourSchedule
                 );
 
-                options.add(option); // Add the option to the list
+                options.add(option);  // Thêm option vào danh sách
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return options; // Return the list of TourOptions
+        return options;  // Trả về danh sách TourOptions
     }
+
 
     public TourOption getTourOptionById(int optionId) {
         TourOption option = null;
         String sql = "SELECT tourOpt.option_Id, tourOpt.tour_Id, tourOpt.option_Name, tourOpt.option_Price, tourOpt.option_Description, "
-                + "ts.day_Of_Week, ts.available_Slots "
+                + "ts.day_Of_Week, ts.available_Slots, ts.tour_Date "  // Lấy thêm tour_Date
                 + "FROM TourOption tourOpt "
                 + "LEFT JOIN TourSchedule ts ON tourOpt.option_Id = ts.option_Id "
-                + "WHERE tourOpt.option_Id = ?";  // Use the correct field names
+                + "WHERE tourOpt.option_Id = ?";  // Sử dụng đúng tên trường
 
         try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, optionId);  // Set the optionId as a parameter
+            stmt.setInt(1, optionId);  // Đặt tham số optionId
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                // Create a new TourOption object using the result set
+                // Tạo một đối tượng TourOption mới từ kết quả truy vấn
                 option = new TourOption(
-                        rs.getInt("option_Id"), // optionId from TourOption
-                        rs.getString("tour_Id"), // tourId from TourOption
-                        rs.getString("option_Name"), // optionName from TourOption
-                        rs.getBigDecimal("option_Price"), // price from TourOption
-                        rs.getString("option_Description"), // description from TourOption
-                        rs.getString("day_Of_Week"), // dayOfWeek from TourSchedule
-                        rs.getInt("available_Slots") // availableSlots from TourSchedule
+                        rs.getInt("option_Id"),             // optionId từ TourOption
+                        rs.getString("tour_Id"),            // tourId từ TourOption
+                        rs.getString("option_Name"),        // optionName từ TourOption
+                        rs.getBigDecimal("option_Price"),   // price từ TourOption
+                        rs.getString("option_Description"), // description từ TourOption
+                        rs.getString("day_Of_Week"),        // dayOfWeek từ TourSchedule
+                        rs.getInt("available_Slots"),       // availableSlots từ TourSchedule
+                        rs.getDate("tour_Date")             // Lấy thêm tour_Date từ TourSchedule
                 );
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return option;  // Return the TourOption object
+        return option;  // Trả về đối tượng TourOption
+    }
+
+    public int getScheduleId(int optionId, Date tourDate) throws SQLException {
+        String query = "SELECT schedule_Id FROM TourSchedule WHERE option_Id = ? AND tour_Date = ?";
+
+        try (Connection conn = UserDB.getConnect(); 
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            // Set parameters
+            ps.setInt(1, optionId);
+            ps.setDate(2, new java.sql.Date(tourDate.getTime())); // Chuyển đổi java.util.Date sang java.sql.Date
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) { // Kiểm tra nếu có kết quả trả về
+                    return rs.getInt("schedule_Id"); // Trả về schedule_Id
+                }
+            }
+        }
+
+        // Trả về -1 nếu không có kết quả nào
+        return -1;
+    }
+    
+    public List<TourOptionDetail> getTourOptionDetailsByOptionId(int optionId) {
+        List<TourOptionDetail> optionDetails = new ArrayList<>();
+        String sql = "SELECT toc.detail_Description, toc.category_Id, toc.detail_Id, toc.option_Id " +
+                     "FROM TourOptionDetail toc " +
+                     "WHERE toc.option_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, optionId);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                TourOptionDetail detail = new TourOptionDetail(
+                        rs.getInt("detail_Id"),
+                        rs.getInt("option_Id"),
+                        rs.getInt("category_Id"),
+                        rs.getString("detail_Description")
+                );
+                optionDetails.add(detail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return optionDetails;
     }
 
     public List<TourPeople> getTourPeopleByOptionId(int optionId) {
@@ -478,35 +567,10 @@ public class KhanhDB {
 //        } else {
 //            System.out.println("Tour not found for ID: " + tourId);
 //        }
+        List<TourOption> tourOptions = userDB.getAllTourOptionsByTourId("T0000001");
+        System.out.println(tourOptions);
         
-        // Example date strings
-        String validDateString = "10/15/2024";   // Valid date in MM/dd/yyyy format
-        String invalidDateString = "2024-15-10"; // Invalid date format
-        String emptyDateString = "";             // Empty date string
-        String nullDateString = null;            // Null date string
-
-        // Convert valid date string
-        try {
-            Date validDate = userDB.convertStringToDate(validDateString);
-            System.out.println("Valid date: " + validDate);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-
-        // Convert invalid date string (should throw an exception)
-        try {
-            Date invalidDate = userDB.convertStringToDate(invalidDateString);
-            System.out.println("Invalid date: " + invalidDate);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        // Convert empty date string (should return null)
-        Date emptyDate = userDB.convertStringToDate(emptyDateString);
-        System.out.println("Empty date: " + emptyDate);
-
-        // Convert null date string (should return null)
-        Date nullDate = userDB.convertStringToDate(nullDateString);
-        System.out.println("Null date: " + nullDate);
+//        TourOption to = userDB.getTourOptionById(1);
+//        System.out.println(to.toString());
     }
 }

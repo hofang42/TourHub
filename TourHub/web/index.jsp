@@ -123,17 +123,22 @@
                         <c:if test="${sessionScope.currentUser != null}">
                             <div class="dropdown">
                                 <button class="avatar-button" onclick="toggleDropdown()">
-                                    <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
+                                    <img src="${currentUser.avatar}"  alt="User Avatar" class="avatar" style="width: 100px; height: 100px;">
                                 </button>
                                 <div id="dropdownContent" class="dropdown-content">
-                                    <a href="user-profile.jsp">Profile</a>
-                                    <a href="settings.jsp">Settings</a>
+                                    <c:if test="${sessionScope.currentUser.role.equals('Customer')}">
+                                        <a href="user-profile.jsp">Profile</a>
+                                    </c:if>
                                     <c:if test="${sessionScope.currentUser.role.equals('Provider')}">
+                                        <a href="user-profile.jsp">Profile</a>
                                         <a href="provider-analys">Dashboard</a>
                                     </c:if>
                                     <c:if test="${sessionScope.currentUser.role.equals('Admin')}">
-                                        <a href="admin-analysis.jsp">Dashboard</a>
+                                        <a href="dashboard">Dashboard</a>
+                                        <a href="manage.jsp">System Management</a>
+                                        <a href="admin-chat.jsp">Chat with customer</a>
                                     </c:if>
+                                    
                                     <a href="logout">Logout</a>
                                 </div>
                             </div>

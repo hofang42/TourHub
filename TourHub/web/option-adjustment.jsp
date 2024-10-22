@@ -702,31 +702,47 @@
     <% 
         // Get the previous selected date from the request attribute
         String previousSelectedDate = (String) request.getAttribute("previousSelectedDate");
+
+        // If previousSelectedDate is not null, increase it by one day
+        if (previousSelectedDate != null) {
+            // Parse the date and add 1 day
+            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            calendar.setTime(dateFormat.parse(previousSelectedDate));
+            calendar.add(java.util.Calendar.DATE, 1); // Add 1 day
+            previousSelectedDate = dateFormat.format(calendar.getTime()); // Format the new date
+        }
     %>
 
     <script>
         // Convert the previousSelectedDate from the server into a JavaScript Date object
         let previousSelectedDate = '<%= previousSelectedDate != null ? previousSelectedDate : "" %>';
         let selectedDate = previousSelectedDate ? new Date(previousSelectedDate) : new Date(); // If no date is passed, use the current date
-
+        
+        console.log("Preday:" + previousSelectedDate);
         // Function to display the date range and filter options
         function displayDateRange(centerDate) {
-            const daysOfWeek = ['Chu nhat', 'Thu hai', 'Thu ba', 'Thu tu', 'Thu nam', 'Thu sau', 'Thu bay'];
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+            // Tìm tất cả các phần tử .date-container
             let dateContainers = document.querySelectorAll('.date-container');
 
+            // Vòng lặp để tạo 14 ngày
             for (let i = 0; i < 14; i++) {
                 let date = new Date(centerDate);
-                date.setDate(centerDate.getDate() + i);
+                date.setDate(centerDate.getDate() + i); // Hiển thị 7 ngày trước và 7 ngày sau
 
                 let dayOfWeek = daysOfWeek[date.getDay()];
                 let formattedDate = date.getDate() + ' thg ' + (date.getMonth() + 1);
 
+                // Cập nhật nội dung của phần tử date-container
                 dateContainers[i].querySelector('[data-dayofweek]').innerText = dayOfWeek;
                 dateContainers[i].querySelector('[data-formatteddate]').innerText = formattedDate;
 
-                dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString());
+                // Cập nhật sự kiện onclick với giá trị ngày mới
+                dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString()); // Sử dụng hàm mũi tên
 
+                // Đặt class selected cho ngày hiện tại
                 if (i === 0) {
                     dateContainers[i].classList.add('selected');
                 } else {
@@ -734,22 +750,26 @@
                 }
             }
 
+            // Cập nhật biến selectedDate thành ngày đã chọn
             selectedDate = centerDate;
+
+            console.log("Seeeelected Dateee: " + selectedDate);
+
             filterTourOptions(selectedDate);
         }
 
-        
+
         const daysMapping = {
-            'Chu nhat': 0,
-            'Thu hai': 1,
-            'Thu ba': 2,
-            'Thu tu': 3,
-            'Thu nam': 4,
-            'Thu sau': 5,
-            'Thu bay': 6
+            'Sunday': 0,
+            'Monday': 1,
+            'Tuesday': 2,
+            'Wednesday': 3,
+            'Thursday': 4,
+            'Friday': 5,
+            'Saturday': 6
         };
 
-        
+
         function filterTourOptions(selectedDate) {
             const dayOfWeek = selectedDate.getDay(); // Lấy số ngày trong tuần từ selectedDate
             console.log("Selected day of week:", dayOfWeek); // Kiểm tra giá trị ngày đã chọn
@@ -763,7 +783,12 @@
 
                 console.log("Option day of week:", optionDayOfWeek); // Kiểm tra giá trị dayOfWeek trong mỗi option
 
-                if (optionDayOfWeek === dayOfWeek) {
+                // Lấy tour_Date từ option
+                const tourDateStr = option.getAttribute('data-tour-date'); // Giả sử bạn lưu trữ tour_Date trong thuộc tính data
+                const tourDate = new Date(tourDateStr); // Chuyển đổi chuỗi ngày thành đối tượng Date
+
+                // Kiểm tra nếu ngày đã chọn và tour_Date cùng ngày
+                if (optionDayOfWeek === dayOfWeek && selectedDate.toDateString() === tourDate.toDateString()) {
                     option.style.display = 'flex'; // Hiển thị tourOption
                 } else {
                     option.style.display = 'none'; // Ẩn tourOption
@@ -772,11 +797,11 @@
         }
 
         // Biến lưu thứ trong tuần
-        const daysOfWeek = ['Chu nhat', 'Thu hai', 'Thu ba', 'Thu tu', 'Thu nam', 'Thu sau', 'Thu bay'];
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         // Hàm để định dạng ngày theo yêu cầu
         function formatDateToDisplay(date) {
-            const daysOfWeek = ['Chu nhat', 'Thu hai', 'Thu ba', 'Thu tu', 'Thu nam', 'Thu sau', 'Thu bay'];
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             let dayOfWeek = daysOfWeek[date.getDay()];
             let formattedDate = dayOfWeek + ', ' + date.getDate() + ' thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
             return formattedDate;
