@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,7 +156,7 @@ public class ThienDB implements DatabaseInfo {
         }
         return null;
     }
-    
+
     public boolean updateProvider(User user) {
         boolean result = false;
 
@@ -193,6 +194,27 @@ public class ThienDB implements DatabaseInfo {
         }
 
         return result;
+    }
+
+    public boolean updateBookingStatus(int cus_Id, String book_Id) {
+        String updateQuery = "UPDATE Booking SET book_Status = 'Cancelled' WHERE book_Status = 'Pending' AND cus_Id = ? AND book_Id = ?";
+
+        try (Connection con = getConnect(); PreparedStatement ps = con.prepareStatement(updateQuery)) {
+
+            // Set the cus_Id and tour_Id in the query
+            ps.setInt(1, cus_Id);
+            ps.setString(2, book_Id);
+
+            // Execute the update query
+            int rowsUpdated = ps.executeUpdate();
+
+            // Print how many rows were updated
+            System.out.println(rowsUpdated + " bookings were updated from 'Pending' to 'Cancelled' for customer ID: " + cus_Id + " and tour ID: " + book_Id);
+            return true;
+        } catch (SQLException e) {
+            System.out.println("SQL error occurred: " + e.getMessage());
+            return false;
+        }
     }
 
     public void banAccount(int userId) throws Exception {
@@ -483,24 +505,27 @@ public class ThienDB implements DatabaseInfo {
     // Function to fetch wishlist items from the database
     public List<Wishlist> getWishlistFromDB(int cus_Id) {
         List<Wishlist> wishlistItems = new ArrayList<>();
-        String sql = "SELECT w.wish_Id, w.cus_Id, w.tour_Id, t.tour_Name FROM Wishlist w inner join Tour t "
-                + "on w.tour_Id = t.tour_Id where cus_Id = ?"; // Replace with your actual table name and query
+        String sql = "SELECT w.wish_Id, w.cus_Id, w.tour_Id, t.tour_Name FROM Wishlist w "
+                + "INNER JOIN Tour t ON w.tour_Id = t.tour_Id WHERE w.cus_Id = ?"; // Fixed table alias
 
         try (Connection con = getConnect(); // Assuming you have this utility
-                 PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+                 PreparedStatement stmt = con.prepareStatement(sql)) {
 
+            // Set the parameter before executing the query
             stmt.setInt(1, cus_Id);
 
-            while (rs.next()) {
-                Wishlist wishlist = new Wishlist();
-                wishlist.setWish_Id(rs.getInt("wish_Id"));
-                wishlist.setCus_Id(rs.getInt("cus_Id"));
-                wishlist.setTour_Id(rs.getString("tour_Id"));
-                wishlist.setTour_Name(rs.getString("tour_Name"));
+            // Now execute the query
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Wishlist wishlist = new Wishlist();
+                    wishlist.setWish_Id(rs.getInt("wish_Id"));
+                    wishlist.setCus_Id(rs.getInt("cus_Id"));
+                    wishlist.setTour_Id(rs.getString("tour_Id"));
+                    wishlist.setTour_Name(rs.getString("tour_Name"));
 
-                wishlistItems.add(wishlist);
+                    wishlistItems.add(wishlist);
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -508,16 +533,104 @@ public class ThienDB implements DatabaseInfo {
         return wishlistItems;
     }
 
-//    public List<Notification> fetchNotifications(int userId) {
-//        List<Notification> notifications = null;
-//        try {
-//            // Kết nối đến cơ sở dữ liệu
-//            Connection connection = DriverManager.getConnection("jdbc:sqlserver://<server>:<port>;databaseName=<database>;user=<username>;password=<password>");
-//            NotificationDAO notificationDAO = new NotificationDAO(connection);
-//            notifications = notificationDAO.getNotificationsByUserId(userId);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return notifications;
-//    }
+    public boolean deleteWishlistItem(int wishId) {
+        String query = "DELETE FROM Wishlist WHERE wish_Id = ?";
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, wishId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0; // return true if deletion was successful
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // return false in case of any error
+        }
+    }
+
+    public static boolean addToWishlist(int userId, String tourId) {
+        boolean added = false;
+
+        // Using try-with-resources for automatic resource management
+        try (Connection conn = getConnect(); // Get a connection to your database
+                 PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Wishlist (user_id, tour_id) VALUES (?, ?)")) {
+
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, tourId);
+            int rowsAffected = pstmt.executeUpdate();
+
+            added = (rowsAffected > 0); // Successfully added to wishlist if rowsAffected > 0
+
+        } catch (SQLException e) {
+            System.out.println("Error adding to wishlist: " + e.getMessage()); // Improved error handling
+        }
+
+        return added;
+    }
+
+    public List<Notification> getNotificationsByUserId(int userId) throws SQLException {
+        List<Notification> notifications = new ArrayList<>();
+
+        String sql = "SELECT notification_Id, message, date_sent, is_read FROM Notifications WHERE user_Id = ?";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Notification notification = new Notification();
+                notification.setNotificationId(rs.getInt("notification_Id"));
+                notification.setMessage(rs.getString("message"));
+                notification.setDateSent(rs.getTimestamp("date_sent"));
+                notification.setRead(rs.getBoolean("is_read"));
+                notifications.add(notification);
+            }
+        }
+
+        return notifications;
+    }
+
+// Method to add a new notification and return its ID
+    public int addNotification(int userId, String message) {
+        String sql = "INSERT INTO Notifications (user_Id, message, date_sent, is_read) VALUES (?, ?, GETDATE(), 0)";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, userId);
+            stmt.setString(2, message);
+
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Return the newly created notification ID
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Return -1 if failed
+    }
+
+    public List<Notification> getUnreadNotifications(int userId) throws SQLException {
+        List<Notification> notifications = new ArrayList<>();
+
+        String sql = "SELECT notification_Id, message, date_sent, is_read FROM Notifications WHERE user_Id = ? AND is_read = 0";
+
+        try (Connection conn = getConnect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Notification notification = new Notification();
+                notification.setNotificationId(rs.getInt("notification_Id"));
+                notification.setMessage(rs.getString("message"));
+                notification.setDateSent(rs.getTimestamp("date_sent"));
+                notification.setRead(rs.getBoolean("is_read"));
+                notifications.add(notification);
+            }
+        }
+
+        return notifications;
+    }
 }

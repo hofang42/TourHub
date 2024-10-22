@@ -20,7 +20,7 @@ import model.Wishlist;
  *
  * @author NOMNOM
  */
-@WebServlet(name = "WishlistServlet", urlPatterns = {"/WishlistServlet"})
+@WebServlet(name = "WishlistServlet", urlPatterns = {"/wishlist"})
 public class WishlistServlet extends HttpServlet {
 
     /**
@@ -63,12 +63,11 @@ public class WishlistServlet extends HttpServlet {
             throws ServletException, IOException {
         // Fetch wishlist data from the database
         User currentUser = (User) request.getSession().getAttribute("currentUser");
-        String tourId = request.getParameter("id");
-        
-        System.out.println(currentUser+ tourId);
+
         ThienDB wishlistdb = new ThienDB();
         int cus_Id = wishlistdb.getCusIdFromUserId(currentUser.getUser_Id());
         List<Wishlist> wishlistItems = wishlistdb.getWishlistFromDB(cus_Id);
+        System.out.println(cus_Id);
         System.out.println(wishlistItems);
 
         // Set the wishlist data as a request attribute
@@ -90,14 +89,64 @@ public class WishlistServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+        if ("delete".equals(action)) {
+            deleteWishlistItem(request, response);
+        } else if ("add".equals(action)) {
+            addWishlistItem(request, response);
+        } else {
+            processRequest(request, response);
+        }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    private void deleteWishlistItem(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Retrieve the wishlist item ID from the request
+        String wishIdStr = request.getParameter("wishId");
+        int wishId = Integer.parseInt(wishIdStr);
+
+        // Call the method to delete the wishlist item
+        ThienDB wishlistdb = new ThienDB();
+        boolean isDeleted = wishlistdb.deleteWishlistItem(wishId);
+
+        // Optionally, you can set a message to indicate success or failure
+        if (isDeleted) {
+            request.setAttribute("message", "Wishlist item deleted successfully.");
+        } else {
+            request.setAttribute("message", "Failed to delete wishlist item.");
+        }
+
+        // Redirect back to the wishlist page to show the updated list
+        User currentUser = (User) request.getSession().getAttribute("currentUser");
+        int cus_Id = wishlistdb.getCusIdFromUserId(currentUser.getUser_Id());
+        List<Wishlist> wishlistItems = wishlistdb.getWishlistFromDB(cus_Id);
+        request.setAttribute("wishlistItems", wishlistItems);
+
+        // Forward the request to the JSP
+        request.getRequestDispatcher("user-wishlist.jsp").forward(request, response);
+    }
+
+    private void addWishlistItem(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String tourId = request.getParameter("tourId");
+        User currentUser = (User) request.getSession().getAttribute("currentUser");
+        String returnUrl = request.getParameter("returnUrl");
+        ThienDB wishlistdb = new ThienDB();
+        int cus_Id = wishlistdb.getCusIdFromUserId(currentUser.getUser_Id());
+
+        // Call a method to add the tour to the user's wishlist
+        boolean success = wishlistdb.addToWishlist(cus_Id, tourId);
+
+        if (success) {
+            // Redirect or set a success message
+            response.sendRedirect(returnUrl); // Redirect to the wishlist page
+        } else {
+            // Handle the case where adding failed
+            request.setAttribute("errorMessage", "Could not add to wishlist. Please try again.");
+            request.getRequestDispatcher("errorPage.jsp").forward(request, response);
+        }
+    }
+
     @Override
     public String getServletInfo() {
         return "Short description";

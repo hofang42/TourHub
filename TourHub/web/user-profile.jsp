@@ -71,14 +71,74 @@
                 margin-right: 0; /* Đảm bảo không gian cho phần bên phải */
             }
 
-            /* Có thể điều chỉnh khoảng cách giữa các phần và định dạng cho các phần khác trong profile */
+            /* Style for the avatar container */
+            .avatar-container {
+                position: relative;
+                display: inline-block;
+                text-align: center;
+            }
 
+            /* Style for the avatar image */
+            .avatar {
+                width: 250px; /* Adjust the width as needed */
+                height: 250px; /* Adjust the height as needed */
+                border-radius: 50%;
+                object-fit: cover;
+            }
 
-            /* Optional: Responsive design */
-            @media (max-width: 480px) {
-                .avatardiv form {
-                    width: 90%; /* Full width on small screens */
-                }
+            /* Style for the overlay */
+            .avatar-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            /* Show the overlay on hover */
+            .avatar-container:hover .avatar-overlay {
+                opacity: 1;
+            }
+
+            /* Common style for both buttons */
+            .upload-label, .upload-btn {
+                color: white;
+                font-size: 16px;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                display: inline-block;
+                width: 150px; /* Set width to ensure they are equal */
+                text-align: center;
+                margin: 5px; /* Space between the buttons */
+            }
+
+            /* Style for the "Change Avatar" label */
+            .upload-label {
+                background-color: #17a2b8;
+            }
+
+            /* Style for the "Upload" button */
+            .upload-btn {
+                background-color: #28a745;
+                border: none;
+            }
+
+            /* Hover effect for both buttons */
+            .upload-label:hover, .upload-btn:hover {
+                opacity: 0.8;
+            }
+
+            /* Hide the file input field */
+            input[type="file"] {
+                display: none;
             }
 
         </style>
@@ -182,14 +242,21 @@
                                     </div>
                                     <div class="profile-info-right">
                                         <div class="profile-info">
-                                            <img src="${currentUser.avatar}" style="width: 400px; height: 400px; border-radius: 50%;"/>
-                                        </div>
-                                        <div class="avatardiv">
-                                            <form action="UploadAvatarServlet" method="post" enctype="multipart/form-data">
-                                                <label>Upload Avatar:</label>
-                                                <input type="file" name="avatar" accept="image/*" required>
-                                                <button type="submit">Upload</button>
-                                            </form>
+                                            <!-- Avatar container -->
+                                            <div class="avatar-container">
+                                                <!-- Display the current avatar -->
+                                                <img id="avatarImg" src="${currentUser.avatar}" class="avatar" />
+
+                                                <!-- Overlay that appears on hover -->
+                                                <div class="avatar-overlay">
+                                                    <!-- Upload form inside the overlay -->
+                                                    <form action="UploadAvatarServlet" method="post" enctype="multipart/form-data">
+                                                        <label for="file-input" class="upload-label">Change Avatar</label>
+                                                        <input id="file-input" type="file" name="avatar" accept="image/*" required>
+                                                        <button type="submit" class="upload-btn">Upload</button>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -213,7 +280,6 @@
                                                     function togglePassword() {
                                                         var passwordField = document.getElementById('passwordDisplay');
                                                         var button = event.target;
-
                                                         if (passwordField.innerHTML === "********") {
                                                             passwordField.innerHTML = "${currentUser.password}";
                                                             button.textContent = "Hide";
@@ -235,6 +301,7 @@
                                                             profileCard.classList.toggle('active'); // Toggle the active class on the profile card
                                                         });
                                                     });
+
         </script>
     </body>
 </html>

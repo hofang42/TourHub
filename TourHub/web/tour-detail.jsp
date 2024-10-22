@@ -532,7 +532,6 @@
                                     <button class="share-btn" onclick="sharePage()">
                                         <i class="fa-regular fa-share-from-square"></i>
                                     </button>
-
                                 </div>
                             </div>                       
                         </div>

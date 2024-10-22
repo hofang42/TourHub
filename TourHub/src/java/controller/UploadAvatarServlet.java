@@ -77,7 +77,8 @@ public class UploadAvatarServlet extends HttpServlet {
         } else {
             System.out.println("Failed to update avatar.");
         }
-
+        currentUser.setAvatar(avatarPath);  // Cập nhật avatar trong session
+        request.getSession().setAttribute("currentUser", currentUser);  // Cập nhật session
         // Chuyển hướng về trang profile
         response.sendRedirect("user-profile.jsp");
     }

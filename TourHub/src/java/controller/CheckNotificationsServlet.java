@@ -5,6 +5,7 @@
 package controller;
 
 import DataAccess.ThienDB;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Notification;
 import model.User;
 
@@ -21,8 +24,8 @@ import model.User;
  *
  * @author NOMNOM
  */
-@WebServlet(name = "NotificationServlet", urlPatterns = {"/notifications"})
-public class NotificationServlet extends HttpServlet {
+@WebServlet(name = "CheckNotificationsServlet", urlPatterns = {"/checkNotifications"})
+public class CheckNotificationsServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,18 +38,36 @@ public class NotificationServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // Get current user from session
+        User currentUser = (User) request.getSession().getAttribute("currentUser");
+
+        // Check if currentUser is null (user not logged in)
+        if (currentUser == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in");
+            return;
+        }
+
+        int userId = currentUser.getUser_Id();
+        ThienDB notificationsDAO = new ThienDB();
+
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet NotificationServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet NotificationServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            // Get notifications from the DAO for the current user
+            List<Notification> notifications = notificationsDAO.getNotificationsByUserId(userId);
+
+            // Convert notifications list to JSON
+            Gson gson = new Gson();
+            String jsonResponse = gson.toJson(notifications);
+
+            // Send JSON response
+            out.write(jsonResponse);
+            out.flush();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching notifications");
         }
     }
 
@@ -62,25 +83,7 @@ public class NotificationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User currentUser = (User) request.getSession().getAttribute("currentUser");
-        int userId = currentUser.getUser_Id();
-        
-        ThienDB notificationsDAO = new ThienDB();
-
-        try {
-            // Get notifications from the DAO
-            List<Notification> notifications = notificationsDAO.getNotificationsByUserId(userId);
-
-            // Set notifications in request scope
-            request.setAttribute("notifications", notifications);
-            System.out.println(notifications);
-
-            // Forward the request to notifications.jsp
-            request.getRequestDispatcher("/user-notification.jsp").forward(request, response);
-
-        } catch (ServletException | IOException | SQLException e) {
-            e.printStackTrace();
-        }
+        processRequest(request, response);
     }
 
     /**

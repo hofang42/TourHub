@@ -6,6 +6,7 @@ package controller;
 
 import DataAccess.BookingDB;
 import DataAccess.ThienDB;
+import com.google.gson.Gson;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -53,15 +54,6 @@ public class BookingServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -80,25 +72,39 @@ public class BookingServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+
+        if (action == null) {
+            action = "login"; // Default action
+        }
+
+        switch (action.toLowerCase()) {
+            case "cancelbook":
+                handleCancelBook(request, response);
+                break;
+            default:
+                response.sendRedirect("error.jsp");
+                break;
+        }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    public void handleCancelBook(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String bookingId = request.getParameter("id");
+        User currentUser = (User) request.getSession().getAttribute("currentUser");
+
+        ThienDB book = new ThienDB();
+        int cus_Id = book.getCusIdFromUserId(currentUser.getUser_Id());
+
+        boolean updateSuccess = book.updateBookingStatus(cus_Id, bookingId);
+
+        book.updateBookingStatus(cus_Id, bookingId);
+        response.sendRedirect("booking");
+    }
+
     @Override
     public String getServletInfo() {
         return "Short description";
