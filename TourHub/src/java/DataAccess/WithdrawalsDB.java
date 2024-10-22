@@ -76,7 +76,7 @@ public class WithdrawalsDB implements DatabaseInfo {
                 Withdrawals withdrawal = new Withdrawals();
                 withdrawal.setId(resultSet.getInt("withdrawals_Id")); // Adjust based on your column names
                 withdrawal.setProviderId(resultSet.getInt("provider_Id"));
-                withdrawal.setWithdrawMoney(resultSet.getBigDecimal("withdraw_money"));
+//                withdrawal.setWithdrawMoney(resultSet.getBigDecimal("withdraw_money"));
                 withdrawal.setStatus(resultSet.getString("status")); // Adjust as necessary
                 withdrawal.setRequestDate(resultSet.getDate("request_Date")); // Adjust as necessary
                 withdrawal.setRespondDate(resultSet.getDate("respond_Date")); // Take the respond date
