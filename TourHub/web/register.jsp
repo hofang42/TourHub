@@ -46,7 +46,7 @@
                                 <!-- First Name -->
                                 <div class="col-12 col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required>
+                                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" value="${param.firstName}" required>
                                         <label for="firstName">First Name</label>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
                                 <!-- Last Name -->
                                 <div class="col-12 col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required>
+                                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" value="${param.lastName}" required>
                                         <label for="lastName">Last Name</label>
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                 <!-- Email -->
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="${param.email}" required>
                                         <label for="email">Email</label>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                 <!-- Phone -->
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone" required>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone" value="${param.phone}" required>
                                         <label for="phone">Phone</label>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                                 <!-- Address -->
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="address" name="address" placeholder="Address" required>
+                                        <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="${param.address}" required>
                                         <label for="address">Address</label>
                                     </div>
                                 </div>
@@ -103,12 +103,13 @@
                                 <div class="col-12">
                                     <div class="form-floating">
                                         <select class="form-select" name="role" id="role" required>
-                                            <option value="Customer" selected>Customer</option>
-                                            <option value="Provider">Provider</option>
+                                            <option value="Customer" ${param.role == 'Customer' ? 'selected' : ''}>Customer</option>
+                                            <option value="Provider" ${param.role == 'Provider' ? 'selected' : ''}>Provider</option>
                                         </select>
                                         <label for="role">Select Role</label>
                                     </div>
                                 </div>
+
                                 <!-- Error Handling (if applicable) -->
                                 <div class="col-12">
                                     <c:if test="${not empty error}">
@@ -117,7 +118,6 @@
                                         </div>
                                     </c:if>
                                 </div>
-
 
                                 <!-- Submit Button -->
                                 <div class="col-12">

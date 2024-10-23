@@ -27,8 +27,11 @@
                                 <label for="birthDate">Date of Birth:</label>
                                 <input type="date" id="birthDate" name="birthDate" class="form-control" required style="height: 50px;"/>
                             </div>
-
+                        <div class="form-group text-center">
+                            <input type="submit" class="button button-sm button-secondary" value="Submit"/>
+                        </div>
                         </form>
+                        
                     </div>
                 </div>
             </div>
