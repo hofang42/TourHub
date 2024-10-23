@@ -47,40 +47,6 @@ public class BookingDB implements DatabaseInfo {
         return null;
     }
 
-    public List<Booking> getUserBooking(int customer_Id) {
-        List<Booking> list = new ArrayList<>();
-
-        String query = "SELECT book_Id, created_At, slot_Order, total_Cost, book_Status, cus_Id, tour_Id, "
-                + "(SELECT tour_Name FROM Tour WHERE Tour.tour_Id = Booking.tour_Id) AS tour_Name, "
-                + "tour_Date, cancel_Date "
-                + "FROM Booking WHERE cus_Id = ?";
-
-        try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
-            stmt.setInt(1, customer_Id);  // Bind the customer_Id
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Booking booking = new Booking(
-                        rs.getInt("book_Id"),
-                        rs.getDate("created_At"),
-                        rs.getInt("slot_Order"),
-                        rs.getBigDecimal("total_Cost"),
-                        rs.getString("book_Status"),
-                        rs.getInt("cus_Id"),
-                        rs.getString("tour_Id"),
-                        rs.getString("tour_Name"),
-                        rs.getDate("tour_Date"),
-                        rs.getDate("cancel_Date")
-                );
-                list.add(booking);  // Add the booking to the list
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(BookingDB.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return list;  // Return the list of bookings
-    }
-
     public List<Booking> getUser2Booking(int customer_Id) {
         List<Booking> list = new ArrayList<>();
 
@@ -88,7 +54,7 @@ public class BookingDB implements DatabaseInfo {
                 + "b.cus_Id, t.tour_Id, t.tour_Name, b.tour_Date, b.cancel_Date "
                 + "FROM Booking b "
                 + "INNER JOIN Tour t ON b.tour_Id = t.tour_Id "
-                + "WHERE b.cus_Id = ?";
+                + "WHERE b.cus_Id = ? ORDER BY b.created_At ASC";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setInt(1, customer_Id);

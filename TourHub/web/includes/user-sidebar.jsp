@@ -18,11 +18,13 @@
                 </a>
             </li>
             <li>
-            <a href="user-wishlist.jsp">
+
+            <a href="wishlist">
                 <i class='bx bxs-dashboard' ></i>
                 <span class="text">My wishlist tour</span>
             </a>
         </li>
+
             <li>
                 <a href="reviewtour.jsp">
                     <i class='bx bxs-star'></i>
@@ -50,7 +52,7 @@
                 </a>
             </li>   
             <li>
-                <a href="payment.jsp">
+                <a href="provider-management?action=show-withdraw-page">
                     <i class='bx bxs-credit-card'></i>
                     <span class="text">Widthdraw</span>
                 </a>
@@ -63,7 +65,7 @@
             </li>
         </c:if>
         <li>
-            <a href="user-notification.jsp">
+            <a href="notifications">
                 <i class='bx bxs-dashboard' ></i>
                 <span class="text">Notification</span>
             </a>

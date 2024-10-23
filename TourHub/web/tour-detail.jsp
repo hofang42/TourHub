@@ -532,7 +532,6 @@
                                     <button class="share-btn" onclick="sharePage()">
                                         <i class="fa-regular fa-share-from-square"></i>
                                     </button>
-
                                 </div>
                             </div>                       
                         </div>
@@ -840,7 +839,7 @@
 
                 <div class="tour-options-section">
                     <c:forEach items="${tourOptions}" var="option">
-                        <div class="tour-option">
+                        <div class="tour-option" data-tour-date="${option.tour_Date}">
                             <div class="tour-option-left-section">
                                 <span class="option-name">${option.option_Name}</span>
                                 <span class="option-note">${option.option_Description}</span>
@@ -851,10 +850,20 @@
                                 <div class="top-pick-logo">Top pick ${option.available_Slots}</div>
                                 <div class="option-price-section">
                                     <div class="option-price">${option.option_Price}</div>
-                                    <button class="option-pick-btn" 
-                                            onclick="window.location.href = 'optionAdjustment?id=${option.option_Id}&selectedDate=' + selectedDate.toISOString().split('T')[0]">
-                                        Chọn vé
-                                    </button>
+
+                                    <!-- Kiểm tra available_Slots -->
+                                    <c:choose>
+                                        <c:when test="${option.available_Slots > 0}">
+                                            <button class="option-pick-btn" 
+                                                    onclick="window.location.href = 'optionAdjustment?id=${option.option_Id}&selectedDate=' + selectedDate.toISOString().split('T')[0]">
+                                                Chọn vé
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button class="option-pick-btn" disabled>Hết lượt</button>
+                                        </c:otherwise>
+                                    </c:choose>
+
                                 </div>
                             </div>                            
                         </div>
@@ -1271,6 +1280,8 @@
 
         // Cập nhật biến selectedDate thành ngày đã chọn
         selectedDate = centerDate;
+        
+        console.log("Seeeelected Dateee: " + selectedDate);
 
         filterTourOptions(selectedDate);
     }
@@ -1300,7 +1311,12 @@
 
             console.log("Option day of week:", optionDayOfWeek); // Kiểm tra giá trị dayOfWeek trong mỗi option
 
-            if (optionDayOfWeek === dayOfWeek) {
+            // Lấy tour_Date từ option
+            const tourDateStr = option.getAttribute('data-tour-date'); // Giả sử bạn lưu trữ tour_Date trong thuộc tính data
+            const tourDate = new Date(tourDateStr); // Chuyển đổi chuỗi ngày thành đối tượng Date
+
+            // Kiểm tra nếu ngày đã chọn và tour_Date cùng ngày
+            if (optionDayOfWeek === dayOfWeek && selectedDate.toDateString() === tourDate.toDateString()) {
                 option.style.display = 'flex'; // Hiển thị tourOption
             } else {
                 option.style.display = 'none'; // Ẩn tourOption
