@@ -69,7 +69,7 @@ public class RegisterServlet extends HttpServlet {
 
         // If no errors, proceed to register the user
         String hashedPassword = Encrypt.toSHA256(password);
-        boolean isRegistered = userDB.registerUser(new User(0, hashedPassword, firstName, lastName, phone, email, address, new Date(), "unverified", role, avatar));
+        boolean isRegistered = userDB.registerUser(new User(0, hashedPassword, firstName, lastName, phone, email, address, new Date(), "Unverified", role, avatar));
 
 
         if (isRegistered) {
