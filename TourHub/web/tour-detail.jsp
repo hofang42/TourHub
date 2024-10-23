@@ -23,7 +23,7 @@
             />
         <!-- Stylesheets -->
         <link
-            rel="stylesheet"
+            rel="stylesheet"        
             type="text/css"
             href="//fonts.googleapis.com/css?family=Oswald:200,400%7CLato:300,400,300italic,700%7CMontserrat:900"
             />

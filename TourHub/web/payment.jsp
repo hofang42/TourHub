@@ -315,7 +315,7 @@
                                         </div>
                                     </div>   
                                     <div class="head">
-                                        <h3>Booking</h3>
+                                        <h3>Recent Request</h3>
                                     </div>
                                     <table class="withdraw-table">
                                         <thead>

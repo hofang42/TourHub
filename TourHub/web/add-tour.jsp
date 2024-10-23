@@ -317,7 +317,11 @@
                 } else {
                     endDateError.style.display = 'none';
                 }
+
+                // Call calculateDuration to update day and night fields
+                calculateDuration();
             }
+
         </script>
 
         <script src="dist/js/theme.min.js"></script>
