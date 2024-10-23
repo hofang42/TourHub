@@ -677,7 +677,6 @@
                                             <button class="option-pick-btn" disabled>Hết lượt</button>
                                         </c:otherwise>
                                     </c:choose>
-
                                 </div>
                             </div>                            
                         </div>
@@ -794,17 +793,17 @@
 
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup3')"></button>
     </div>
-    <!--        Popup4-->
+    
+    <!--Popup4-->
     <div id="popup4">
         <h3>Tour Itinerary</h3>
         <div class="tour-itinerary-wrapper">
             <ul>
                 <c:forEach var="itinerary" items="${tourDetailDescription.tourItinerary}">
                     <li>${itinerary}</li>
-                    </c:forEach>
+                </c:forEach>
             </ul>
         </div>
-
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup4')"></button>
     </button>
     </div>
@@ -1066,33 +1065,59 @@
         // Tìm tất cả các phần tử .date-container
         let dateContainers = document.querySelectorAll('.date-container');
 
+        // Tìm tất cả các phần tử .tour-option và lưu trữ ngày tour
+        const tourOptions = [...document.querySelectorAll('.tour-option')];
+        const availableTourDates = tourOptions.map(option => new Date(option.getAttribute('data-tour-date')).toDateString());
+
+        let closestTourDate = null;
+
         // Vòng lặp để tạo 14 ngày
         for (let i = 0; i < 14; i++) {
             let date = new Date(centerDate);
-            date.setDate(centerDate.getDate() + i); // Hiển thị 7 ngày trước và 7 ngày sau
+            date.setDate(centerDate.getDate() + i); // Hiển thị các ngày xung quanh ngày hiện tại
 
             let dayOfWeek = daysOfWeek[date.getDay()];
             let formattedDate = date.getDate() + ' thg ' + (date.getMonth() + 1);
 
-            // Cập nhật nội dung của phần tử date-container
-            dateContainers[i].querySelector('[data-dayofweek]').innerText = dayOfWeek;
-            dateContainers[i].querySelector('[data-formatteddate]').innerText = formattedDate;
+            // Chuyển đổi date thành chuỗi để kiểm tra
+            let dateString = date.toDateString();
 
-            // Cập nhật sự kiện onclick với giá trị ngày mới
-            dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString()); // Sử dụng hàm mũi tên
+            // Kiểm tra xem ngày này có trong danh sách availableTourDates không
+            if (availableTourDates.includes(dateString)) {
+                // Nếu chưa có closestTourDate, đặt ngày này làm ngày gần nhất
+                if (!closestTourDate) {
+                    closestTourDate = new Date(date);
+                }
 
-            // Đặt class selected cho ngày hiện tại
-            if (i === 0) {
-                dateContainers[i].classList.add('selected');
+                // Cập nhật nội dung của phần tử date-container
+                dateContainers[i].querySelector('[data-dayofweek]').innerText = dayOfWeek;
+                dateContainers[i].querySelector('[data-formatteddate]').innerText = formattedDate;
+
+                // Cập nhật sự kiện onclick với giá trị ngày mới
+                dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString());
+
+                // Hiển thị date-container nếu có tour
+                dateContainers[i].style.display = 'flex';
+
+                // Nếu là ngày gần nhất có tour, thêm class selected
+                if (dateString === closestTourDate.toDateString()) {
+                    dateContainers[i].classList.add('selected');
+                } else {
+                    dateContainers[i].classList.remove('selected');
+                }
             } else {
-                dateContainers[i].classList.remove('selected');
+                // Ẩn date-container nếu không có tour
+                dateContainers[i].style.display = 'none';
             }
         }
 
-        // Cập nhật biến selectedDate thành ngày đã chọn
-        selectedDate = centerDate;
-        
-        console.log("Seeeelected Dateee: " + selectedDate);
+        // Nếu tìm thấy ngày gần nhất có tour, cập nhật selectedDate
+        if (closestTourDate) {
+            selectedDate = closestTourDate;
+        } else {
+            // Nếu không có ngày nào có tour, giữ ngày trung tâm mặc định
+            selectedDate = centerDate;
+        }
 
         filterTourOptions(selectedDate);
     }
@@ -1158,18 +1183,44 @@
     function openCalendar() {
         flatpickr("#calendarInput", {
             dateFormat: "Y-m-d",
-            defaultDate: new Date(),
+            defaultDate: new Date(), // Ngày mặc định là ngày hiện tại
             minDate: "today",
             onChange: function (selectedDates, dateStr, instance) {
                 if (selectedDates.length > 0) {
-                    selectedDate = new Date(selectedDates[0]);
-                    displayDateRange(selectedDate);
+                    const selectedDate = new Date(selectedDates[0]);
+
+                    // Kiểm tra xem ngày được chọn có tour hay không
+                    const availableTourDates = getAvailableTourDates();
+
+                    // Nếu ngày được chọn không có tourOption
+                    if (!availableTourDates.includes(selectedDate.toDateString())) {
+                        alert("Ngày được chọn không có tour nào!");
+                        // Quay lại ngày mặc định là ngày gần nhất có tour
+                        const closestTourDate = getClosestTourDate();
+                        instance.setDate(closestTourDate, true); // Đặt lại ngày trong flatpickr
+                        displayDateRange(closestTourDate); // Cập nhật UI với ngày gần nhất có tour
+                    } else {
+                        // Nếu có tour, cập nhật UI
+                        displayDateRange(selectedDate);
+                    }
                 }
             },
             onClose: function () {
                 toggle('calendar');
             }
         }).open();
+    }
+
+    // Function để lấy danh sách ngày có tour
+    function getAvailableTourDates() {
+        const tourOptions = [...document.querySelectorAll('.tour-option')];
+        return tourOptions.map(option => new Date(option.getAttribute('data-tour-date')).toDateString());
+    }
+
+    // Function để tìm ngày gần nhất có tour
+    function getClosestTourDate() {
+        const availableTourDates = getAvailableTourDates();
+        return new Date(availableTourDates[0]); // Giả sử ngày gần nhất có tour là ngày đầu tiên trong danh sách
     }
 
     // Khi trang tải, hiển thị dải ngày với ngày đầu tiên là ngày hiện tại

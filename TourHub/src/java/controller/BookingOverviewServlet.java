@@ -22,7 +22,7 @@ import model.User;
 import model.Booking;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
@@ -123,10 +123,10 @@ public class BookingOverviewServlet extends HttpServlet {
 
         try {
             // Fetch the tourId by optionId
-            tourId = khanhDB.getTourIdByOptionId(String.valueOf(optionId)); // Call with String representation if needed
+            tourId = khanhDB.getTourIdByOptionId(optionIdString); // Call with String representation if needed
             if (tourId == null) {
                 // Redirect to an error page if no tour is found for the given optionId
-                response.sendRedirect(request.getContextPath() + "/error.jsp?message=No Tour found for Option ID " + optionId);
+                response.sendRedirect(request.getContextPath() + "/error.jsp?message=No Tour found for Option ID " + optionIdString);
                 return;
             }
         } catch (SQLException e) {
@@ -148,12 +148,14 @@ public class BookingOverviewServlet extends HttpServlet {
         // Convert selectedDateString to java.sql.Date
         java.sql.Date sqlDate = null;
         try {
-            sqlDate = (java.sql.Date) convertStringToSqlDate(selectedDateString); // Use the convertStringToSqlDate method
+            sqlDate = convertStringToSqlDate(selectedDateString); // Use the convertStringToSqlDate method
         } catch (ParseException e) {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/error.jsp?message=Invalid date format");
             return;
         }
+        
+        System.out.println(sqlDate);
 
         int scheduleId = 0;
         try {
@@ -161,12 +163,14 @@ public class BookingOverviewServlet extends HttpServlet {
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(BookingOverviewServlet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        
+        System.out.println(scheduleId);
 
         // Now, you can use tourId in your booking process or elsewhere.
         try {
             // Import the booking using the updated tourId
             khanhDB.importBooking(tourId, selectedDateString, totalCost, bookingDetail, bookStatus, String.valueOf(optionId), scheduleId, cusId, slotOrder, selectedDateString, cancelDate, selectedDateString, refundAmount);
-            System.out.println("Booking successfully imported.");           
+            System.out.println("Booking successfully imported.");          
         } catch (SQLException e) {
             System.err.println("Error importing booking: " + e.getMessage());
         }

@@ -354,7 +354,7 @@
 
         async function checkPaid(price, content) {
             // Early exit if payment is already successful\
-            clearInterval(checkInterval);
+//            clearInterval(checkInterval);
             if (isSuccess) {
                 return;
             }
