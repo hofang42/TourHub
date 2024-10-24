@@ -26,7 +26,7 @@
         </li>
 
             <li>
-                <a href="reviewtour.jsp">
+                <a href="SubmitReview">
                     <i class='bx bxs-star'></i>
                     <span class="text">Review Tours</span>
                 </a>
