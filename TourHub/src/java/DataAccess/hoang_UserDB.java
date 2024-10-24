@@ -253,20 +253,20 @@ public class hoang_UserDB implements DatabaseInfo {
         return monthlyProfits; // Returns an array containing monthly profits
     }
 
-    public List<Map<String, Object>> getHotDestination(int companyId) {
+    public List<Map<String, Object>> getHotDestination(int companyId, int year) {
         List<Map<String, Object>> hotDestinations = new ArrayList<>();
         String query = "SELECT t.location, COUNT(b.tour_Id) AS bookingCount "
                 + "FROM Company c "
                 + "INNER JOIN Tour t ON c.company_Id = t.company_Id "
                 + "INNER JOIN Booking b ON b.tour_Id = t.tour_Id "
-                + "WHERE c.company_Id = ? "
+                + "WHERE c.company_Id = ? AND YEAR(b.book_Date) = ?"
                 + "GROUP BY t.location"; // Group by location to get booking counts
 
         try (Connection connection = getConnect(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             // Set the company ID in the prepared statement
             preparedStatement.setInt(1, companyId);
-
+            preparedStatement.setInt(2, year);
             // Execute the query
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 // Process the results

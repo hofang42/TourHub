@@ -25,9 +25,9 @@ function fetchMonthlyBookings() {
                 const totalBookings = data.monthlyBookings.map(entry => entry.totalBookings);
 
                 // Log the data for each month
-                months.forEach((month, index) => {
-                    console.log(`Month: ${month}, Total Bookings: ${totalBookings[index]}`);
-                });
+//                months.forEach((month, index) => {
+//                    console.log(`Month: ${month}, Total Bookings: ${totalBookings[index]}`);
+//                });
 
                 // Create the chart with the fetched data
                 createChart(months, totalBookings);
@@ -69,7 +69,7 @@ function fetchMonthlyProfits() {
                 return response.json();
             })
             .then(data => {
-                console.log(data); // Log the entire response for inspection
+//                console.log(data); // Log the entire response for inspection
 
                 const monthlyProfitsThisYear = data.monthlyProfitsThisYear;
                 const monthlyProfitsLastYear = data.monthlyProfitsLastYear;
@@ -83,7 +83,7 @@ function fetchMonthlyProfits() {
                 // Prepare data for chart for this year
                 const profitsThisYear = [];
                 monthlyProfitsThisYear.forEach(entry => {
-                    console.log(entry); // Log each entry to see its structure
+//                    console.log(entry); // Log each entry to see its structure
                     const totalProfit = entry.profit || 0; // Access the totalProfit property, default to 0
                     profitsThisYear.push(totalProfit);
                 });
@@ -91,7 +91,7 @@ function fetchMonthlyProfits() {
                 // Prepare data for chart for last year
                 const profitsLastYear = [];
                 monthlyProfitsLastYear.forEach(entry => {
-                    console.log(entry); // Log each entry to see its structure
+//                    console.log(entry); // Log each entry to see its structure
                     const totalProfit = entry.profit || 0; // Access the totalProfit property, default to 0
                     profitsLastYear.push(totalProfit);
                 });
@@ -157,7 +157,7 @@ function fetchPieChartData() {
                 return response.json();
             })
             .then(data => {
-                console.log('Parsed JSON Data:', data);
+//                console.log('Parsed JSON Data:', data);
 
                 const hotDestinations = data.hotDestinations || [];
                 const categoryLabels = hotDestinations.map(dest => dest.location);

@@ -172,25 +172,28 @@
                             </div>
                             <div class="form-group required">
                                 <label for="start_Date">Start Date: <span style="color: red;">*</span></label>
-                                <input type="date" class="form-control" id="start_Date" name="start_Date" required onchange="validateDates()">
+                                <input type="date" class="form-control" id="start_Date" name="start_Date" required onchange="validateDates(); calculateDuration();" min="">
                                 <span id="startDateError" style="color: red; display: none;">Start date cannot be in the past.</span>
                             </div>
+
                             <div class="form-group required">
                                 <label for="end_Date">End Date: <span style="color: red;">*</span></label>
-                                <input type="date" class="form-control" id="end_Date" name="end_Date" required onchange="validateDates()">
-                                <span id="endDateError" style="color: red; display: none;">End date cannot be in the past.</span>
+                                <input type="date" class="form-control" id="end_Date" name="end_Date" required onchange="validateDates(); calculateDuration();">
+                                <span id="endDateError" style="color: red; display: none;">End date cannot be before the start date.</span>
                             </div>
+
                             <div class="form-group required">
                                 <label for="total_Time">Duration</label>
                                 <div class="d-flex align-items-center">
                                     <div class="mr-3">
-                                        <input type="number" id="day" name="day" class="form-control" required placeholder="Days" min="0" max="30" readonly>
+                                        <input type="number" id="day" name="day" class="form-control" required placeholder="Days" readonly>
                                     </div>
                                     <div>
-                                        <input type="number" id="night" name="night" class="form-control" required placeholder="Nights" min="0" max="30" readonly>
+                                        <input type="number" id="night" name="night" class="form-control" required placeholder="Nights" readonly>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="form-group required">
                                 <label for="location">Location: <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
@@ -268,7 +271,7 @@
                     var end = new Date(endDate);
 
                     // Calculate the difference in time (milliseconds)
-                    var diffTime = end - start;
+                    var diffTime = end.getTime() - start.getTime();
 
                     // Convert the time difference to days (1 day = 24*60*60*1000 milliseconds)
                     var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -280,7 +283,7 @@
                         // Set the night value (days - 1)
                         document.getElementById("night").value = diffDays - 1;
                     } else {
-                        // If the end date is before the start date, reset the fields
+                        // Reset the fields if the date difference is invalid (e.g., end date is before start date)
                         document.getElementById("day").value = 0;
                         document.getElementById("night").value = 0;
                     }
@@ -290,6 +293,7 @@
                     document.getElementById("night").value = 0;
                 }
             }
+
             function validateDates() {
                 const startDateInput = document.getElementById('start_Date');
                 const endDateInput = document.getElementById('end_Date');
@@ -318,6 +322,41 @@
                     endDateError.style.display = 'none';
                 }
             }
+            // Function to set the minimum start date as today's date
+            document.addEventListener('DOMContentLoaded', function () {
+                const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+                document.getElementById("start_Date").setAttribute("min", today); // Set the min attribute to today's date
+            });
+
+            function validateDates() {
+                const startDateInput = document.getElementById('start_Date');
+                const endDateInput = document.getElementById('end_Date');
+                const startDateError = document.getElementById('startDateError');
+                const endDateError = document.getElementById('endDateError');
+
+                const today = new Date().setHours(0, 0, 0, 0); // Today's date without time
+
+                // Convert input values to date objects
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                // Validate start date
+                if (startDateInput.value && startDate < today) {
+                    startDateError.style.display = 'block';
+                    startDateInput.value = ''; // Clear invalid date
+                } else {
+                    startDateError.style.display = 'none';
+                }
+
+                // Validate end date
+                if (endDateInput.value && endDate < startDate) {
+                    endDateError.style.display = 'block';
+                    endDateInput.value = ''; // Clear invalid date
+                } else {
+                    endDateError.style.display = 'none';
+                }
+            }
+
         </script>
 
         <script src="dist/js/theme.min.js"></script>
