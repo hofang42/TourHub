@@ -236,8 +236,6 @@
                     <button>Xem thông tin vé</button>
                 </div>
             </div>
-
-
         </div>
 
         <div class="option-adjustment">
@@ -257,59 +255,59 @@
                         </button>
 
                         <div class="date-section" id="date-section">
-                            <div class="date-container" data-index="0" onclick="selectDate(this)">
+                            <div class="date-container" data-index="0" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="0"></span>
                                     <span class="date" data-formatteddate="0"></span>
                                 </div>
-                                <div class="date-container" data-index="1" onclick="selectDate(this)">
+                                <div class="date-container" data-index="1" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="1"></span>
                                     <span class="date" data-formatteddate="1"></span>
                                 </div>
-                                <div class="date-container" data-index="2" onclick="selectDate(this)">
+                                <div class="date-container" data-index="2" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="2"></span>
                                     <span class="date" data-formatteddate="2"></span>
                                 </div>
-                                <div class="date-container" data-index="3" onclick="selectDate(this)">
+                                <div class="date-container" data-index="3" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="3"></span>
                                     <span class="date" data-formatteddate="3"></span>
                                 </div>
-                                <div class="date-container" data-index="4" onclick="selectDate(this)">
+                                <div class="date-container" data-index="4" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="4"></span>
                                     <span class="date" data-formatteddate="4"></span>
                                 </div>
-                                <div class="date-container" data-index="5" onclick="selectDate(this)">
+                                <div class="date-container" data-index="5" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="5"></span>
                                     <span class="date" data-formatteddate="5"></span>
                                 </div>
-                                <div class="date-container" data-index="6" onclick="selectDate(this)">
+                                <div class="date-container" data-index="6" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="6"></span>
                                     <span class="date" data-formatteddate="6"></span>
                                 </div>
-                                <div class="date-container" data-index="7" onclick="selectDate(this)">
+                                <div class="date-container" data-index="7" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="7"></span>
                                     <span class="date" data-formatteddate="7"></span>
                                 </div>
-                                <div class="date-container" data-index="8" onclick="selectDate(this)">
+                                <div class="date-container" data-index="8" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="8"></span>
                                     <span class="date" data-formatteddate="8"></span>
                                 </div>
-                                <div class="date-container" data-index="9" onclick="selectDate(this)">
+                                <div class="date-container" data-index="9" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="9"></span>
                                     <span class="date" data-formatteddate="9"></span>
                                 </div>
-                                <div class="date-container" data-index="10" onclick="selectDate(this)">
+                                <div class="date-container" data-index="10" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="10"></span>
                                     <span class="date" data-formatteddate="10"></span>
                                 </div>
-                                <div class="date-container" data-index="11" onclick="selectDate(this)">
+                                <div class="date-container" data-index="11" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="11"></span>
                                     <span class="date" data-formatteddate="11"></span>
                                 </div>
-                                <div class="date-container" data-index="12" onclick="selectDate(this)">
+                                <div class="date-container" data-index="12" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="12"></span>
                                     <span class="date" data-formatteddate="12"></span>
                                 </div>
-                                <div class="date-container" data-index="13" onclick="selectDate(this)">
+                                <div class="date-container" data-index="13" data-option-id="${option.option_Id}" onclick="selectDate(this)">
                                     <span class="day-of-week" data-dayofweek="13"></span>
                                     <span class="date" data-formatteddate="13"></span>
                                 </div>
@@ -709,7 +707,7 @@
             java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
             java.util.Calendar calendar = java.util.Calendar.getInstance();
             calendar.setTime(dateFormat.parse(previousSelectedDate));
-            calendar.add(java.util.Calendar.DATE, 1); // Add 1 day
+            calendar.add(java.util.Calendar.DATE, 0); // Add 0 day
             previousSelectedDate = dateFormat.format(calendar.getTime()); // Format the new date
         }
     %>

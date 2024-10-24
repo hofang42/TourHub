@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
                 user.setLast_Name(googleAccount.getFamily_name());
                 user.setPassword(""); // No password for Google users initially
                 user.setCreated_At(new java.util.Date());
-                user.setUser_Status("verified");
+                user.setUser_Status("Verified");
                 userDB.registerUser(user); // Save user in the DB
 
                 // Set user in session before redirecting
@@ -84,8 +84,8 @@ public class LoginServlet extends HttpServlet {
         }
 
         if (user != null) {
-            // Check if the user status is "unverified"
-            if (user.getUser_Status().equals("unverified")) {
+            // Check if the user status is "Unverified"
+            if (user.getUser_Status().equals("Unverified")) {
                 // Generate OTP
                 Random rand = new Random();
                 int otp = rand.nextInt(999999);
