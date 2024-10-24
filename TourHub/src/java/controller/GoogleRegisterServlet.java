@@ -31,6 +31,14 @@ public class GoogleRegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String role = request.getParameter("role");
 
+        // Kiểm tra mật khẩu
+        if (!isValidPassword(password)) {
+            // Nếu mật khẩu không hợp lệ, gửi thông báo lỗi
+            request.setAttribute("errorMessage", "Password must be 8-16 characters long, include at least 1 uppercase letter and 1 special character.");
+            request.getRequestDispatcher("googleregister.jsp").forward(request, response);
+            return;
+        }
+
         // Cập nhật thông tin vào User object
         user.setPhone(phone);
         user.setAddress(address);
@@ -65,4 +73,12 @@ public class GoogleRegisterServlet extends HttpServlet {
             response.sendRedirect("home");
         }
     }
+
+// Phương thức kiểm tra mật khẩu
+    private boolean isValidPassword(String password) {
+        // Biểu thức chính quy: 8-16 ký tự, ít nhất 1 ký tự in hoa và 1 ký tự đặc biệt
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,16}$";
+        return password != null && password.matches(passwordPattern);
+    }
+
 }

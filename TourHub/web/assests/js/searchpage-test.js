@@ -57,7 +57,7 @@ function showResults(tours, provinces) {
             imgDiv.style.flexShrink = '0';
 
             const img = document.createElement('img');
-            img.src = province.image_url ? province.image_url : 'default-image.jpg'; // Use a default image if none provided
+            img.src = `assests/images/provinces/${province.image_url}`;// Use a default image if none provided
             img.alt = province.province_name;
             img.style.width = '100px';
             img.style.height = '100px';
@@ -93,7 +93,7 @@ function showResults(tours, provinces) {
             imgDiv.style.flexShrink = '0';
 
             const img = document.createElement('img');
-            img.src = `assests/images/tour-images/${tour.tour_Img}`;
+            img.src = `assests/images/tour-images/${tour.tour_Img[0]}`;
             img.alt = tour.tour_Name;
             img.style.width = '100px';
             img.style.height = '100px';
@@ -128,7 +128,7 @@ function showResults(tours, provinces) {
 
 function selectProvince(provinceName) {
     // Redirect to the Province page with the selected province name
-    window.location.href = `search?query=${encodeURIComponent(provinceName)}`;
+    window.location.href = `search?querry=${encodeURIComponent(removeDiacritics(provinceName))}`;
 }
 
 function selectTour(tourId) {

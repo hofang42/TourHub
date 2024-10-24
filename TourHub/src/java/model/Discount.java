@@ -109,4 +109,9 @@ public class Discount {
         this.tour_Id = tour_Id;
     }
 
+    @Override
+    public String toString() {
+        return "Discount{" + "discount_Id=" + discount_Id + ", code=" + code + ", quantity=" + quantity + ", percent_Discount=" + percent_Discount + ", start_Day=" + start_Day + ", end_Day=" + end_Day + ", require=" + require + ", tour_Id=" + tour_Id + ", description=" + description + '}';
+    }
+
 }

@@ -17,97 +17,138 @@
         <link href="assests/css/customer.css" rel="stylesheet" />
 
         <title>User Profile</title>
+        <style>
+
+
+            /* Style the labels */
+            .avatardiv label {
+                margin-bottom: 10px; /* Space below the label */
+                font-weight: bold; /* Bold text */
+            }
+
+            /* Style the file input */
+            .avatardiv input[type="file"] {
+                margin-bottom: 20px; /* Space below the input */
+                padding: 10px; /* Add padding */
+                border: 1px solid #ccc; /* Light border */
+                border-radius: 4px; /* Rounded corners */
+                font-size: 14px; /* Font size */
+            }
+
+            /* Style the submit button */
+            .avatardiv button {
+                padding: 10px 20px; /* Vertical and horizontal padding */
+                border: none; /* Remove default border */
+                border-radius: 4px; /* Rounded corners */
+                background-color: #4CAF50; /* Green background */
+                color: white; /* White text color */
+                font-size: 16px; /* Font size */
+                cursor: pointer; /* Pointer cursor on hover */
+                transition: background-color 0.3s; /* Transition effect */
+            }
+
+            /* Change button color on hover */
+            .avatardiv button:hover {
+                background-color: #45a049; /* Darker green on hover */
+            }
+
+            .profile-card {
+                display: flex; /* Sử dụng Flexbox để tạo cấu trúc cho phần card */
+                justify-content: space-between; /* Căn giữa và phân chia không gian */
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+            }
+
+            .profile-info-left,
+            .profile-info-right {
+                flex: 1; /* Chiếm 50% không gian của mỗi phần */
+                margin-right: 20px; /* Thêm khoảng cách bên phải cho phần bên trái */
+            }
+
+            .profile-info-right {
+                margin-right: 0; /* Đảm bảo không gian cho phần bên phải */
+            }
+
+            /* Style for the avatar container */
+            .avatar-container {
+                position: relative;
+                display: inline-block;
+                text-align: center;
+            }
+
+            /* Style for the avatar image */
+            .avatar {
+                width: 250px; /* Adjust the width as needed */
+                height: 250px; /* Adjust the height as needed */
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            /* Style for the overlay */
+            .avatar-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            /* Show the overlay on hover */
+            .avatar-container:hover .avatar-overlay {
+                opacity: 1;
+            }
+
+            /* Common style for both buttons */
+            .upload-label, .upload-btn {
+                color: white;
+                font-size: 16px;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                display: inline-block;
+                width: 150px; /* Set width to ensure they are equal */
+                text-align: center;
+                margin: 5px; /* Space between the buttons */
+            }
+
+            /* Style for the "Change Avatar" label */
+            .upload-label {
+                background-color: #17a2b8;
+            }
+
+            /* Style for the "Upload" button */
+            .upload-btn {
+                background-color: #28a745;
+                border: none;
+            }
+
+            /* Hover effect for both buttons */
+            .upload-label:hover, .upload-btn:hover {
+                opacity: 0.8;
+            }
+
+            /* Hide the file input field */
+            input[type="file"] {
+                display: none;
+            }
+
+        </style>
     </head>
     <body>
         <!-- SIDEBAR -->
-        <section id="sidebar">
-            <a href="home" class="brand">
-                <i class='bx bxs-smile'></i>
-                <span class="text">TourHub</span>
-            </a>
-            <ul class="side-menu top">
-                <li class="active">
-                    <a href="user-profile.jsp">
-                        <i class='bx bxs-dashboard' ></i>
-                        <span class="text">User Information</span>
-                    </a>
-                </li>
-                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
-                    <li>
-                        <a href="pending-bookings">
-                            <i class='bx bxs-shopping-bag-alt' ></i>
-                            <span class="text">Manage Booking</span>
-                        </a>
-                    </li>
-                </c:if>
-                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
-                    <li>
-                        <a href="booking">
-                            <i class='bx bxs-shopping-bag-alt' ></i>
-                            <span class="text">My Booking</span>
-                        </a>
-                    </li>
-                </c:if>
-                <li>
-                    <a href="user-chat.jsp">
-                        <i class='bx bxs-message-dots' ></i>
-                        <span class="text">Message</span>
-                    </a>
-                </li>    
-                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
-                    <li class="">
-                        <a href="${sessionScope.currentUser.role == 'Provider' ? '/Project_SWP/provider-analys' : 'admin-analysis.jsp'}">
-                            <i class='bx bxs-dashboard' ></i>
-                            <span class="text">Dashboard</span>
-                        </a>
-                    </li>   
-                    <li class="dropdown-btn">
-                        <a href="my-tour">
-                            <i class='bx bxs-briefcase-alt' ></i>
-                            <span class="text">My Tour</span>
-                        </a>
-                    </li>   
-                    <li>
-                        <a href="payment.jsp">
-                            <i class='bx bxs-credit-card'></i>
-                            <span class="text">Widthdraw</span>
-                        </a>
-                    </li> 
-                    <li>
-                        <a href="discount">
-                            <i class='bx bxs-discount'></i>
-                            <span class="text">Manage Discounts</span>
-                        </a>
-                    </li>
-                </c:if>                
-                <c:if test="${sessionScope.currentUser.role == 'Customer'}">
-                    <li>
-                        <a href="reviewtour.jsp">
-                            <i class='bx bxs-star'></i>
-                            <span class="text">Review Tours</span>
-                        </a>
-                    </li>
-                </c:if>
-            </ul>
-            <ul class="side-menu">
-                <li>
-                    <a href="#">
-                        <i class='bx bxs-cog' ></i>
-                        <span class="text">Settings</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="logout" class="logout">
-                        <i class='bx bxs-log-out-circle' ></i>
-                        <span class="text">Logout</span>
-                    </a>
-                </li>
-            </ul>
-        </section>
+
+        <%@include file="includes/user-sidebar.jsp" %>
+
         <!-- SIDEBAR -->
-
-
-
         <!-- CONTENT -->
         <section id="content">
             <!-- NAVBAR -->
@@ -127,7 +168,7 @@
                     <!-- <span class="num">8</span> -->
                 </a>
                 <div class="image-container">
-                    <img src="assests/images/avatar.jpg" alt="User Avatar" class="avatar">
+                    <img src="${currentUser.avatar}" alt="User Avatar" class="avatar">
                 </div>
 
             </nav>
@@ -147,7 +188,7 @@
                             </c:when>
                             <c:otherwise>
                                 <div class="profile-card">
-                                    <div>
+                                    <div class="profile-info-left">
                                         <div class="profile-info">
                                             <label>Full Name:</label>
                                             <p><span>${currentUser.first_Name} ${currentUser.last_Name}</span></p>
@@ -177,13 +218,52 @@
                                                 <button type="submit" name="buttonChange" value="pass">Change password</button>
                                             </form>
                                         </div>
-                                    </div>
-                                    <div class="change-info-button">
-                                        <form action="user-updateinfo.jsp">
-                                            <button type="submit">Change Information</button>
-                                        </form>
-                                    </div>
+                                        <c:if test="${sessionScope.currentUser.role == 'Customer'}">
+                                            <div class="profile-info">
+                                                <label>Birthday: </label>
+                                                <p><span>${currentUser.cus_Birth}</span></p>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                                            <div class="profile-info">
+                                                <label>Tax Code: </label>
+                                                <p><span>${currentUser.tax_Code}</span></p>
+                                            </div>
+                                            <div class="profile-info">
+                                                <label>Balance: </label>
+                                                <p><span>${currentUser.balance}</span></p>
+                                            </div>
+                                            <div class="profile-info">
+                                                <label>Bank Information: </label>
+                                                <p><span>${currentUser.bank_Information}</span></p>
+                                            </div>
+                                        </c:if>
 
+                                    </div>
+                                    <div class="profile-info-right">
+                                        <div class="profile-info">
+                                            <!-- Avatar container -->
+                                            <div class="avatar-container">
+                                                <!-- Display the current avatar -->
+                                                <img id="avatarImg" src="${currentUser.avatar}" class="avatar" />
+
+                                                <!-- Overlay that appears on hover -->
+                                                <div class="avatar-overlay">
+                                                    <!-- Upload form inside the overlay -->
+                                                    <form action="UploadAvatarServlet" method="post" enctype="multipart/form-data">
+                                                        <label for="file-input" class="upload-label">Change Avatar</label>
+                                                        <input id="file-input" type="file" name="avatar" accept="image/*" required>
+                                                        <button type="submit" class="upload-btn">Upload</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="change-info-button">
+                                    <form action="user-updateinfo.jsp">
+                                        <button type="submit">Change Information</button>
+                                    </form>
                                 </div>
                             </c:otherwise>
                         </c:choose>
@@ -200,7 +280,6 @@
                                                     function togglePassword() {
                                                         var passwordField = document.getElementById('passwordDisplay');
                                                         var button = event.target;
-
                                                         if (passwordField.innerHTML === "********") {
                                                             passwordField.innerHTML = "${currentUser.password}";
                                                             button.textContent = "Hide";
@@ -222,6 +301,7 @@
                                                             profileCard.classList.toggle('active'); // Toggle the active class on the profile card
                                                         });
                                                     });
+
         </script>
     </body>
 </html>

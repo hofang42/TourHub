@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Booking;
+import model.Comment;
 import model.Review;
 import model.ReviewReply;
 import model.Tour;
@@ -189,6 +190,35 @@ public class ReviewDB implements DatabaseInfo {
         return reviews;
     }
 
+    public List<Review> getTop3ReviewsByTourId(String tourId) {
+        List<Review> reviews = new ArrayList<>();
+        String sql = "SELECT TOP 3 R.review_Id, R.comment, R.rating_Star, R.user_Id, U.first_Name, U.last_Name, R.tour_Id "
+                + "FROM Review R JOIN [User] U ON R.user_Id = U.user_Id "
+                + "WHERE R.tour_Id = ? "
+                + "ORDER BY R.rating_Star DESC";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tourId); // Đảm bảo tourId được đặt đúng vào câu lệnh SQL
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Review review = new Review();
+                    review.setReview_Id(rs.getInt("review_Id"));
+                    review.setComment(rs.getString("comment"));
+                    review.setRating_Star(rs.getInt("rating_Star"));
+                    review.setUser_Id(rs.getInt("user_Id"));
+                    review.setTour_Id(rs.getString("tour_Id"));
+                    review.setFirst_Name(rs.getString("first_Name"));
+                    review.setLast_Name(rs.getString("last_Name"));
+                    reviews.add(review);  // Thêm review vào danh sách
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return reviews;
+    }
+
     public boolean addReplyToReview(int reviewId, String replyContent, int userId) {
         String sql = "INSERT INTO ReviewReply (reply_Content, review_Id, user_Id) VALUES (?, ?, ?)";
         try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -331,4 +361,61 @@ public class ReviewDB implements DatabaseInfo {
             return false; // Return false if there was an error
         }
     }
+
+    public boolean addComment(int userId, String tourId, String commentText, Integer parentCommentId) {
+        String sql = "INSERT INTO Comment (user_id, tour_id, comment_text, parent_comment_id) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, tourId);
+            ps.setString(3, commentText);
+            if (parentCommentId != null) {
+                ps.setInt(4, parentCommentId);  // Nếu là reply thì truyền vào parent_comment_id
+            } else {
+                ps.setNull(4, java.sql.Types.INTEGER);  // Nếu là comment gốc, set NULL
+            }
+            int rowsInserted = ps.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Comment> getCommentsByTourId(String tourId) {
+        List<Comment> comments = new ArrayList<>();
+        String sql = "SELECT c.comment_id, c.parent_comment_id, u.first_Name, u.last_Name, c.comment_text, c.created_at "
+                + "FROM Comment c JOIN [User] u ON c.user_id = u.user_Id "
+                + "WHERE c.tour_id = ? "
+                + "ORDER BY COALESCE(c.parent_comment_id, c.comment_id), c.created_at";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tourId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Comment comment = new Comment();
+                    comment.setCommentId(rs.getInt("comment_id"));
+
+                    // Lấy parent_comment_id và kiểm tra NULL
+                    int parentCommentId = rs.getInt("parent_comment_id");
+                    if (rs.wasNull()) {
+                        comment.setParentCommentId(null); // Nếu là NULL thì gán null
+                    } else {
+                        comment.setParentCommentId(parentCommentId); // Ngược lại thì gán giá trị bình thường
+                    }
+
+                    comment.setFirstName(rs.getString("first_Name"));
+                    comment.setLastName(rs.getString("last_Name"));
+                    comment.setCommentText(rs.getString("comment_text"));
+                    comment.setCreatedAt(rs.getTimestamp("created_at"));
+                    comments.add(comment);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return comments;
+    }
+
 }

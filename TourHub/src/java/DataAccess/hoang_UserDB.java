@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.BookingDetails;
+import model.Discount;
+import model.Review;
 import model.Tour;
 
 /**
@@ -88,15 +90,17 @@ public class hoang_UserDB implements DatabaseInfo {
         return bookingCount;
     }
 
-    public List<BookingDetails> getPendingBookingDetails() {
+    public List<BookingDetails> getBookingDetails(int companyId) {
         String query
                 = "SELECT b.book_Id, t.tour_Name, "
                 + "CONCAT(u.first_Name, ' ', u.last_Name) AS cus_Name, "
-                + "b.slot_Order, b.book_Status, b.total_Cost "
+                + "b.slot_Order, b.book_Status, b.total_Cost, "
+                + "b.book_Date " // Ensure this is the correct column name for the booking date
                 + "FROM Booking b "
                 + "JOIN Customer c ON b.cus_Id = c.cus_Id "
                 + "JOIN [User] u ON c.user_Id = u.user_Id "
-                + "JOIN Tour t ON b.tour_Id = t.tour_Id WHERE b.book_Status = 'Pending'";
+                + "JOIN Tour t ON b.tour_Id = t.tour_Id "
+                + "WHERE company_Id = ?";
 
         // Initialize an empty list to hold the booking details
         List<BookingDetails> bookingDetailsList = new ArrayList<>();
@@ -104,7 +108,7 @@ public class hoang_UserDB implements DatabaseInfo {
         try {
             // Try-with-resources to manage the connection and statement
             try (Connection con = getConnect(); PreparedStatement statement = con.prepareStatement(query)) {
-
+                statement.setInt(1, companyId);
                 // Execute the query and get the result set
                 try (ResultSet resultSet = statement.executeQuery()) {
                     // Iterate through the result set
@@ -116,8 +120,10 @@ public class hoang_UserDB implements DatabaseInfo {
                         int slotOrder = resultSet.getInt("slot_Order");
                         String bookStatus = resultSet.getString("book_Status");
                         double totalCost = resultSet.getDouble("total_Cost");
-                        // Create a new BookingDetail object and add it to the list
-                        BookingDetails bookingDetail = new BookingDetails(bookId, tourName, customerName, slotOrder, bookStatus, totalCost);
+                        Date bookedDay = resultSet.getDate("book_Date");  // Ensure you're using the correct column
+
+                        // Create a new BookingDetail object and add it to the list                        
+                        BookingDetails bookingDetail = new BookingDetails(bookId, tourName, customerName, slotOrder, bookStatus, totalCost, bookedDay);
                         bookingDetailsList.add(bookingDetail);
                     }
                 }
@@ -131,8 +137,8 @@ public class hoang_UserDB implements DatabaseInfo {
         }
         return bookingDetailsList;
     }
-    //With day 
 
+    //With day 
     public int getTotalBookingAMonthByDate(int companyId, java.util.Date date) {
         int bookingCount = 0;
         String query = "SELECT COUNT(*) AS booking_count "
@@ -504,9 +510,112 @@ public class hoang_UserDB implements DatabaseInfo {
         return tours;
     }
 
+    public void updateTourImages(String tourId, List<String> updatedImages) throws SQLException {
+        // Convert the list of images into a comma-separated string
+        String updatedImageString = String.join(";", updatedImages);
+
+        // SQL update query
+        String sql = "UPDATE Tour SET tour_Img = ? WHERE tour_Id = ?";
+
+        try (PreparedStatement stmt = getConnect().prepareStatement(sql)) {
+            // Set the parameters
+            stmt.setString(1, updatedImageString); // Set the updated image string
+            stmt.setString(2, tourId); // Set the tour ID
+
+            // Execute the update
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Optionally rethrow the exception
+        }
+    }
+
+    //DISCOUNT
+    public List<Discount> getAllDiscounts() {
+        List<Discount> discounts = new ArrayList<>();
+
+        // SQL query to select all records from the Discount table
+        String sql = "SELECT * FROM [Discount]";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            // Process the result set
+            while (rs.next()) {
+                // Fetch data from the result set
+                int discountId = rs.getInt("discount_Id");
+                String code = rs.getString("code");
+                int quantity = rs.getInt("quantity");
+                double percentDiscount = rs.getDouble("percent_Discount");
+                Date startDay = rs.getDate("start_Day");
+                Date endDay = rs.getDate("end_Day");
+                String require = rs.getString("require");
+                String tourId = rs.getString("tour_Id");
+                String description = rs.getString("description");
+
+                // Create a Discount object and add it to the list
+                Discount discount = new Discount(discountId, code, quantity, percentDiscount, startDay, endDay, require, tourId, description);
+                discounts.add(discount);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return discounts;
+    }
+
+    //REVIEW
+    public List<Review> getTop5ReviewsByLikes() {
+        List<Review> reviews = new ArrayList<>();
+        String sql = "SELECT TOP 5 r.review_Id, r.comment, r.rating_Star, r.user_Id, r.tour_Id, r.likes, u.first_Name, u.last_Name "
+                + "FROM Review r "
+                + "JOIN [User] u ON r.user_Id = u.user_Id "
+                + "ORDER BY r.likes DESC";
+
+        try (Connection conn = getConnect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Review review = new Review();
+                    review.setReview_Id(rs.getInt("review_Id"));
+                    review.setComment(rs.getString("comment"));
+                    review.setRating_Star(rs.getInt("rating_Star"));
+                    review.setUser_Id(rs.getInt("user_Id"));
+                    review.setTour_Id(rs.getString("tour_Id"));
+                    review.setLikeCount(rs.getInt("likes")); // Set the like_Count field
+                    review.setFirst_Name(rs.getString("first_Name"));
+                    review.setLast_Name(rs.getString("last_Name"));
+                    reviews.add(review);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reviews;
+    }
+
+    //COMPANY
+    public BigDecimal getBalanceByCompanyId(int companyId) {
+        String sql = "SELECT balance FROM Company WHERE company_Id = ?";
+        BigDecimal balance = BigDecimal.ZERO;
+        try (Connection conn = getConnect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, companyId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    balance = rs.getBigDecimal("balance");
+                    System.out.println("Balance for Company ID " + companyId + ": " + balance);
+                } else {
+                    System.out.println("No company found with ID: " + companyId);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return balance;
+    }
+
     public static void main(String[] args) {
-        List<Tour> tours = new hoang_UserDB().getTourFromQuery("Hà Nội", 2);
-        for (Tour book : tours) {
+        List<Discount> tours = new hoang_UserDB().getAllDiscounts();
+        for (Discount book : tours) {
             System.out.println(book.toString());
         }
     }
