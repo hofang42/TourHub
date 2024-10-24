@@ -218,29 +218,34 @@
                                     <!-- End Incomes  -->
                                 </div>
                                 <!-- End Insight -->
-                                <!-- Start chart -->
-                                <div class="charts-container">
-                                    <div class="chart-container">
-                                        <div class="left-chart">
-                                            <canvas id="myChart"></canvas>
-                                            <small class="chart-label">Monthly Tour Booked</small>
-                                        </div>
-                                        <div class="left-chart">
-                                            <canvas id="multiLineChart"></canvas>
-                                            <small class="chart-label">Yearly Profit</small>
-                                        </div>
-
-                                        <div class="right-chart">
-                                            <div>
-                                                <canvas id="circleChart"  width="500" height="500"></canvas>
-                                                <small class="chart-label">Hot Destination</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
                             </c:otherwise>
                         </c:choose>
+                    </div>
+                </div>
+
+                <div class="table-data">
+                    <div class="order">
+                        <!-- Start chart -->
+                        <div class="charts-container">
+                            <div class="chart-container">
+                                <div class="left-chart">
+                                    <canvas id="myChart"></canvas>
+                                    <small class="chart-label">Monthly Tour Booked</small>
+                                </div>
+                                <div class="left-chart">
+                                    <canvas id="multiLineChart"></canvas>
+                                    <small class="chart-label">Yearly Profit</small>
+                                </div>
+
+                                <div class="right-chart">
+                                    <div>
+                                        <canvas id="circleChart"  width="500" height="500"></canvas>
+                                        <small class="chart-label">Hot Destination</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
