@@ -293,7 +293,7 @@ public class ThienDB implements DatabaseInfo {
     }
 
     public void approveTour(String tourId) throws Exception {
-        String sql = "UPDATE Tour SET tour_Status = 'Approved' WHERE tour_Id = ?";
+        String sql = "UPDATE Tour SET tour_Status = 'Active' WHERE tour_Id = ?";
         try (Connection conn = getConnect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, tourId);
             pstmt.executeUpdate();
