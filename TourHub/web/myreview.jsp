@@ -69,7 +69,7 @@
                     </a>
                 </li>
                 <li class="active">
-                    <a href="myreviews.jsp">
+                    <a href="SubmitReview">
                         <i class='bx bxs-star'></i>
                         <span class="text">Review Tours</span>
                     </a>
@@ -116,7 +116,7 @@
             <div class="container mt-3">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a class="nav-link" href="reviewtour.jsp">Review Tours</a>
+                        <a class="nav-link" href="SubmitReview">Review Tours</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="myreview.jsp">My Reviews</a>

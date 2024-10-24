@@ -13,14 +13,67 @@
         <link rel="stylesheet" href="assests/css/style_profile.css">
         <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assests/css/review.css">
-        <link rel="stylesheet" href="assests/css/style_profile.css">      
+
 
         <title>Tour Reviews</title>
     </head>
     <body>
         <!-- SIDEBAR -->
-        <%@include file="includes/user-sidebar.jsp" %>
+        <section id="sidebar">
+            <a href="index.jsp" class="brand">
+                <i class='bx bxs-smile'></i>
+                <span class="text">TourHub</span>
+            </a>
+            <ul class="side-menu top">
+                <li>
+                    <a href="user-profile.jsp">
+                        <i class='bx bxs-dashboard'></i>
+                        <span class="text">User Information</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="user-booking.jsp">
+                        <i class='bx bxs-shopping-bag-alt'></i>
+                        <span class="text">My Booking</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="user-chat.jsp">
+                        <i class='bx bxs-message-dots'></i>
+                        <span class="text">Message</span>
+                    </a>
+                </li>
+                <c:if test="${sessionScope.currentUser.role == 'Provider'}">
+                    <li>
+                        <a href="discount">
+                            <i class='bx bxs-discount'></i>
+                            <span class="text">Manage Discounts</span>
+                        </a>
+                    </li>
+                </c:if>
+
+                <li class="active">
+                    <a href="SubmitReview">
+                        <i class='bx bxs-star'></i>
+                        <span class="text">Review Tours</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="side-menu">
+                <li>
+                    <a href="#">
+                        <i class='bx bxs-cog'></i>
+                        <span class="text">Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="logout" class="logout">
+                        <i class='bx bxs-log-out-circle'></i>
+                        <span class="text">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
         <!-- SIDEBAR -->
 
         <!-- CONTENT -->
@@ -50,7 +103,7 @@
             <div class="container mt-3">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a class="nav-link active" href="reviewtour.jsp">Review Tours</a>
+                        <a class="nav-link active" href="SubmitReview">Review Tours</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="myreview.jsp">My Reviews</a>

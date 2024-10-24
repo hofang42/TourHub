@@ -154,7 +154,7 @@ public class ReviewDB implements DatabaseInfo {
             e.printStackTrace();
         }
 
-        return imageUrl != null ? imageUrl : "assests/images/default-tour.jpg";
+            return imageUrl != null ? imageUrl : "assests/images/1.jpg";
     }
 
     public List<Review> getReviewsByTourId(String tourId) {

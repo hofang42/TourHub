@@ -77,6 +77,7 @@ public class SubmitReviewServlet extends HttpServlet {
         // Fetch related tour data for each booking
         for (Booking booking : bookedTours) {
             Tour tour = reviewDB.getTourById(booking.getTour_Id());
+
             if (tour != null) {
                 booking.setTour_Name(tour.getTour_Name());
                 booking.setTour_Img(tour.getTour_Img());
