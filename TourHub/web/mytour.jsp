@@ -206,7 +206,7 @@
 
 
                         </div>
-                        <div>Or you can add a tour by downloading and filling out this <a href="./assests/tour-import-template/addtour.csv" download="addtour.csv">form</a></div>
+                        <div>Or you can add tours by downloading and filling out this <a href="./assests/tour-import-template/addtour.csv" download="addtour.csv">form</a></div>
                         <!-- Error Message Display -->
                         <c:if test="${not empty errorMessage}">
                             <div class="alert alert-danger">

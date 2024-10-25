@@ -63,8 +63,17 @@ public class ImportTourServlet extends HttpServlet {
                 // Handle file upload
                 Part filePart = request.getPart("file");
                 if (filePart != null && filePart.getSize() > 0) {
-                    File uploadFolder = getFolderUpload(request);
                     String fileName = filePart.getSubmittedFileName();
+
+                    // Check if the file is a .csv file
+                    if (!fileName.endsWith(".csv")) {
+                        message = "Invalid file type. Please upload a .csv file.";
+                        request.setAttribute("errorMessage", message);
+                        request.getRequestDispatcher("my-tour").forward(request, response);
+                        return;  // Stop further execution if the file is not a .csv file
+                    }
+
+                    File uploadFolder = getFolderUpload(request);
                     File file = new File(uploadFolder, fileName);
 
                     try (InputStream fileContent = filePart.getInputStream(); FileOutputStream outputStream = new FileOutputStream(file)) {
@@ -73,7 +82,7 @@ public class ImportTourServlet extends HttpServlet {
                         while ((read = fileContent.read(bytes)) != -1) {
                             outputStream.write(bytes, 0, read);
                         }
-                        message = "File uploaded successfully!";
+                        message = "File uploaded and tour added successfully!";
                     } catch (IOException e) {
                         message = "Failed to read the file.";
                         e.printStackTrace();
@@ -81,19 +90,18 @@ public class ImportTourServlet extends HttpServlet {
                 } else {
                     message = "No file selected for upload.";
                 }
+
                 request.setAttribute("errorMessage", message);
                 request.getRequestDispatcher("import-tour?action=save-to-db").forward(request, response);
-                break;
+
             case "save-to-db":
                 String msg;
                 try {
                     saveTourImportCSV(request, response);
-                    msg = "Tours added successfully!";
                 } catch (SQLException | IOException ex) {
                     msg = "Failed to add tours.";
                     ex.printStackTrace();
                 }
-                request.setAttribute("errorMessage", msg);
                 request.getRequestDispatcher("my-tour").forward(request, response);
             default:
                 response.getWriter().println("Invalid action specified.");
