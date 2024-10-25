@@ -160,7 +160,7 @@
 
                 <div class="table-data">
                     <div class="order">
-                        <h3 class="head">Add Tour</h3>
+                        <h3 class="head">Add Tour</h3>                   
                         <form action="provider-management?action=add-tour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
                             <div class="form-group required">
                                 <label for="tour_Name">Tour Name: <span style="color: red;">*</span></label>
@@ -328,34 +328,6 @@
                 document.getElementById("start_Date").setAttribute("min", today); // Set the min attribute to today's date
             });
 
-            function validateDates() {
-                const startDateInput = document.getElementById('start_Date');
-                const endDateInput = document.getElementById('end_Date');
-                const startDateError = document.getElementById('startDateError');
-                const endDateError = document.getElementById('endDateError');
-
-                const today = new Date().setHours(0, 0, 0, 0); // Today's date without time
-
-                // Convert input values to date objects
-                const startDate = new Date(startDateInput.value);
-                const endDate = new Date(endDateInput.value);
-
-                // Validate start date
-                if (startDateInput.value && startDate < today) {
-                    startDateError.style.display = 'block';
-                    startDateInput.value = ''; // Clear invalid date
-                } else {
-                    startDateError.style.display = 'none';
-                }
-
-                // Validate end date
-                if (endDateInput.value && endDate < startDate) {
-                    endDateError.style.display = 'block';
-                    endDateInput.value = ''; // Clear invalid date
-                } else {
-                    endDateError.style.display = 'none';
-                }
-            }
 
         </script>
 

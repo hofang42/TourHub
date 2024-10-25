@@ -107,7 +107,7 @@ public class ProviderChartServlet extends HttpServlet {
 
         // Fetch monthly bookings for the company
         hoang_UserDB bookDB = new hoang_UserDB();
-        Map<Integer, Integer> monthlyBookings = bookDB.getBookingMonthly(companyId);
+        Map<Integer, Integer> monthlyBookings = bookDB.getBookingMonthly(companyId, year);
 
         // Fetch monthly profits for the selected year
         double[] monthlyProfitsThisYear = bookDB.getMonthlyProfitByYear(companyId, year);
@@ -202,20 +202,4 @@ public class ProviderChartServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public static void main(String[] args) {
-        // Replace with appropriate company ID and date for testing
-        int companyId = 2; // Example company ID
-
-        // Create an instance of BookingDB
-        hoang_UserDB bookingDB = new hoang_UserDB();
-
-        // Call the method to get monthly bookings
-        Map<Integer, Integer> monthlyBookings = bookingDB.getBookingMonthly(companyId);
-
-        // Print the results
-        System.out.println("Monthly Bookings for Company ID: " + companyId);
-        for (Map.Entry<Integer, Integer> entry : monthlyBookings.entrySet()) {
-            System.out.println("Month: " + entry.getKey() + ", Total Bookings: " + entry.getValue());
-        }
-    }
 }

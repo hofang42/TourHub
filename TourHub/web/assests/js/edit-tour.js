@@ -22,51 +22,69 @@ function reloadData() {
         }
     });
 }
+
+function validateDates() {
+    const startDateInput = document.getElementById('start_Date');
+    const endDateInput = document.getElementById('end_Date');
+    const startDateError = document.getElementById('startDateError');
+    const endDateError = document.getElementById('endDateError');
+
+    const today = new Date().setHours(0, 0, 0, 0); // Today's date without time
+
+    // Convert input values to date objects
+    const startDate = new Date(startDateInput.value);
+    const endDate = new Date(endDateInput.value);
+
+    // Validate start date
+    if (startDateInput.value && startDate < today) {
+        startDateError.style.display = 'block';
+        startDateInput.value = ''; // Clear invalid date
+    } else {
+        startDateError.style.display = 'none';
+    }
+
+    // Validate end date
+    if (endDateInput.value && endDate < startDate) {
+        endDateError.style.display = 'block';
+        endDateInput.value = ''; // Clear invalid date
+    } else {
+        endDateError.style.display = 'none';
+    }
+}
+
 function calculateDuration() {
     // Get the values of the start and end dates
     var startDate = document.getElementById("start_Date").value;
     var endDate = document.getElementById("end_Date").value;
 
-    console.log("Start Date:", startDate);
-    console.log("End Date:", endDate);
-
-    // Reset the fields by default
-    document.getElementById("day").value = 0;
-    document.getElementById("night").value = 0;
-
-    // Check if both dates are provided
     if (startDate && endDate) {
         // Parse the dates into Date objects
         var start = new Date(startDate);
         var end = new Date(endDate);
 
-        // Normalize to midnight to prevent issues with time zones
-        start.setHours(0, 0, 0, 0);
-        end.setHours(0, 0, 0, 0);
-
         // Calculate the difference in time (milliseconds)
-        var diffTime = end - start;
-
-        console.log("Time Difference (milliseconds):", diffTime);
-
-        // Check if end date is before start date
-        if (diffTime < 0) {
-            alert("End date cannot be before start date.");
-            return; // Exit the function early
-        }
+        var diffTime = end.getTime() - start.getTime();
 
         // Convert the time difference to days (1 day = 24*60*60*1000 milliseconds)
         var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        console.log("Difference in Days:", diffDays);
+        if (diffDays > 0) {
+            // Set the day value
+            document.getElementById("day").value = diffDays;
 
-        // Set the day and night values
-        document.getElementById("day").value = diffDays; // Total days
-        document.getElementById("night").value = Math.max(0, diffDays - 1); // Nights = days - 1
-        console.log(diffDays);
+            // Set the night value (days - 1)
+            document.getElementById("night").value = diffDays - 1;
+        } else {
+            // Reset the fields if the date difference is invalid (e.g., end date is before start date)
+            document.getElementById("day").value = 0;
+            document.getElementById("night").value = 0;
+        }
+    } else {
+        // Reset the fields if either date is missing
+        document.getElementById("day").value = 0;
+        document.getElementById("night").value = 0;
     }
 }
-
 
 function removeImage(tourId, imageToRemove) {
     const xhr = new XMLHttpRequest();

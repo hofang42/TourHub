@@ -170,11 +170,11 @@ public class ProviderManagementServlet extends HttpServlet {
         }
 
         String imageFilenames = fileNames.toString(); // Convert StringBuilder to String
-
+        BigDecimal price_db = BigDecimal.valueOf(price);
         // Save tour information to the database
         try {
             new TourDB().saveTourToDatabase(request, tourName, tourDescription, startDate, endDate, location,
-                    duration, price, slot, imageFilenames);
+                    duration, price_db, slot, imageFilenames);
             request.setAttribute("message", "Tour added successfully!");
         } catch (SQLException e) {
             e.printStackTrace();

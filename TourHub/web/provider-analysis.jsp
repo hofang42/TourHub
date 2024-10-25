@@ -159,7 +159,9 @@
                         <div class="head">
                             <h3>Dashboard</h3>
                             <div>
-                                <button>Export File</button>
+                                <form method="post" action="exportCsv">
+                                    <button type="submit">Export File</button>
+                                </form>
                             </div>
                         </div>
 
@@ -230,8 +232,12 @@
                         <div class="">
                             <div class="charts-container">
                                 <div class="chart-container">
+                                    <!-- Spinner for loading feedback -->
+                                    <div id="loadingSpinner" style="display: none;">
+                                        <p>Loading data...</p>
+                                    </div>
                                     <div class="left-chart">
-                                        <canvas id="myChart"></canvas>
+                                        <canvas id="myChart" ></canvas>
                                         <small class="chart-label">Monthly Tour Booked</small>
                                     </div>
                                     <div class="left-chart">
@@ -245,7 +251,7 @@
                                             <small class="chart-label">Hot Destination</small>
                                         </div>
                                     </div>
-                                </div>re
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -295,94 +301,11 @@
                                             });
                                         }
 
-                                        // Function to fetch data from the server
-                                        // JavaScript
-
-// Function to fetch hot destinations based on selected year
-                                        // JavaScript
-
-// Function to fetch hot destinations based on selected year
-                                        // JavaScript
-
-// Function to fetch hot destinations based on selected year
-                                        async function fetchHotDestinations() {
-                                            // Get the selected year from the year picker input
-                                            var year = $('#yearPicker').val(); // Fetch the selected year from the input field
-
-                                            // Check if a year is selected, if not, set it to the current year
-                                            if (!year) {
-                                                year = new Date().getFullYear(); // Use current year if no year is selected
-                                            }
-
-                                            console.log("Fetching data for year:", year); // Debugging - Log the year being fetched
-
-                                            try {
-                                                // Send the selected year as a query parameter to the servlet
-                                                const response = await fetch('/Project_SWP/charts?year=' + year);
-                                                if (!response.ok) {
-                                                    throw new Error('Network response was not ok: ' + response.statusText);
-                                                }
-
-                                                const data = await response.json();
-                                                console.log("DATAAAA", data);
-
-                                                // Extract category labels and data from the JSON response
-                                                const categoryLabels = data.categoryLabels;
-                                                const categoryData = data.categoryData;
-
-                                                // Render the pie chart with data
-                                                var hotDestinationsChart = new Chart(document.getElementById('circleChart').getContext('2d'), {
-                                                    type: 'pie',
-                                                    data: {
-                                                        labels: categoryLabels,
-                                                        datasets: [{
-                                                                label: 'Số lượng đặt tour theo vùng',
-                                                                data: categoryData,
-                                                                backgroundColor: [
-                                                                    'rgba(255, 99, 132, 0.6)',
-                                                                    'rgba(54, 162, 235, 0.6)',
-                                                                    'rgba(255, 206, 86, 0.6)',
-                                                                    'rgba(75, 192, 192, 0.6)',
-                                                                    'rgba(153, 102, 255, 0.6)',
-                                                                    'rgba(255, 159, 64, 0.6)'
-                                                                ],
-                                                                borderWidth: 1
-                                                            }]
-                                                    },
-                                                    options: {
-                                                        responsive: true,
-                                                    }
-                                                });
-                                            } catch (error) {
-                                                console.error('There has been a problem with your fetch operation:', error);
-                                            }
-                                        }
-
-// Initialize the year picker and fetch data when the page is loaded
-                                        document.addEventListener('DOMContentLoaded', function () {
-                                            $('#yearPicker').datetimepicker({
-                                                format: "YYYY", // Year selection only
-                                                viewMode: "years"  // Set picker view mode to years
-                                            });
-
-                                            // Fetch data for the current year on page load
-                                            fetchHotDestinations();
-
-                                            // Update data when the year is changed using datetimepicker event
-                                            $('#yearPicker').on('change.datetimepicker', function (e) {
-                                                // Get the new selected year from the picker
-                                                var newYear = e.date.year(); // Get the selected year from the event object
-                                                console.log("Year changed to:", newYear); // Debugging - Log the new year
-
-                                                // Update the input field with the selected year
-                                                $('#yearPicker').val(newYear);
-
-                                                // Trigger fetching of the new data
-                                                fetchHotDestinations();
-                                            });
-                                        });
+// JavaScript
 
         </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
         <!-- Include jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

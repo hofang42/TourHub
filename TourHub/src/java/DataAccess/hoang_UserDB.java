@@ -8,6 +8,7 @@ import static DataAccess.BookingDB.getConnect;
 import static DataAccess.TourDB.getConnect;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import model.BookingDetails;
 import model.Discount;
 import model.Review;
 import model.Tour;
+import utils.CSVReader;
 
 /**
  *
@@ -169,6 +171,57 @@ public class hoang_UserDB implements DatabaseInfo {
         return bookingCount;
     }
 
+    public int[] getTotalBookingMonthly(int companyId, int year) {
+        int[] bookingCounts = new int[12]; // Array to hold the total bookings for each month
+        String query = "SELECT COUNT(*) AS booking_count "
+                + "FROM Booking b "
+                + "JOIN Customer c ON b.cus_Id = c.cus_Id "
+                + "JOIN [User] u ON c.user_Id = u.user_Id "
+                + "JOIN Tour t ON b.tour_Id = t.tour_Id "
+                + "WHERE t.company_Id = ? "
+                + "AND MONTH(b.book_Date) = ? "
+                + "AND YEAR(b.book_Date) = ?";
+
+        try (Connection connection = getConnect()) {
+            for (int month = 1; month <= 12; month++) {
+                try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                    pstmt.setInt(1, companyId); // Set the company ID parameter
+                    pstmt.setInt(2, month);     // Set the month parameter
+                    pstmt.setInt(3, year);      // Set the year parameter
+
+                    // Execute the query and retrieve the result
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        if (rs.next()) {
+                            bookingCounts[month - 1] = rs.getInt("booking_count");
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace(); // Handle exceptions appropriately in production code
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle connection issues appropriately in production code
+        }
+
+        return bookingCounts; // Returns an array containing total bookings for each month
+    }
+
+    public int getTotalBookingCurrentYear(int companyId) {
+        // Get the current year dynamically
+        int currentYear = LocalDate.now().getYear();
+
+        // Get the monthly booking counts for the current year
+        int[] monthlyBookings = getTotalBookingMonthly(companyId, currentYear);
+
+        // Calculate the total number of bookings for the current year
+        int totalBookings = 0;
+        for (int bookings : monthlyBookings) {
+            totalBookings += bookings; // Sum up the bookings for each month
+        }
+
+        return totalBookings; // Return the total bookings for the current year
+    }
+
     public void acceptABooking(int bookId) {
         String sql = "UPDATE Booking SET book_Status = 'Booked' WHERE book_Status = 'Pending' AND book_Id = ?";
 
@@ -183,20 +236,20 @@ public class hoang_UserDB implements DatabaseInfo {
         }
     }
 
-    public Map<Integer, Integer> getBookingMonthly(int companyId) {
+    public Map<Integer, Integer> getBookingMonthly(int companyId, int year) {
         Map<Integer, Integer> monthlyBookings = new HashMap<>();
         String query = "SELECT MONTH(b.book_Date) AS month, COUNT(*) AS totalBookings "
                 + "FROM Booking b "
                 + "JOIN Tour t ON b.tour_Id = t.tour_Id "
                 + "WHERE t.company_Id = ? "
-                + "AND b.book_Status = 'Booked' "
-                + "AND YEAR(book_Date) = YEAR(GETDATE())" // Filter for only booked status
+                + "AND b.book_Status = 'Booked' " // Filter for only booked status
+                + "AND YEAR(book_Date) = ?"
                 + "GROUP BY MONTH(b.book_Date)"
                 + "ORDER BY MONTH(b.book_Date)";
 
         try (Connection connection = getConnect(); PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, companyId); // Set the company ID parameter
-
+            pstmt.setInt(2, year);
             // Execute the query and retrieve the result
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -251,6 +304,22 @@ public class hoang_UserDB implements DatabaseInfo {
         }
 
         return monthlyProfits; // Returns an array containing monthly profits
+    }
+
+    public BigDecimal getTotalProfitCurrentYear(int companyId) {
+        // Get the current year dynamically
+        int currentYear = LocalDate.now().getYear();
+
+        // Get the monthly profits for the current year
+        double[] monthlyProfits = getMonthlyProfitByYear(companyId, currentYear);
+
+        // Calculate the total profit by summing up the monthly profits
+        BigDecimal totalProfit = BigDecimal.ZERO;
+        for (double profit : monthlyProfits) {
+            totalProfit = totalProfit.add(BigDecimal.valueOf(profit));
+        }
+
+        return totalProfit; // Return the total profit as a BigDecimal
     }
 
     public List<Map<String, Object>> getHotDestination(int companyId, int year) {
@@ -612,6 +681,8 @@ public class hoang_UserDB implements DatabaseInfo {
         }
         return balance;
     }
+
+
 
     public static void main(String[] args) {
         List<Discount> tours = new hoang_UserDB().getAllDiscounts();
