@@ -54,8 +54,8 @@ public class CustomerInfoServlet extends HttpServlet {
         try {
             customerDB.saveCustomer(customer);
         } catch (SQLException e) {
-            e.printStackTrace();
-            response.sendRedirect("customerInfo.jsp"); // Redirect to error page on failure
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("customerInfo.jsp").forward(request, response);
             return;
         }
 
