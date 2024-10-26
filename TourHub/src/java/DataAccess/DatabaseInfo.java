@@ -12,3 +12,4 @@ public interface DatabaseInfo {
 //ADMIN-PC\SQLEXPRESS : TNTD
 //justduck : Duc
 //HOFANG42\\SQLHF
+//Khanh\SQLEXPRESS

@@ -4,6 +4,7 @@ package controller;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+import DataAccess.KhanhDB;
 import DataAccess.ProvinceDB;
 import DataAccess.TourDB;
 import DataAccess.UserDB;
@@ -27,6 +28,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import model.Tour;
 import model.Withdrawals;
 
@@ -134,7 +137,15 @@ public class ProviderManagementServlet extends HttpServlet {
                     Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
+            case "add-option" : {
+                addOption(request, response);
+                break;
+            }
+            case "save-option" : {
+                saveOption(request, response);
+                break;
+            }
+            
         }
     }
 
@@ -569,4 +580,86 @@ public class ProviderManagementServlet extends HttpServlet {
         return originalPath;
     }
 
+    public void addOption(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String tourId = request.getParameter("tourId");
+        int companyId = 0;
+        try {
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        } catch (SQLException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        Tour tourEdit = new TourDB().getTourFromTourID(tourId, companyId);
+        request.setAttribute("tour", tourEdit);
+        
+        getServletContext().getRequestDispatcher("/add-option.jsp").forward(request, response);
+    }
+    
+    public void saveOption(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        KhanhDB khanhDB = new KhanhDB();
+
+        // Retrieve parameters from request
+        String tourId = request.getParameter("tourId");
+        String optionName = request.getParameter("option_Name");
+        String optionDescription = request.getParameter("option_Description");
+        String[] daysOfWeek = request.getParameterValues("dayOfWeek");
+        String startRepeatDate = request.getParameter("start_Repeat_Date");
+        String endRepeatDate = request.getParameter("end_Repeat_Date");
+        String slot = request.getParameter("option_Slot");
+        String[] peopleTypes = request.getParameterValues("people_Type[]");
+        String[] peopleDescriptions = request.getParameterValues("people_Description[]");
+        String[] peopleMinQtys = request.getParameterValues("people_MinQty[]");
+        String[] peopleMaxQtys = request.getParameterValues("people_MaxQty[]");
+        String[] peoplePrices = request.getParameterValues("people_Price[]");
+
+        // Validation: Check if all required fields are populated
+        if (tourId == null || optionName == null || optionDescription == null || 
+            daysOfWeek == null || startRepeatDate == null || endRepeatDate == null || 
+            slot == null || peopleTypes == null || peopleDescriptions == null || 
+            peopleMinQtys == null || peopleMaxQtys == null || peoplePrices == null) {
+
+            request.setAttribute("message", "All fields must be filled out.");
+            request.getRequestDispatcher("provider-management?action=add-option&tourId=" + tourId).forward(request, response);
+            return;
+        }
+
+        int optionSlot = Integer.parseInt(slot);
+        BigDecimal minPrice = Arrays.stream(peoplePrices)
+                                    .map(BigDecimal::new)
+                                    .min(BigDecimal::compareTo)
+                                    .orElse(BigDecimal.ZERO);
+
+        int optionId;
+        try {
+            // Insert the tour option and get the generated option ID
+            optionId = khanhDB.importTourOption(tourId, optionName, minPrice, optionDescription);
+            System.out.println("Generated Option ID: " + optionId);
+
+            // Insert each person type as a separate record in TourOptionPeople
+            for (int i = 0; i < peopleTypes.length; i++) {
+                String peopleType = peopleTypes[i];
+                String peopleDescription = peopleDescriptions[i];
+                int minCount = Integer.parseInt(peopleMinQtys[i]);
+                int maxCount = Integer.parseInt(peopleMaxQtys[i]);
+                BigDecimal price = new BigDecimal(peoplePrices[i]);
+
+                khanhDB.importTourOptionPeople(optionId, peopleType, minCount, maxCount, price, peopleDescription);
+                System.out.println("Inserted People Type: " + peopleType + " for Option ID: " + optionId);
+            }
+
+            // Insert Tour Schedules for each selected day of the week
+            for (String dayOfWeek : daysOfWeek) {
+                khanhDB.importTourSchedule(optionId, startRepeatDate, endRepeatDate, dayOfWeek, optionSlot);
+                System.out.println("Inserted schedule for " + dayOfWeek + " between " + startRepeatDate + " and " + endRepeatDate);
+            }
+
+            // Set success message after all imports are completed
+            request.setAttribute("message", "Add Tour Option Successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Error adding tour option.");
+        }
+
+        request.getRequestDispatcher("provider-management?action=add-option&tourId=" + tourId).forward(request, response);
+    }
 }
