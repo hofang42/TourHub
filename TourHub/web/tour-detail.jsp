@@ -199,8 +199,9 @@
                 scrollbar-width: thin;
                 scrollbar-color: #888 #f1f1f1;
             }
+            /* Popup Background and Content */
             .popup {
-                display: none; /* Ẩn popup ban đầu */
+                display: none;
                 position: fixed;
                 z-index: 9999;
                 left: 0;
@@ -209,7 +210,12 @@
                 height: 100%;
                 background-color: rgba(0, 0, 0, 0.7);
                 opacity: 0;
-                transition: opacity 0.4s ease; /* Hiệu ứng mở popup mượt */
+                transition: opacity 0.4s ease;
+            }
+
+            .popup.show {
+                display: block;
+                opacity: 1;
             }
 
             .popup-content {
@@ -220,23 +226,19 @@
                 width: 80%;
                 max-width: 800px;
                 border-radius: 10px;
-                max-height: 80vh; /* Giới hạn chiều cao của popup */
-                overflow-y: auto; /* Thêm thanh cuộn nếu nội dung quá dài */
+                max-height: 80vh;
+                overflow-y: auto;
                 opacity: 0;
                 transform: translateY(-50px);
-                transition: opacity 0.4s ease, transform 0.4s ease; /* Hiệu ứng popup trượt lên */
-            }
-
-            .popup.show {
-                display: block;
-                opacity: 1;
+                transition: opacity 0.4s ease, transform 0.4s ease;
             }
 
             .popup-content.show {
                 opacity: 1;
-                transform: translateY(0); /* Trượt popup vào vị trí ban đầu */
+                transform: translateY(0);
             }
 
+            /* Close Button */
             .close-btn {
                 position: absolute;
                 top: 10px;
@@ -245,7 +247,8 @@
                 cursor: pointer;
                 color: #333;
             }
-            /* CSS cho thẻ đánh giá */
+
+            /* Review Item Styling */
             .review-item {
                 display: flex;
                 flex-direction: column;
@@ -257,16 +260,17 @@
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
                 width: 100%;
                 max-width: 800px;
-                transition: all 0.3s ease;
+                transition: box-shadow 0.3s ease;
             }
 
             .review-item:hover {
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
 
+            /* Review Header: Align User and Stars to the Left */
             .review-header {
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-start; /* Align to the left */
                 align-items: center;
                 margin-bottom: 10px;
             }
@@ -275,22 +279,26 @@
                 font-weight: bold;
                 font-size: 14px;
                 color: #333;
+                margin-right: 10px; /* Space between name and stars */
             }
 
             .review-stars {
-                color: #f39c12;
+                color: #f39c12; /* Gold color for stars */
                 font-size: 16px;
                 margin-top: 5px;
+                text-align: left;
             }
 
+            /* Review Text */
             .review-text {
                 font-size: 14px;
                 line-height: 1.6;
                 color: #555;
                 margin-top: 10px;
+                text-align: left;
             }
 
-            /* Nút xem tất cả đánh giá */
+            /* Link for Viewing All Reviews */
             .view-review a {
                 font-size: 14px;
                 color: #007bff;
@@ -301,6 +309,59 @@
             .view-review a:hover {
                 color: #0056b3;
             }
+            /* Container for Highlighted Reviews */
+            .highlight-review {
+                max-width: 800px;
+            }
+
+            /* Individual Review Item */
+            .review-item {
+                border: none;
+                border-radius: 8px;
+            }
+
+            .card-title {
+                font-size: 1.1em;
+                font-weight: bold;
+            }
+
+            .card-text {
+                font-size: 0.95em;
+            }
+
+            .text-primary {
+                color: #007bff !important;
+            }
+
+            .text-secondary {
+                color: #6c757d !important;
+            }
+
+            .text-warning {
+                color: #ffc107 !important;
+            }
+
+            /* Review List Styling */
+            .review-list {
+                width: 100%; /* Full width for list items */
+            }
+
+
+            /* No Review Message */
+            .no-review {
+                font-style: italic;
+                color: #777;
+                padding: 10px;
+                text-align: left; /* Left-align message */
+            }
+
+            /* Additional Styling for Strong Labels */
+            .review-item p strong {
+                font-weight: bold;
+                color: #333;
+                margin-right: 5px;
+            }
+
 
             /* Hiệu ứng khi hiển thị popup */
             .popup {
@@ -351,7 +412,7 @@
             }
 
         </style>
-        
+
         <script>
             function toggle(popupId) {
                 var popup = document.getElementById(popupId);
@@ -641,7 +702,7 @@
                             <div class="rank">
                                 <span class="rank-type">Excellent</span>
                                 <br>
-                                <span class="number-rating">Từ ${tour.number_Of_Review} đánh giá</span>
+                                <span class="number-rating">From ${tour.number_Of_Review} Review</span>
                             </div>
                         </div>
 
@@ -688,55 +749,59 @@
 
                         <span class="view-review-content">What Travelers Say</span>
                         <a href="#" id="viewAllReviewsBtn">See All Reviews</a>
-                  
+
                     </div>
 
                     <!-- Popup để hiển thị tất cả các đánh giá -->
                     <div id="reviewPopup" class="popup">
-                        <div class="popup-content">
-                            <span class="close-btn" id="closePopup">&times;</span>
-                            <h2>Tất cả đánh giá</h2>
-
-                            <div class="all-reviews">
-                                <c:forEach var="review" items="${allReviews}">
-                                    <div class="review-item">
-                                        <div class="review-header">
-                                            <div class="review-user">${review.first_Name} ${review.last_Name}</div>
+                        <div class="popup-content card shadow-lg">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">All Reviews</h2>
+                                <span class="close-btn" id="closePopup">&times;</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="all-reviews">
+                                    <c:forEach var="review" items="${allReviews}">
+                                        <div class="card mb-3 review-item">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h5 class="card-title text-primary mb-0">${review.first_Name} ${review.last_Name}</h5>
+                                                    <div class="review-stars text-warning">
+                                                        <c:forEach var="i" begin="1" end="${review.rating_Star}">
+                                                            ★
+                                                        </c:forEach>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text text-secondary">${review.comment}</p>
+                                            </div>
                                         </div>
-
-                                        <div class="review-stars">
-                                            <c:forEach var="i" begin="1" end="${review.rating_Star}">
-                                                ★
-                                            </c:forEach>
-                                        </div>
-
-                                        <div class="review-text">${review.comment}</div>
-                                    </div>
-                                </c:forEach>
+                                    </c:forEach>
+                                </div>
                             </div>
                         </div>
                     </div>
 
 
-                    <div class="highlight-review">
+
+                    <div class="highlight-review container mt-4">
                         <div class="review-list">
                             <c:choose>
                                 <c:when test="${not empty reviews}">
                                     <c:forEach var="review" items="${reviews}">
-                                        <div class="review-item">
-                                            <p><strong>Người đánh giá:</strong> ${review.first_Name} ${review.last_Name}</p>
-                                            <p><strong>Bình luận:</strong> ${review.comment}</p>
-                                            <p><strong>Số sao:</strong> ${review.rating_Star} / 5</p>
+                                        <div class="card review-item mb-3 shadow-sm">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-primary">${review.first_Name} ${review.last_Name}</h5>
+                                                <p class="card-text text-secondary mb-2"><i class="fas fa-star text-warning"></i> ${review.rating_Star} / 5</p>
+                                                <p class="card-text"><strong>Comment:</strong> ${review.comment}</p>
+                                            </div>
                                         </div>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="no-review">Không có review nào cho tour này.</div>
+                                    <div class="alert alert-info text-center">No review for this tour.</div>
                                 </c:otherwise>
                             </c:choose>
                         </div>
-
-
                     </div>
                 </div>
             </div>
@@ -982,7 +1047,7 @@
 
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup3')"></button>
     </div>
-    
+
     <!--Popup4-->
     <div id="popup4">
         <h3>Tour Itinerary</h3>
@@ -990,12 +1055,12 @@
             <ul>
                 <c:forEach var="itinerary" items="${tourDetailDescription.tourItinerary}">
                     <li>${itinerary}</li>
-                </c:forEach>
+                    </c:forEach>
             </ul>
         </div>
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup4')"></button>
     </button>
-    </div>
+</div>
 <!--        Popup5-->
 <div id="popup5">
     <h4>Tour ghép</h4>
@@ -1100,7 +1165,7 @@
     <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup5')"></button>
 </button>
 </div>
-                
+
 
 <!--    <div id="popup5" class="popup">
         <div class="popup-content">
@@ -1108,24 +1173,24 @@
 
              Dynamic content of the popup 
             <div class="tour-option-detail-wrapper">
-                <c:forEach items="${optionDetails}" var="detail">
-                    <div>
-                        <h4>Category: 
-                            <c:choose>
-                                <c:when test="${detail.categoryId == 1}">Price Includes</c:when>
-                                <c:when test="${detail.categoryId == 2}">Meals</c:when>
-                                <c:when test="${detail.categoryId == 3}">Transport</c:when>
-                                <c:when test="${detail.categoryId == 4}">Additional Services/Items</c:when>
-                                <c:when test="${detail.categoryId == 5}">Price Excludes</c:when>
-                            </c:choose>
-                        </h4>
-                        <span>${detail.detailDescription}</span>
-                    </div>
-                </c:forEach>
-            </div>
-        </div>
-    </div>-->
-                
+<c:forEach items="${optionDetails}" var="detail">
+    <div>
+        <h4>Category: 
+    <c:choose>
+        <c:when test="${detail.categoryId == 1}">Price Includes</c:when>
+        <c:when test="${detail.categoryId == 2}">Meals</c:when>
+        <c:when test="${detail.categoryId == 3}">Transport</c:when>
+        <c:when test="${detail.categoryId == 4}">Additional Services/Items</c:when>
+        <c:when test="${detail.categoryId == 5}">Price Excludes</c:when>
+    </c:choose>
+</h4>
+<span>${detail.detailDescription}</span>
+</div>
+</c:forEach>
+</div>
+</div>
+</div>-->
+
 <div class="tour-content">
 
 

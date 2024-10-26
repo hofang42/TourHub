@@ -1,39 +1,130 @@
-package Controller;
 
 import DataAccess.ReviewDB;
-import model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.List;
+import jakarta.servlet.http.HttpSession;
 import model.Review;
+import model.Tour;
+import model.User;
 
-@WebServlet("/myreviews")
+import java.io.IOException; 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@WebServlet(name = "MyReviewsServlet", urlPatterns = {"/myreviews"})
 public class MyReviewsServlet extends HttpServlet {
 
-    private ReviewDB reviewDB = new ReviewDB();
+    private final ReviewDB reviewDB = new ReviewDB();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Retrieve the current user from the session
-        User currentUser = (User) request.getSession().getAttribute("currentUser");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("currentUser");
 
-        // Check if the user is logged in
         if (currentUser == null) {
-            // If not logged in, redirect to the login page
             response.sendRedirect("login.jsp");
-            return; // Stop further processing
+            return;
         }
 
-        // Proceed to get user reviews if the user is logged in
         List<Review> userReviews = reviewDB.getUserReviews(currentUser.getUser_Id());
-        request.setAttribute("userReviews", userReviews);
+        Map<Integer, String> tourNames = new HashMap<>();
+        Map<Integer, String> tourImages = new HashMap<>();
 
-        // Forward to the myreview.jsp page
+        for (Review review : userReviews) {
+            Tour tour = reviewDB.getTourById(review.getTour_Id());
+            if (tour != null) {
+                tourNames.put(review.getReview_Id(), tour.getTour_Name());
+                tourImages.put(review.getReview_Id(), reviewDB.getTourImageUrl(review.getTour_Id()));
+            }
+        }
+
+        request.setAttribute("userReviews", userReviews);
+        request.setAttribute("tourNames", tourNames);
+        request.setAttribute("tourImages", tourImages);
+
+        String reviewSuccess = (String) session.getAttribute("reviewSuccess");
+        if (reviewSuccess != null) {
+            request.setAttribute("reviewSuccess", reviewSuccess);
+            session.removeAttribute("reviewSuccess");
+        }
+
+        String reviewError = (String) session.getAttribute("reviewError");
+        if (reviewError != null) {
+            request.setAttribute("reviewError", reviewError);
+            session.removeAttribute("reviewError");
+        }
+
         request.getRequestDispatcher("myreview.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if ("update".equals(action)) {
+            updateReview(request, response);
+        } else if ("delete".equals(action)) {
+            deleteReview(request, response);
+        } else {
+            response.sendRedirect("myreviews");
+        }
+    }
+
+    private void updateReview(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("currentUser");
+
+        if (currentUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        int reviewId = Integer.parseInt(request.getParameter("reviewId"));
+        int ratingStar = Integer.parseInt(request.getParameter("ratingStar"));
+        String comment = request.getParameter("comment");
+
+        Review review = new Review();
+        review.setReview_Id(reviewId);
+        review.setUser_Id(currentUser.getUser_Id());
+        review.setRating_Star(ratingStar);
+        review.setComment(comment);
+
+        boolean isUpdated = reviewDB.updateReview(review);
+
+        if (isUpdated) {
+            session.setAttribute("reviewSuccess", "Review updated successfully!");
+        } else {
+            session.setAttribute("reviewError", "Failed to update review.");
+        }
+
+        response.sendRedirect("myreviews");
+    }
+
+    private void deleteReview(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+
+        String reviewIdParam = request.getParameter("reviewId");
+        if (reviewIdParam != null) {
+            int reviewId = Integer.parseInt(reviewIdParam);
+            boolean isDeleted = reviewDB.deleteReview(reviewId);
+
+            if (isDeleted) {
+                session.setAttribute("reviewSuccess", "Review deleted successfully.");
+            } else {
+                session.setAttribute("reviewError", "Failed to delete the review.");
+            }
+        } else {
+            session.setAttribute("reviewError", "Review ID is required.");
+        }
+
+        response.sendRedirect("myreviews");
     }
 }
