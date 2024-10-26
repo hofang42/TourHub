@@ -45,11 +45,11 @@ public class CompanyInfoServlet extends HttpServlet {
         try {
             companyDB.saveCompany(company);
         } catch (SQLException e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp"); // Redirect to error page on failure
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("companyInfo.jsp").forward(request, response);
             return;
         }
-        
+
         user.setTax_Code(taxCode);
         user.setBank_Information(bankInformation);
         user.setBalance(BigDecimal.valueOf(0));
