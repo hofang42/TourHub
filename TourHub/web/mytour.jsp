@@ -266,9 +266,16 @@
                                                                 <div class="event-default-caption">
                                                                     <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                       style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                         Edit
                                                                     </a>
+                                                                       
+                                                                    <a href="provider-management?action=add-option&tourId=${tour.tour_Id}" 
+                                                                       class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                        Add Option
+                                                                    </a>
+                                                                       
                                                                     <c:if test="${tour.tour_Status == 'Active'}">
                                                                         <a href="provider-management?action=set-tour-status&tourId=${tour.tour_Id}&status=Hidden" 
                                                                            class="button button-xs button-secondary button-nina tour-visit-count" 

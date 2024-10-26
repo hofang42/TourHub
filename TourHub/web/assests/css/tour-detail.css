@@ -74,6 +74,7 @@ a {
 .tour-info-container-wrapper {
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
 
 .tour-name {
@@ -96,6 +97,11 @@ a {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.tour-save-share {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .save-btn, .share-btn {
@@ -144,7 +150,7 @@ a {
 
 .tour-gallery {
     margin-top: 20px;
-    max-width: 1150px;
+    width: 75%;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(4, 6vw);
@@ -380,6 +386,7 @@ a {
 .tour-detail {
     display: flex;
     gap: 10px;
+    width: 75%;
 }
 
 .tour-detail p {
@@ -387,11 +394,11 @@ a {
 }
 
 .tour-detail-left-section {
-    max-width: 750px;
+    width: 60%;
 }
 
 .tour-detail-right-section {
-    max-width: 450px;
+    width: 40%;
 }
 
 .left-section-above {
