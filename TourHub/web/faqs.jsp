@@ -80,12 +80,12 @@
                             <ul class="list-inline">
                                 <li class="box-inline list-inline-item"><span class="icon novi-icon icon-md-smaller icon-secondary mdi mdi-phone"></span>
                                     <ul class="list-comma">
-                                        <li><a href="tel:#">1-800-1234-567</a></li>
-                                        <li><a href="tel:#">1-800-6780-345</a></li>
+                                        <li><a href="tel:#">0854719702</a></li>
+                                        <li><a href="tel:#">0828006916</a></li>
                                     </ul>
                                 </li>
-                                <li class="box-inline list-inline-item"><span class="icon novi-icon icon-md-smaller icon-secondary mdi mdi-map-marker"></span><a href="#">2130 Fulton Street, San Diego, CA 94117-1080 USA</a></li>
-                                <li class="box-inline list-inline-item"><span class="icon novi-icon icon-md-smaller icon-secondary mdi mdi-email"></span><a href="mailto:#">mail@demolink.org</a></li>
+                                <li class="box-inline list-inline-item"><span class="icon novi-icon icon-md-smaller icon-secondary mdi mdi-map-marker"></span><a href="#">FPT University Da Nang</a></li>
+                                <li class="box-inline list-inline-item"><span class="icon novi-icon icon-md-smaller icon-secondary mdi mdi-email"></span><a href="mailto:#">tourhubforlife@gmail.com</a></li>
                             </ul>
                             <ul class="list-inline">
                                 <li class="list-inline-item"><a class="icon novi-icon icon-sm-bigger icon-gray-1 mdi mdi-facebook" href="#"></a></li>
@@ -148,7 +148,7 @@
                                         <a href="manage.jsp">System Management</a>
                                         <a href="admin-chat.jsp">Chat with customer</a>
                                     </c:if>
-                                    
+
                                     <a href="logout">Logout</a>
                                 </div>
                             </div>
