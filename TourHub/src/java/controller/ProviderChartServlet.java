@@ -79,10 +79,22 @@ public class ProviderChartServlet extends HttpServlet {
             return;
         }
 
-// Retrieve the logged-in user
+        // Retrieve the logged-in user
         User user = (User) session.getAttribute("currentUser");
         int companyId;
         CompanyDB companyDB = new CompanyDB();
+
+        // Get the year parameter from the request (default to the current year if not provided)
+        String yearParam = request.getParameter("year");
+        int year;
+        System.out.println("YEARRRR" + yearParam);
+        try {
+            // Default to current year if the year parameter is missing or invalid
+            year = (yearParam != null && !yearParam.isEmpty()) ? Integer.parseInt(yearParam) : LocalDate.now().getYear();
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year parameter");
+            return;
+        }
 
         try {
             // Get company ID based on the user ID
@@ -93,23 +105,23 @@ public class ProviderChartServlet extends HttpServlet {
             return;
         }
 
-// Fetch monthly bookings for the company
+        // Fetch monthly bookings for the company
         hoang_UserDB bookDB = new hoang_UserDB();
-        Map<Integer, Integer> monthlyBookings = bookDB.getBookingMonthly(companyId);
+        Map<Integer, Integer> monthlyBookings = bookDB.getBookingMonthly(companyId, year);
 
-// Fetch monthly profits for the current year
-        double[] monthlyProfitsThisYear = bookDB.getMonthlyProfitByYear(companyId, LocalDate.now().getYear());
-        double[] monthlyProfitsLastYear = bookDB.getMonthlyProfitByYear(companyId, LocalDate.now().getYear() - 1);
+        // Fetch monthly profits for the selected year
+        double[] monthlyProfitsThisYear = bookDB.getMonthlyProfitByYear(companyId, year);
+        double[] monthlyProfitsLastYear = bookDB.getMonthlyProfitByYear(companyId, year - 1);
 
-// Set the response to JSON
+        // Set the response to JSON
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-// Build the JSON response
+        // Build the JSON response
         StringBuilder jsonResponse = new StringBuilder();
         jsonResponse.append("{");
 
-// Append monthly bookings
+        // Append monthly bookings
         jsonResponse.append("\"monthlyBookings\": [");
         if (monthlyBookings.isEmpty()) {
             jsonResponse.append("],"); // Empty array case
@@ -121,7 +133,7 @@ public class ProviderChartServlet extends HttpServlet {
         }
         jsonResponse.append("],"); // Close monthlyBookings array
 
-// Append monthly profits for this year
+        // Append monthly profits for this year
         jsonResponse.append("\"monthlyProfitsThisYear\": [");
         for (int month = 0; month < 12; month++) {
             jsonResponse.append(String.format("{\"month\": %d, \"profit\": %.2f},", month + 1, monthlyProfitsThisYear[month]));
@@ -129,7 +141,7 @@ public class ProviderChartServlet extends HttpServlet {
         jsonResponse.setLength(jsonResponse.length() - 1); // Remove the last comma
         jsonResponse.append("],"); // Close monthlyProfitsThisYear array
 
-// Append monthly profits for last year
+        // Append monthly profits for last year
         jsonResponse.append("\"monthlyProfitsLastYear\": [");
         for (int month = 0; month < 12; month++) {
             jsonResponse.append(String.format("{\"month\": %d, \"profit\": %.2f},", month + 1, monthlyProfitsLastYear[month]));
@@ -137,10 +149,10 @@ public class ProviderChartServlet extends HttpServlet {
         jsonResponse.setLength(jsonResponse.length() - 1); // Remove the last comma
         jsonResponse.append("],"); // Close monthlyProfitsLastYear array
 
-// Fetch hot destinations (assuming you have already done this)
-        List<Map<String, Object>> hotDestinations = bookDB.getHotDestination(companyId);
+        // Fetch hot destinations (assuming you have already done this)
+        List<Map<String, Object>> hotDestinations = bookDB.getHotDestination(companyId, year);
 
-// Prepare data for hot destinations
+        // Prepare data for hot destinations
         List<String> categoryLabels = new ArrayList<>();
         List<Integer> categoryData = new ArrayList<>();
 
@@ -153,18 +165,17 @@ public class ProviderChartServlet extends HttpServlet {
             }
         }
 
-// Append hot destination data to the JSON response
+        // Append hot destination data to the JSON response
         jsonResponse.append("\"categoryLabels\": ").append(new Gson().toJson(categoryLabels)).append(",");
         jsonResponse.append("\"categoryData\": ").append(new Gson().toJson(categoryData));
 
-// Close the JSON object
+        // Close the JSON object
         jsonResponse.append("}");
 
-// Send the JSON response to the client        
+        // Send the JSON response to the client        
         PrintWriter out = response.getWriter();
         out.print(jsonResponse.toString());
         out.flush();
-
     }
 
     /**
@@ -191,20 +202,4 @@ public class ProviderChartServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public static void main(String[] args) {
-        // Replace with appropriate company ID and date for testing
-        int companyId = 2; // Example company ID
-
-        // Create an instance of BookingDB
-        hoang_UserDB bookingDB = new hoang_UserDB();
-
-        // Call the method to get monthly bookings
-        Map<Integer, Integer> monthlyBookings = bookingDB.getBookingMonthly(companyId);
-
-        // Print the results
-        System.out.println("Monthly Bookings for Company ID: " + companyId);
-        for (Map.Entry<Integer, Integer> entry : monthlyBookings.entrySet()) {
-            System.out.println("Month: " + entry.getKey() + ", Total Bookings: " + entry.getValue());
-        }
-    }
 }

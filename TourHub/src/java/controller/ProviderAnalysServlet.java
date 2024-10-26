@@ -17,10 +17,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.BookingDetails;
@@ -99,6 +101,11 @@ public class ProviderAnalysServlet extends HttpServlet {
         }
 
         float totalProfitThisMonth = tourDB.getTotalProfit(companyId);
+        // Create a NumberFormat instance for VND currency
+        NumberFormat vndFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+// Format the totalProfitThisMonth to VND
+        String formattedProfit = vndFormat.format(totalProfitThisMonth);
         int visitToday = tourDB.getTodayVisit(companyId); // Assuming getVisitsByDate accepts a date
         int bookingThisMonth = bookingDB.getTotalBookingThisMonth(companyId); // Use dateInput if available
         List<BookingDetails> bookings = bookingDB.getBookingDetails(companyId); // Consider if you need to filter this by date as well
@@ -115,7 +122,7 @@ public class ProviderAnalysServlet extends HttpServlet {
         }
 
         // Set session attributes for the JSP
-        request.getSession().setAttribute("totalProfitThisMonth", totalProfitThisMonth);
+        request.getSession().setAttribute("totalProfitThisMonth", formattedProfit);
         request.getSession().setAttribute("visitToday", visitToday);
         request.getSession().setAttribute("bookingThisMonth", bookingThisMonth);
         request.getSession().setAttribute("currentUser", user);
