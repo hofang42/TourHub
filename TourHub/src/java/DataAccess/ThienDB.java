@@ -226,7 +226,7 @@ public class ThienDB implements DatabaseInfo {
     }
 
     public void unbanAccount(int userId) throws Exception {
-        String sql = "UPDATE [User] SET user_Status = 'verified' WHERE user_Id = ?";
+        String sql = "UPDATE [User] SET user_Status = 'Verified' WHERE user_Id = ?";
         try (Connection conn = getConnect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             pstmt.executeUpdate();

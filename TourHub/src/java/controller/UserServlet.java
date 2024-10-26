@@ -111,7 +111,7 @@ public class UserServlet extends HttpServlet {
             }
         }
 
-        User user = new User(userId, rawPassword, firstName, lastName, phone, email, address, "verified", role, avatar, cus_Birth, currentUser.getCreated_At());
+        User user = new User(userId, rawPassword, firstName, lastName, phone, email, address, "Verified", role, avatar, cus_Birth, currentUser.getCreated_At());
 
         ThienDB userDB = new ThienDB();
         boolean isUpdated = userDB.updateCustomer(user);
