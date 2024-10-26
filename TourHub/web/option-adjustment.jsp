@@ -211,7 +211,7 @@
             </div>
         </header>
      
-        <div class="main-container flex" id="blur">
+        <div class="main-container flex" id="blur" style="margin-bottom: 50px">
         <div class="card" style="height: fit-content;">
             <img src="assests/images/new-image/CuChi-1.jpg" class="card-img" alt="">
             <div class="tour-card-body">
@@ -236,96 +236,38 @@
                     <button>Xem thông tin vé</button>
                 </div>
             </div>
-
-
         </div>
 
         <div class="option-adjustment">
-            <div class="tour-booking">
-                <h4>Có vé trống cho bạn</h4>
 
-                <div class="date-picking">
-                    <button class="calendar" onclick="openCalendar(); toggle('blur');">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        Xem lịch
-                    </button>
+            <%
+            // Get the previous selected date from the request attribute
+                String previousSelectedDate = (String) request.getAttribute("previousSelectedDate");
 
-                    <input type="text" id="calendarInput" style="display: none;" />
-                    <div class="date-wrapper">
-                        <button class="scroll-left" onclick="scrollLeft1()">
-                            <i class="fa-solid fa-arrow-right fa-flip-horizontal"></i>
-                        </button>
+                // Check if previousSelectedDate is not null
+                if (previousSelectedDate != null) {
+                    // Parse the date from the format yyyy-MM-dd
+                    java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    java.util.Date date = inputFormat.parse(previousSelectedDate);
 
-                        <div class="date-section" id="date-section">
-                            <div class="date-container" data-index="0" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="0"></span>
-                                    <span class="date" data-formatteddate="0"></span>
-                                </div>
-                                <div class="date-container" data-index="1" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="1"></span>
-                                    <span class="date" data-formatteddate="1"></span>
-                                </div>
-                                <div class="date-container" data-index="2" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="2"></span>
-                                    <span class="date" data-formatteddate="2"></span>
-                                </div>
-                                <div class="date-container" data-index="3" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="3"></span>
-                                    <span class="date" data-formatteddate="3"></span>
-                                </div>
-                                <div class="date-container" data-index="4" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="4"></span>
-                                    <span class="date" data-formatteddate="4"></span>
-                                </div>
-                                <div class="date-container" data-index="5" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="5"></span>
-                                    <span class="date" data-formatteddate="5"></span>
-                                </div>
-                                <div class="date-container" data-index="6" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="6"></span>
-                                    <span class="date" data-formatteddate="6"></span>
-                                </div>
-                                <div class="date-container" data-index="7" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="7"></span>
-                                    <span class="date" data-formatteddate="7"></span>
-                                </div>
-                                <div class="date-container" data-index="8" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="8"></span>
-                                    <span class="date" data-formatteddate="8"></span>
-                                </div>
-                                <div class="date-container" data-index="9" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="9"></span>
-                                    <span class="date" data-formatteddate="9"></span>
-                                </div>
-                                <div class="date-container" data-index="10" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="10"></span>
-                                    <span class="date" data-formatteddate="10"></span>
-                                </div>
-                                <div class="date-container" data-index="11" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="11"></span>
-                                    <span class="date" data-formatteddate="11"></span>
-                                </div>
-                                <div class="date-container" data-index="12" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="12"></span>
-                                    <span class="date" data-formatteddate="12"></span>
-                                </div>
-                                <div class="date-container" data-index="13" onclick="selectDate(this)">
-                                    <span class="day-of-week" data-dayofweek="13"></span>
-                                    <span class="date" data-formatteddate="13"></span>
-                                </div>
-                        </div>
+                    // Create output format to display the date as Monday, 28 Oct 2024
+                    java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("EEEE, dd MMM yyyy", java.util.Locale.ENGLISH);
 
-                        <button class="scroll-right" onclick="scrollRight()">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+                    // Format the date
+                    String formattedDate = outputFormat.format(date);
 
+                    // Set the formatted date as an attribute to be used in the HTML
+                    previousSelectedDate = formattedDate;
+                }
+            %>
+
+            <!-- Display formatted date in the selected-date span -->
             <div class="selected-date-container">
-                <span class="selected-date-title">Ngày tham quan đã chọn</span>
+                <span class="selected-date-title">Selected date</span>
                 <br>
-                <span class="selected-date"></span>
+                <span class="selected-date">
+                    <%= previousSelectedDate != null ? previousSelectedDate : "No date selected" %>
+                </span>
             </div>
 
             <div class="people-adjust-container">
@@ -505,16 +447,38 @@
         }
         
         function convertDateFormat(dateString) {
-            // Split the date string to extract the day, month, and year
+            // dateString có định dạng "Monday, 28 Oct 2024"
+
+            // Tách chuỗi để lấy phần ngày, tháng và năm
             const parts = dateString.split(', ')[1].split(' ');
 
-            // Extract day, month, and year
-            const day = parts[0]; // "11"
-            const month = parts[2]; // "10"
-            const year = parts[3]; // "2024"
+            // parts[0] là ngày, parts[1] là tháng (dạng chữ), parts[2] là năm
+            const day = parts[0]; // "28"
+            const month = convertMonthToNumber(parts[1]); // "Oct"
+            const year = parts[2]; // "2024"
 
-            // Return the formatted date
+            // Trả về chuỗi định dạng day/month/year
             return day + '/' + month + '/' + year;
+        }
+
+        function convertMonthToNumber(month) {
+            // Map tháng dạng chữ sang số
+            const monthMap = {
+                'Jan': '01',
+                'Feb': '02',
+                'Mar': '03',
+                'Apr': '04',
+                'May': '05',
+                'Jun': '06',
+                'Jul': '07',
+                'Aug': '08',
+                'Sep': '09',
+                'Oct': '10',
+                'Nov': '11',
+                'Dec': '12'
+            };
+
+            return monthMap[month];
         }
     </script>
 
@@ -669,7 +633,7 @@
     </script>
 
 
-    <script>
+<!--    <script>
         function scrollRight() {
             const section = document.querySelector('.date-section');
             if (section) {
@@ -697,178 +661,165 @@
                 }
             }
         }, true);
-    </script>
+    </script>-->
 
-    <% 
-        // Get the previous selected date from the request attribute
-        String previousSelectedDate = (String) request.getAttribute("previousSelectedDate");
-
-        // If previousSelectedDate is not null, increase it by one day
-        if (previousSelectedDate != null) {
-            // Parse the date and add 1 day
-            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
-            java.util.Calendar calendar = java.util.Calendar.getInstance();
-            calendar.setTime(dateFormat.parse(previousSelectedDate));
-            calendar.add(java.util.Calendar.DATE, 1); // Add 1 day
-            previousSelectedDate = dateFormat.format(calendar.getTime()); // Format the new date
-        }
-    %>
+    
 
     <script>
-        // Convert the previousSelectedDate from the server into a JavaScript Date object
-        let previousSelectedDate = '<%= previousSelectedDate != null ? previousSelectedDate : "" %>';
-        let selectedDate = previousSelectedDate ? new Date(previousSelectedDate) : new Date(); // If no date is passed, use the current date
-        
-        console.log("Preday:" + previousSelectedDate);
-        // Function to display the date range and filter options
-        function displayDateRange(centerDate) {
-            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-            // Tìm tất cả các phần tử .date-container
-            let dateContainers = document.querySelectorAll('.date-container');
-
-            // Vòng lặp để tạo 14 ngày
-            for (let i = 0; i < 14; i++) {
-                let date = new Date(centerDate);
-                date.setDate(centerDate.getDate() + i); // Hiển thị 7 ngày trước và 7 ngày sau
-
-                let dayOfWeek = daysOfWeek[date.getDay()];
-                let formattedDate = date.getDate() + ' thg ' + (date.getMonth() + 1);
-
-                // Cập nhật nội dung của phần tử date-container
-                dateContainers[i].querySelector('[data-dayofweek]').innerText = dayOfWeek;
-                dateContainers[i].querySelector('[data-formatteddate]').innerText = formattedDate;
-
-                // Cập nhật sự kiện onclick với giá trị ngày mới
-                dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString()); // Sử dụng hàm mũi tên
-
-                // Đặt class selected cho ngày hiện tại
-                if (i === 0) {
-                    dateContainers[i].classList.add('selected');
-                } else {
-                    dateContainers[i].classList.remove('selected');
-                }
-            }
-
-            // Cập nhật biến selectedDate thành ngày đã chọn
-            selectedDate = centerDate;
-
-            console.log("Seeeelected Dateee: " + selectedDate);
-
-            filterTourOptions(selectedDate);
-        }
-
-
-        const daysMapping = {
-            'Sunday': 0,
-            'Monday': 1,
-            'Tuesday': 2,
-            'Wednesday': 3,
-            'Thursday': 4,
-            'Friday': 5,
-            'Saturday': 6
-        };
-
-
-        function filterTourOptions(selectedDate) {
-            const dayOfWeek = selectedDate.getDay(); // Lấy số ngày trong tuần từ selectedDate
-            console.log("Selected day of week:", dayOfWeek); // Kiểm tra giá trị ngày đã chọn
-
-            const tourOptions = [...document.querySelectorAll('.tour-option')];
-
-            tourOptions.forEach(option => {
-                const refundSection = option.querySelector('.refund-section').innerText;
-                console.log("Refund section text:", refundSection); // In ra nội dung refund-section
-                const optionDayOfWeek = daysMapping[refundSection]; // Sử dụng ánh xạ để lấy số
-
-                console.log("Option day of week:", optionDayOfWeek); // Kiểm tra giá trị dayOfWeek trong mỗi option
-
-                // Lấy tour_Date từ option
-                const tourDateStr = option.getAttribute('data-tour-date'); // Giả sử bạn lưu trữ tour_Date trong thuộc tính data
-                const tourDate = new Date(tourDateStr); // Chuyển đổi chuỗi ngày thành đối tượng Date
-
-                // Kiểm tra nếu ngày đã chọn và tour_Date cùng ngày
-                if (optionDayOfWeek === dayOfWeek && selectedDate.toDateString() === tourDate.toDateString()) {
-                    option.style.display = 'flex'; // Hiển thị tourOption
-                } else {
-                    option.style.display = 'none'; // Ẩn tourOption
-                }
-            });
-        }
-
-        // Biến lưu thứ trong tuần
-        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-        // Hàm để định dạng ngày theo yêu cầu
-        function formatDateToDisplay(date) {
-            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            let dayOfWeek = daysOfWeek[date.getDay()];
-            let formattedDate = dayOfWeek + ', ' + date.getDate() + ' thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
-            return formattedDate;
-        }
-
-        // Cập nhật hàm selectDate
-        function selectDate(element, dateStr) {
-            console.log("Date string selected:", dateStr);
-
-            // Xóa class 'selected' khỏi tất cả các ngày
-            let allDates = document.querySelectorAll('.date-container');
-            allDates.forEach(date => date.classList.remove('selected'));
-
-            // Thêm class 'selected' vào phần tử được nhấp vào
-            element.classList.add('selected');
-
-            // Cập nhật ngày đã chọn
-            selectedDate = new Date(dateStr);
-            console.log("Updated selectedDate:", selectedDate);
-
-            // Hiển thị ngày đã chọn trong phần tử .selected-date với định dạng mong muốn
-            let selectedDateElement = document.querySelector('.selected-date');
-            selectedDateElement.innerText = formatDateToDisplay(selectedDate); // Sử dụng hàm formatDateToDisplay
-
-            filterTourOptions(selectedDate);
-        }
-
-        // Function để mở lịch và đặt ngày mặc định
-        function openCalendar() {
-            flatpickr("#calendarInput", {
-                dateFormat: "Y-m-d",
-                defaultDate: new Date(),
-                minDate: "today",
-                onChange: function (selectedDates, dateStr, instance) {
-                    if (selectedDates.length > 0) {
-                        selectedDate = new Date(selectedDates[0]);
-                        
-                        // Hiển thị ngày đã chọn trong phần tử .selected-date khi chọn từ popup lịch
-                        let selectedDateElement = document.querySelector('.selected-date');
-                        selectedDateElement.innerText = formatDateToDisplay(selectedDate); // Định dạng theo yêu cầu
-                        
-                        displayDateRange(selectedDate);
-                    }
-                },
-                onClose: function () {
-                    toggle('calendar');
-                }
-            }).open();
-        }
-
-        // Display the date range on page load
-        window.onload = function () {
-            displayDateRange(selectedDate);
-
-            // Display the selected date in the desired format
-            let selectedDateElement = document.querySelector('.selected-date');
-            selectedDateElement.innerText = formatDateToDisplay(selectedDate);
-        };
-    </script>
-
+//        // Convert the previousSelectedDate from the server into a JavaScript Date object
+//        let previousSelectedDate = '<%= previousSelectedDate != null ? previousSelectedDate : "" %>';
+//        let selectedDate = previousSelectedDate ? new Date(previousSelectedDate) : new Date(); // If no date is passed, use the current date
+//        
+//        console.log("Preday:" + previousSelectedDate);
+//        // Function to display the date range and filter options
+//        function displayDateRange(centerDate) {
+//            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+//
+//            // Tìm tất cả các phần tử .date-container
+//            let dateContainers = document.querySelectorAll('.date-container');
+//
+//            // Vòng lặp để tạo 14 ngày
+//            for (let i = 0; i < 14; i++) {
+//                let date = new Date(centerDate);
+//                date.setDate(centerDate.getDate() + i); // Hiển thị 7 ngày trước và 7 ngày sau
+//
+//                let dayOfWeek = daysOfWeek[date.getDay()];
+//                let formattedDate = date.getDate() + ' thg ' + (date.getMonth() + 1);
+//
+//                // Cập nhật nội dung của phần tử date-container
+//                dateContainers[i].querySelector('[data-dayofweek]').innerText = dayOfWeek;
+//                dateContainers[i].querySelector('[data-formatteddate]').innerText = formattedDate;
+//
+//                // Cập nhật sự kiện onclick với giá trị ngày mới
+//                dateContainers[i].onclick = () => selectDate(dateContainers[i], date.toISOString()); // Sử dụng hàm mũi tên
+//
+//                // Đặt class selected cho ngày hiện tại
+//                if (i === 0) {
+//                    dateContainers[i].classList.add('selected');
+//                } else {
+//                    dateContainers[i].classList.remove('selected');
+//                }
+//            }
+//
+//            // Cập nhật biến selectedDate thành ngày đã chọn
+//            selectedDate = centerDate;
+//
+//            console.log("Seeeelected Dateee: " + selectedDate);
+//
+//            filterTourOptions(selectedDate);
+//        }
+//
+//
+//        const daysMapping = {
+//            'Sunday': 0,
+//            'Monday': 1,
+//            'Tuesday': 2,
+//            'Wednesday': 3,
+//            'Thursday': 4,
+//            'Friday': 5,
+//            'Saturday': 6
+//        };
+//
+//
+//        function filterTourOptions(selectedDate) {
+//            const dayOfWeek = selectedDate.getDay(); // Lấy số ngày trong tuần từ selectedDate
+//            console.log("Selected day of week:", dayOfWeek); // Kiểm tra giá trị ngày đã chọn
+//
+//            const tourOptions = [...document.querySelectorAll('.tour-option')];
+//
+//            tourOptions.forEach(option => {
+//                const refundSection = option.querySelector('.refund-section').innerText;
+//                console.log("Refund section text:", refundSection); // In ra nội dung refund-section
+//                const optionDayOfWeek = daysMapping[refundSection]; // Sử dụng ánh xạ để lấy số
+//
+//                console.log("Option day of week:", optionDayOfWeek); // Kiểm tra giá trị dayOfWeek trong mỗi option
+//
+//                // Lấy tour_Date từ option
+//                const tourDateStr = option.getAttribute('data-tour-date'); // Giả sử bạn lưu trữ tour_Date trong thuộc tính data
+//                const tourDate = new Date(tourDateStr); // Chuyển đổi chuỗi ngày thành đối tượng Date
+//
+//                // Kiểm tra nếu ngày đã chọn và tour_Date cùng ngày
+//                if (optionDayOfWeek === dayOfWeek && selectedDate.toDateString() === tourDate.toDateString()) {
+//                    option.style.display = 'flex'; // Hiển thị tourOption
+//                } else {
+//                    option.style.display = 'none'; // Ẩn tourOption
+//                }
+//            });
+//        }
+//
+//        // Biến lưu thứ trong tuần
+//        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+//
+//        // Hàm để định dạng ngày theo yêu cầu
+//        function formatDateToDisplay(date) {
+//            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+//            let dayOfWeek = daysOfWeek[date.getDay()];
+//            let formattedDate = dayOfWeek + ', ' + date.getDate() + ' thg ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
+//            return formattedDate;
+//        }
+//
+//        // Cập nhật hàm selectDate
+//        function selectDate(element, dateStr) {
+//            console.log("Date string selected:", dateStr);
+//
+//            // Xóa class 'selected' khỏi tất cả các ngày
+//            let allDates = document.querySelectorAll('.date-container');
+//            allDates.forEach(date => date.classList.remove('selected'));
+//
+//            // Thêm class 'selected' vào phần tử được nhấp vào
+//            element.classList.add('selected');
+//
+//            // Cập nhật ngày đã chọn
+//            selectedDate = new Date(dateStr);
+//            console.log("Updated selectedDate:", selectedDate);
+//
+//            // Hiển thị ngày đã chọn trong phần tử .selected-date với định dạng mong muốn
+//            let selectedDateElement = document.querySelector('.selected-date');
+//            selectedDateElement.innerText = formatDateToDisplay(selectedDate); // Sử dụng hàm formatDateToDisplay
+//
+//            filterTourOptions(selectedDate);
+//        }
+//
+//        // Function để mở lịch và đặt ngày mặc định
+//        function openCalendar() {
+//            flatpickr("#calendarInput", {
+//                dateFormat: "Y-m-d",
+//                defaultDate: new Date(),
+//                minDate: "today",
+//                onChange: function (selectedDates, dateStr, instance) {
+//                    if (selectedDates.length > 0) {
+//                        selectedDate = new Date(selectedDates[0]);
+//                        
+//                        // Hiển thị ngày đã chọn trong phần tử .selected-date khi chọn từ popup lịch
+//                        let selectedDateElement = document.querySelector('.selected-date');
+//                        selectedDateElement.innerText = formatDateToDisplay(selectedDate); // Định dạng theo yêu cầu
+//                        
+//                        displayDateRange(selectedDate);
+//                    }
+//                },
+//                onClose: function () {
+//                    toggle('calendar');
+//                }
+//            }).open();
+//        }
+//
+//        // Display the date range on page load
+//        window.onload = function () {
+//            displayDateRange(selectedDate);
+//
+//            // Display the selected date in the desired format
+//            let selectedDateElement = document.querySelector('.selected-date');
+//            selectedDateElement.innerText = formatDateToDisplay(selectedDate);
+//        };
+//    </script>
+    
     <script>
-        const options = document.querySelectorAll('.tour-option');
-        options.forEach(option => {
-            const dayOfWeek = option.getAttribute('data-dayofweek');
-            console.log(dayOfWeek); // Kiểm tra xem giá trị có được in ra không
-        });
-    </script>
+//        const options = document.querySelectorAll('.tour-option');
+//        options.forEach(option => {
+//            const dayOfWeek = option.getAttribute('data-dayofweek');
+//            console.log(dayOfWeek); // Kiểm tra xem giá trị có được in ra không
+//        });
+//    </script>
 
     <script>
         document.querySelectorAll('.nav-link').forEach(anchor => {

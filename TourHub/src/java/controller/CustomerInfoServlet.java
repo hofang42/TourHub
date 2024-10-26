@@ -29,11 +29,24 @@ public class CustomerInfoServlet extends HttpServlet {
         }
 
         // Get customer details from form
-        String birthDate = request.getParameter("birthDate");
+        String birthDateStr = request.getParameter("birthDate");
+
+        // Validate that the customer is at least 18 years old
+        java.sql.Date birthDate = java.sql.Date.valueOf(birthDateStr);
+        java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+        long ageInMillis = today.getTime() - birthDate.getTime();
+        long ageInYears = ageInMillis / (1000L * 60 * 60 * 24 * 365);
+
+        if (ageInYears < 18) {
+            // If user is less than 18, redirect to an error page or return a message
+            request.setAttribute("errorMessage", "You must be at least 18 years old.");
+            request.getRequestDispatcher("customerInfo.jsp").forward(request, response);
+            return;
+        }
 
         // Create a new Customer object
         Customer customer = new Customer();
-        customer.setCus_Birth(java.sql.Date.valueOf(birthDate));
+        customer.setCus_Birth(birthDate);
         customer.setUser_Id(user.getUser_Id());
 
         // Save customer details to the database
@@ -41,15 +54,16 @@ public class CustomerInfoServlet extends HttpServlet {
         try {
             customerDB.saveCustomer(customer);
         } catch (SQLException e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp"); // Redirect to error page on failure
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("customerInfo.jsp").forward(request, response);
             return;
         }
-        
-        user.setCus_Birth(java.sql.Date.valueOf(birthDate));
+
+        user.setCus_Birth(birthDate);
         session.setAttribute("currentUser", user);
 
         // Redirect to homepage or customer dashboard after successful update
         response.sendRedirect("home");
     }
 }
+

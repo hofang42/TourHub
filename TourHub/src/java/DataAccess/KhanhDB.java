@@ -5,6 +5,8 @@
 package DataAccess;
 
 import static DataAccess.UserDB.getConnect;
+import java.sql.Statement;
+import java.sql.CallableStatement;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -340,6 +342,80 @@ public class KhanhDB {
         // Trả về -1 nếu không có kết quả nào
         return -1;
     }
+    
+    public int importTourOption(String tourId, String optionName, BigDecimal optionPrice, String optionDescription) throws SQLException {
+
+        String sql = "INSERT INTO TourOption (tour_Id, option_Name, option_Price, option_Description) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = UserDB.getConnect(); 
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Set the parameters for the prepared statement
+            ps.setString(1, tourId);
+            ps.setString(2, optionName);
+            ps.setBigDecimal(3, optionPrice);
+            ps.setString(4, optionDescription);
+
+            // Execute the insert
+            ps.executeUpdate();
+
+            // Retrieve the generated key for option_Id
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);  // Get the generated option_Id
+                } else {
+                    throw new SQLException("Failed to retrieve option_Id.");
+                }
+            }
+        }
+    }
+    
+    public void importTourOptionPeople(int optionId, String peopleType, int minCount, int maxCount, BigDecimal price, String description) throws SQLException {
+
+        String sql = "INSERT INTO TourOptionPeople (option_Id, people_Type, min_Count, max_Count, price, description) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = UserDB.getConnect(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Set the parameters for the prepared statement
+            ps.setInt(1, optionId);
+            ps.setString(2, peopleType);
+            ps.setInt(3, minCount);
+            ps.setInt(4, maxCount);
+            ps.setBigDecimal(5, price);
+            ps.setString(6, description);
+
+            // Execute the insert
+            ps.executeUpdate();
+            System.out.println("TourOptionPeople record inserted successfully for option ID: " + optionId);
+        }
+    }
+    
+    public void importTourSchedule(int optionId, String startDate, String endDate, String dayOfWeek, int availableSlots) throws SQLException {
+
+        String sql = "{CALL InsertTourSchedule(?, ?, ?, ?, ?)}";  // SQL to call the stored procedure
+
+        // Parse dates into SQL DATE format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Date sqlStartDate = Date.valueOf(LocalDate.parse(startDate, formatter));
+        Date sqlEndDate = Date.valueOf(LocalDate.parse(endDate, formatter));
+
+        // Establish connection and prepare the CallableStatement
+        try (Connection conn = UserDB.getConnect();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            // Set input parameters
+            cs.setInt(1, optionId);
+            cs.setDate(2, sqlStartDate);
+            cs.setDate(3, sqlEndDate);
+            cs.setString(4, dayOfWeek);
+            cs.setInt(5, availableSlots);
+
+            // Execute the stored procedure
+            cs.execute();
+            System.out.println("Tour schedules inserted successfully for option ID: " + optionId);
+        }
+    }
 
     public void importBooking(String tourId, String selectedDate, String totalCost, String bookingDetail, String bookStatus,
             String optionId, int scheduleId, int cusId, int slotOrder,
@@ -509,6 +585,8 @@ public class KhanhDB {
         }
         return null; // Return null if no tour_Id is found or if the input is invalid
     }
+    
+    
 
     public static void main(String[] args) {
         KhanhDB userDB = new KhanhDB();
@@ -567,10 +645,11 @@ public class KhanhDB {
 //        } else {
 //            System.out.println("Tour not found for ID: " + tourId);
 //        }
-        List<TourOption> tourOptions = userDB.getAllTourOptionsByTourId("T0000001");
-        System.out.println(tourOptions);
+//        List<TourOption> tourOptions = userDB.getAllTourOptionsByTourId("T0000001");
+//        System.out.println(tourOptions);
         
 //        TourOption to = userDB.getTourOptionById(1);
 //        System.out.println(to.toString());
+
     }
 }
