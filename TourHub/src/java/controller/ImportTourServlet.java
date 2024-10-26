@@ -90,12 +90,13 @@ public class ImportTourServlet extends HttpServlet {
                 } else {
                     message = "No file selected for upload.";
                 }
-
                 request.setAttribute("errorMessage", message);
                 request.getRequestDispatcher("import-tour?action=save-to-db").forward(request, response);
-
+                CSVReader fileReader = new CSVReader();
+                fileReader.deleteAllFilesInDir(getFolderUpload(request).toString());
+                break;
             case "save-to-db":
-                String msg;
+                String msg = "";
                 try {
                     saveTourImportCSV(request, response);
                 } catch (SQLException | IOException ex) {
@@ -103,6 +104,7 @@ public class ImportTourServlet extends HttpServlet {
                     ex.printStackTrace();
                 }
                 request.getRequestDispatcher("my-tour").forward(request, response);
+                break;
             default:
                 response.getWriter().println("Invalid action specified.");
                 break;
@@ -122,10 +124,11 @@ public class ImportTourServlet extends HttpServlet {
                     tour.getStart_Date().toString(), tour.getEnd_Date().toString(), tour.getLocation(),
                     tour.getTotal_Time(), tour.getPrice(), tour.getSlot(), tourImg);
         }
+
     }
 
     private File getFolderUpload(HttpServletRequest request) {
-        String uploadPath = request.getServletContext().getRealPath("/assets/tour-imported");
+        String uploadPath = request.getServletContext().getRealPath("/assests/tour-imported");
         String cleanedPath = removeBuildPath(uploadPath);
 
         File folderUpload = new File(cleanedPath);

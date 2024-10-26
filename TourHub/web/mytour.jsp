@@ -195,14 +195,14 @@
 
                             </div>
 
-                            <!--                            <div class="sort-options">
-                                                            <label for="sortOrder">Sort by:</label>
-                                                            <select id="sortOrder" name="sortOrder" onchange="sortTours()">
-                                                                <option value="most-booking" ${param.sortOrder == 'most-booking' ? 'selected="selected"' : ''}>Most Booking</option>
-                                                                <option value="price-asc" ${param.sortOrder == 'price-asc' ? 'selected="selected"' : ''}>Lowest Price</option>
-                                                                <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected="selected"' : ''}>Highest Price</option>
-                                                            </select>
-                                                        </div>-->
+                            <div class="sort-options">
+                                <label for="sortOrder">Sort by:</label>
+                                <select id="sortOrder" name="sortOrder" onchange="sortTours()">
+                                    <option value="most-booking" ${param.sortOrder == 'most-booking' ? 'selected="selected"' : ''}>Most Booking</option>
+                                    <option value="price-asc" ${param.sortOrder == 'price-asc' ? 'selected="selected"' : ''}>Lowest Price</option>
+                                    <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected="selected"' : ''}>Highest Price</option>
+                                </select>
+                            </div>
 
 
                         </div>
@@ -343,18 +343,18 @@
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-                                        document.addEventListener('DOMContentLoaded', function () {
-                                            const burger = document.querySelector('.burger');
-                                            const navigation = document.querySelector('.navigation-admin');
-                                            const main = document.querySelector('.main-admin');
-                                            const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const burger = document.querySelector('.burger');
+                                        const navigation = document.querySelector('.navigation-admin');
+                                        const main = document.querySelector('.main-admin');
+                                        const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                            burger.addEventListener('click', function () {
-                                                navigation.classList.toggle('active');
-                                                main.classList.toggle('active');
-                                                profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                            });
+                                        burger.addEventListener('click', function () {
+                                            navigation.classList.toggle('active');
+                                            main.classList.toggle('active');
+                                            profileCard.classList.toggle('active'); // Toggle the active class on the profile card
                                         });
+                                    });
 
 
         </script>
@@ -380,7 +380,7 @@
             function sortTours() {
                 const sortOrder = document.getElementById('sortOrder').value;
                 // Redirect to the sorted page with the selected order
-                window.location.href = 'provider-management?action=sort&sortOrder=' + sortOrder;
+                window.location.href = 'sort?sortOrder=' + sortOrder;
             }
         </script>
 

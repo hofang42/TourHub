@@ -260,40 +260,6 @@
                     }
                 });
             }
-            function calculateDuration() {
-                // Get the values of the start and end dates
-                var startDate = document.getElementById("start_Date").value;
-                var endDate = document.getElementById("end_Date").value;
-
-                if (startDate && endDate) {
-                    // Parse the dates into Date objects
-                    var start = new Date(startDate);
-                    var end = new Date(endDate);
-
-                    // Calculate the difference in time (milliseconds)
-                    var diffTime = end.getTime() - start.getTime();
-
-                    // Convert the time difference to days (1 day = 24*60*60*1000 milliseconds)
-                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    if (diffDays > 0) {
-                        // Set the day value
-                        document.getElementById("day").value = diffDays;
-
-                        // Set the night value (days - 1)
-                        document.getElementById("night").value = diffDays - 1;
-                    } else {
-                        // Reset the fields if the date difference is invalid (e.g., end date is before start date)
-                        document.getElementById("day").value = 0;
-                        document.getElementById("night").value = 0;
-                    }
-                } else {
-                    // Reset the fields if either date is missing
-                    document.getElementById("day").value = 0;
-                    document.getElementById("night").value = 0;
-                }
-            }
-
             function validateDates() {
                 const startDateInput = document.getElementById('start_Date');
                 const endDateInput = document.getElementById('end_Date');
@@ -328,6 +294,39 @@
                 document.getElementById("start_Date").setAttribute("min", today); // Set the min attribute to today's date
             });
 
+            function calculateDuration() {
+                // Get the values of the start and end dates
+                var startDate = document.getElementById("start_Date").value;
+                var endDate = document.getElementById("end_Date").value;
+
+                if (startDate && endDate) {
+                    // Parse the dates into Date objects
+                    var start = new Date(startDate);
+                    var end = new Date(endDate);
+
+                    // Calculate the difference in time (milliseconds)
+                    var diffTime = end.getTime() - start.getTime();
+
+                    // Convert the time difference to days (1 day = 24*60*60*1000 milliseconds)
+                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays > 0) {
+                        // Set the day value
+                        document.getElementById("day").value = diffDays;
+
+                        // Set the night value (days - 1)
+                        document.getElementById("night").value = diffDays - 1;
+                    } else {
+                        // Reset the fields if the date difference is invalid (e.g., end date is before start date)
+                        document.getElementById("day").value = 0;
+                        document.getElementById("night").value = 0;
+                    }
+                } else {
+                    // Reset the fields if either date is missing
+                    document.getElementById("day").value = 0;
+                    document.getElementById("night").value = 0;
+                }
+            }
 
         </script>
 

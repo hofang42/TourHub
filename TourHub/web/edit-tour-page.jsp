@@ -280,28 +280,32 @@
                                         <div class="form-group">
                                             <label for="tour_Img">Tour Images:</label>
                                             <!-- Only display the div if tourEditImages is not empty -->
+                                            <c:if test="${empty tourEditImages}">
+                                                No Image Available
+                                            </c:if>
                                             <c:if test="${not empty tourEditImages}">
                                                 <div id="tourImagesContainer" class="tour-images-container">
                                                     <c:forEach var="image" items="${tourEditImages}">
-                                                        <figure class="tour-image-wrapper">
-                                                            <img src="./assests/images/tour-images/${image}" alt="${tour.tour_Name}" class="tour-image" />
-                                                            <div class="tour-image-caption">
-                                                                <button class="btn btn-danger" 
-                                                                        onclick="removeImage('${tour.tour_Id}', '${image}')"
-                                                                        style="font-size: 12px;
-                                                                        padding: 2px 5px;
-                                                                        line-height: 1;
-                                                                        width: 50px;">
-                                                                    Remove
-                                                                </button>
-                                                            </div>
-                                                        </figure>
+                                                        <c:if test="${not empty image}">
+                                                            <figure class="tour-image-wrapper">
+                                                                <img src="./assests/images/tour-images/${image}" alt="${tour.tour_Name}" class="tour-image" />
+                                                                <div class="tour-image-caption">
+                                                                    <button class="btn btn-danger" 
+                                                                            onclick="removeImage('${tour.tour_Id}', '${image}')"
+                                                                            style="font-size: 12px;
+                                                                            padding: 2px 5px;
+                                                                            line-height: 1;
+                                                                            width: 50px;">
+                                                                        Remove
+                                                                    </button>
+                                                                </div>
+                                                            </figure>
+                                                        </c:if>
                                                     </c:forEach>
                                                 </div>
                                             </c:if>
+
                                         </div>
-
-
                                         <button type="submit" class="btn btn-primary btn-block">Save</button>
                                     </form>
                                 </c:otherwise>
@@ -320,18 +324,18 @@
             <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
             <script>
-                                                                            document.addEventListener('DOMContentLoaded', function () {
-                                                                                const burger = document.querySelector('.burger');
-                                                                                const navigation = document.querySelector('.navigation-admin');
-                                                                                const main = document.querySelector('.main-admin');
-                                                                                const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                                                                document.addEventListener('DOMContentLoaded', function () {
+                                                                                    const burger = document.querySelector('.burger');
+                                                                                    const navigation = document.querySelector('.navigation-admin');
+                                                                                    const main = document.querySelector('.main-admin');
+                                                                                    const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                                                                burger.addEventListener('click', function () {
-                                                                                    navigation.classList.toggle('active');
-                                                                                    main.classList.toggle('active');
-                                                                                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                                                                    burger.addEventListener('click', function () {
+                                                                                        navigation.classList.toggle('active');
+                                                                                        main.classList.toggle('active');
+                                                                                        profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                                                                    });
                                                                                 });
-                                                                            });
 
 
             </script>

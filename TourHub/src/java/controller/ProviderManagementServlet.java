@@ -105,37 +105,18 @@ public class ProviderManagementServlet extends HttpServlet {
             case "search":
                 searchTour(request, response);
                 break;
-            case "save-edit-tour": {
-                try {
-                    saveEditTour(request, response);
-                } catch (ParseException ex) {
-                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            case "sort":
-                sort(request, response);
-            case "withdraw": {
-                try {
-                    requesrWithdrawMoney(request, response);
-                } catch (SQLException ex) {
-                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            case "remove-image": {
-                try {
-                    removeImage(request, response);
-                } catch (SQLException ex) {
-                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            case "show-withdraw-page": {
-                try {
-                    showBalancePage(request, response);
-                } catch (SQLException ex) {
-                    Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
+            case "save-edit-tour":
+                saveEditTour(request, response);
+                break;
+            case "withdraw":
+                requesrWithdrawMoney(request, response);
+                break;
+            case "remove-image":
+                removeImage(request, response);
+                break;
+            case "show-withdraw-page":
+                showBalancePage(request, response);
+                break;
         }
     }
 
@@ -194,12 +175,19 @@ public class ProviderManagementServlet extends HttpServlet {
             Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         Tour tourEdit = new TourDB().getTourFromTourID(tourId, companyId);
+
+        System.out.println("TEST Image" + tourEdit.toString());
+        System.out.println("TEST Image" + tourEdit.getTour_Img());
+        List<String> images = tourEdit.getTour_Img(); // Assuming this is a single String with images separated by commas
+        List<String> imageList = images != null ? images : new ArrayList<>(); // Directly assign images if it's not null
+        request.setAttribute("tourEditImages", imageList);
+
         request.setAttribute("tourEdit", tourEdit);
-        request.setAttribute("tourEditImages", tourEdit.getTour_Img());
+//        request.setAttribute("tourEditImages", imageList);
         request.getRequestDispatcher("edit-tour-page.jsp").forward(request, response);
     }
 
-    private void removeImage(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+    private void removeImage(HttpServletRequest request, HttpServletResponse response) {
         // Get parameters from the request
         String tourId = request.getParameter("tourId");
         String imageToRemove = request.getParameter("imageToRemove");
@@ -249,11 +237,10 @@ public class ProviderManagementServlet extends HttpServlet {
         }
     }
 
-    private void saveEditTour(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException {
+    private void saveEditTour(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String tourId = request.getParameter("tourId");
         TourDB tourDB = new TourDB();
         Tour oldTour = tourDB.getTourFromTourID(tourId);
-
         String newTourName = request.getParameter("tour_Name");
         String newTourDescription = request.getParameter("tour_Description");
         String newStartDateStr = request.getParameter("start_Date");
@@ -272,14 +259,20 @@ public class ProviderManagementServlet extends HttpServlet {
         } catch (ParseException e) {
             e.printStackTrace();
             request.setAttribute("message", "Invalid date format. Please use yyyy-MM-dd.");
-            getServletContext().getRequestDispatcher("my-tour").forward(request, response);
+            try {
+                getServletContext().getRequestDispatcher("my-tour").forward(request, response);
+            } catch (ServletException ex) {
+                Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
             return;
         }
 
         // Default day and night values to avoid null issues
         String newDay = (dayParam != null && !dayParam.isEmpty()) ? dayParam : "0";
         String newNight = (nightParam != null && !nightParam.isEmpty()) ? nightParam : "0";
-        String newDuration = newDay + "D" + newNight + "N";
+        String newDuration = newDay + "N" + newNight + "D";
 
         // Parse price to BigDecimal
         BigDecimal newPrice = new BigDecimal(request.getParameter("price"));
@@ -287,13 +280,19 @@ public class ProviderManagementServlet extends HttpServlet {
 
         // Handle multiple file uploads for images and store them in a list
         List<String> newImageFilenames = new ArrayList<>();
-        for (Part part : request.getParts()) {
-            if (part.getName().equals("tour_Img") && part.getSize() > 0) {
-                String fileName = extractFileName(part);
-                fileName = new File(fileName).getName(); // Get the file name
-                part.write(getFolderUpload(request).getAbsolutePath() + File.separator + fileName); // Save file
-                newImageFilenames.add(fileName); // Add filename to the list
+        try {
+            for (Part part : request.getParts()) {
+                if (part.getName().equals("tour_Img") && part.getSize() > 0) {
+                    String fileName = extractFileName(part);
+                    fileName = new File(fileName).getName(); // Get the file name
+                    part.write(getFolderUpload(request).getAbsolutePath() + File.separator + fileName); // Save file
+                    newImageFilenames.add(fileName); // Add filename to the list
+                }
             }
+        } catch (IOException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ServletException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         // Compare and update only if values have changed
@@ -361,8 +360,11 @@ public class ProviderManagementServlet extends HttpServlet {
         } else {
             request.setAttribute("message", "No changes made to the tour.");
         }
-
-        getServletContext().getRequestDispatcher("/provider-management?action=edit-tour&tourId=" + tourId).forward(request, response);
+        try {
+            getServletContext().getRequestDispatcher("/provider-management?action=edit-tour&tourId=" + tourId).forward(request, response);
+        } catch (ServletException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void searchTour(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -438,7 +440,7 @@ public class ProviderManagementServlet extends HttpServlet {
         request.getRequestDispatcher("my-tour").forward(request, response);
     }
 
-    private void requesrWithdrawMoney(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+    private void requesrWithdrawMoney(HttpServletRequest request, HttpServletResponse response) {
 
         // Retrieve the selected amount from the radio buttons
         String amountParam = request.getParameter("amount");
@@ -454,12 +456,23 @@ public class ProviderManagementServlet extends HttpServlet {
         } else {
             // Handle case where no amount is provided
             request.setAttribute("message", "Please select an amount to withdraw.");
-            request.getRequestDispatcher("provider-management?action=show-withdraw-page").forward(request, response);
+            try {
+                request.getRequestDispatcher("provider-management?action=show-withdraw-page").forward(request, response);
+            } catch (ServletException ex) {
+                Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
             return;
         }
 
         BigDecimal bdWithdrawMoney = BigDecimal.valueOf(withdrawMoneyDouble);
-        int provider_Id = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        int provider_Id = 0;
+        try {
+            provider_Id = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        } catch (SQLException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         WithdrawalsDB withdrawalsDB = new WithdrawalsDB();
         String message;
 
@@ -470,28 +483,16 @@ public class ProviderManagementServlet extends HttpServlet {
         }
 
         request.setAttribute("message", message);
-        request.getRequestDispatcher("provider-management?action=show-withdraw-page").forward(request, response);
-    }
-
-    private void sort(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String sortOrder = request.getParameter("sortOrder");
-        hoang_UserDB tourDB = new hoang_UserDB();
-        int companyId = 0;
         try {
-            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
-        } catch (SQLException ex) {
+            request.getRequestDispatcher("provider-management?action=show-withdraw-page").forward(request, response);
+        } catch (ServletException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // Fetch the sorted list of tours
-        List<Tour> sortedTours = tourDB.SortProviderTour(sortOrder, companyId);
-
-        // Set the sorted tours in the request scope
-        request.getSession().setAttribute("tourEdit", sortedTours);
-        // Forward to the JSP page to display the sorted tours
-        request.getRequestDispatcher("mytour.jsp").forward(request, response);
     }
 
-    public void showBalancePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+    public void showBalancePage(HttpServletRequest request, HttpServletResponse response) {
         hoang_UserDB hoangDB = new hoang_UserDB();
         WithdrawalsDB withdrawalsDB = new WithdrawalsDB();
         int companyId = 0;
@@ -510,12 +511,23 @@ public class ProviderManagementServlet extends HttpServlet {
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         String formattedBalance = currencyFormat.format(balance);
 
-        List<Withdrawals> withdrawalses = withdrawalsDB.getWithdrawalsByProviderId(companyId);
+        List<Withdrawals> withdrawalses = null;
+        try {
+            withdrawalses = withdrawalsDB.getWithdrawalsByProviderId(companyId);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("SIZE" + withdrawalses.size());
         request.setAttribute("withdrawalses", withdrawalses);
         request.setAttribute("balance", formattedBalance);
         System.out.println("TESTTTT" + withdrawalses + formattedBalance);
-        request.getRequestDispatcher("payment.jsp").forward(request, response);
+        try {
+            request.getRequestDispatcher("payment.jsp").forward(request, response);
+        } catch (ServletException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

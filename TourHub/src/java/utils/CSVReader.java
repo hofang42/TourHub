@@ -91,10 +91,37 @@ public class CSVReader {
         // Return the latest file (first file after sorting)
         return files[0];
     }
+    // Method to delete all files in a directory
+
+    public void deleteAllFilesInDir(String dirPath) {
+        File dir = new File(dirPath);
+
+        if (!dir.exists() || !dir.isDirectory()) {
+            System.out.println("Directory does not exist or is not a directory.");
+            return;
+        }
+
+        // Get all files in the directory
+        File[] files = dir.listFiles(File::isFile);
+
+        if (files == null || files.length == 0) {
+            System.out.println("No files to delete in the directory.");
+            return;
+        }
+
+        // Delete each file
+        for (File file : files) {
+            if (file.delete()) {
+                System.out.println("Deleted file: " + file.getName());
+            } else {
+                System.out.println("Failed to delete file: " + file.getName());
+            }
+        }
+    }
 
     public static void main(String[] args) {
         CSVReader csvReader = new CSVReader();
-        String dirPath = "E:/FPTU/Major 5/SWP/project/TourHub/TourHub/web/assets/tour-imported/";
+        String dirPath = "E:/FPTU/Major 5/SWP/project/TourHub/TourHub/web/assests/tour-imported/";
 
         // Get the latest file from the specified directory
         File latestFile = csvReader.getLatestFileFromDir(dirPath);
