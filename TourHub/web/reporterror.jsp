@@ -103,7 +103,7 @@
                             <div class="rd-navbar-nav-wrap">
                                 <!-- RD Navbar Nav-->
                                 <ul class="rd-navbar-nav">
-                                    <li class="active"><a href="home">Home</a>
+                                    <li><a href="home">Home</a>
                                     </li>
                                     <li><a href="about-us.jsp">About Us</a>
                                     </li>
@@ -113,7 +113,7 @@
                                     </li>
                                     <li><a href="faqs.jsp">FAQs</a>
                                     </li>
-                                    <li><a href="reporterror.jsp">Report Error</a>
+                                    <li class="active"><a href="reporterror.jsp">Report Error</a>
                                     </li>
                                 </ul>
                             </div>
