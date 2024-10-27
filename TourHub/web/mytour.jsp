@@ -183,7 +183,7 @@
                         <!-- Add New Tour Button -->
                         <div style="display: flex; justify-content: space-between; align-items: center">
                             <div style="margin-top: 10px; display: flex; width: 100%">
-                                <form action="add-tour.jsp" method="GET">
+                                <form action="provider-management?action=show-add-tour" method="POST">
                                     <button type="submit" class="button button-primary">Add New Tour</button>
                                 </form>
                                 <form method="post" action="import-tour?action=save-import" enctype="multipart/form-data" style="margin-left: auto;" accept-charset="UTF-8">
@@ -195,7 +195,13 @@
 
                             </div>
 
-                            <div class="sort-options">
+
+
+
+                        </div>
+                        <div style="display: flex; margin-top: 20px">
+                            <div>Or you can add tours by downloading and filling out this <a href="./assests/tour-import-template/addtour.csv" download="addtour.csv">form</a></div>
+                            <div class="sort-options" style="margin-left: auto;">
                                 <label for="sortOrder">Sort by:</label>
                                 <select id="sortOrder" name="sortOrder" onchange="sortTours()">
                                     <option value="most-booking" ${param.sortOrder == 'most-booking' ? 'selected="selected"' : ''}>Most Booking</option>
@@ -203,10 +209,7 @@
                                     <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected="selected"' : ''}>Highest Price</option>
                                 </select>
                             </div>
-
-
                         </div>
-                        <div>Or you can add tours by downloading and filling out this <a href="./assests/tour-import-template/addtour.csv" download="addtour.csv">form</a></div>
                         <!-- Error Message Display -->
                         <c:if test="${not empty errorMessage}">
                             <div class="alert alert-danger">
@@ -238,6 +241,11 @@
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
                                                                        style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                         Edit
+                                                                    </a>
+                                                                    <a href="provider-management?action=add-option&tourId=${tour.tour_Id}" 
+                                                                       class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                        Add Option
                                                                     </a>
                                                                     <c:if test="${tourEdit.tour_Status == 'Active'}">
                                                                         <a href="provider-management?action=set-tour-status&tourId=${tourEdit.tour_Id}&status=Hidden"
@@ -295,13 +303,13 @@
                                                                        style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                         Edit
                                                                     </a>
-                                                                       
+
                                                                     <a href="provider-management?action=add-option&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
                                                                        style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                         Add Option
                                                                     </a>
-                                                                       
+
                                                                     <c:if test="${tour.tour_Status == 'Active'}">
                                                                         <a href="provider-management?action=set-tour-status&tourId=${tour.tour_Id}&status=Hidden" 
                                                                            class="button button-xs button-secondary button-nina tour-visit-count" 

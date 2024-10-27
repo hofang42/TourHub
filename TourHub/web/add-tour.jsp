@@ -22,7 +22,9 @@
         <link href="assests/css/customer.css" rel="stylesheet" >      
         <link href="assests/css/provider_analysis.css" rel="stylesheet"/>        
         <link rel="stylesheet" href="assests/css/bootstrap.css" />
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+        <!-- Toasify JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
         <title>Analytic</title>
         <style>
             body {
@@ -153,10 +155,10 @@
 
             <!-- MAIN -->
             <main>
-                <h3 style="<c:if test='${requestScope.message.contains("successfully")}'>color: green;</c:if>
-                    <c:if test='${requestScope.message.contains("Error")}'>color: red;</c:if>">
-                    ${requestScope.message}
-                </h3>
+<!--                <h3 style="<c:if test='${requestScope.message.contains("successfully")}'>color: green;</c:if>
+                <c:if test='${requestScope.message.contains("Error")}'>color: red;</c:if>">
+                ${requestScope.message}
+            </h3>-->
 
                 <div class="table-data">
                     <div class="order">
@@ -194,14 +196,31 @@
                                 </div>
                             </div>
 
-                            <div class="form-group required">
+                            <!--                            <div class="form-group required">
+                                                            <label for="location">Location: <span style="color: red;">*</span></label>
+                                                            <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
+                                                        </div>-->
+                            <div class="form-group">
                                 <label for="location">Location: <span style="color: red;">*</span></label>
-                                <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
+                                <select class="form-control" id="location" name="location" style="height: 40px;
+                                        padding: 8px;
+                                        font-size: 16px;" required>
+                                    <option value="">Select a province</option>
+                                    <c:set var="location" value="${location}"/> <!-- Move this line outside the forEach -->
+                                    <c:forEach var="province" items="${provinces}">
+                                        <option value="${province.province_name}" style="height: 40px;
+                                                padding: 8px;
+                                                font-size: 16px;"
+                                                <c:if test="${province.province_name == location}">selected</c:if>
+                                                >${province.province_name}</option>
+                                    </c:forEach>
+                                </select>
                             </div>
-                            <div class="form-group required">
-                                <label for="price">Price: <span style="color: red;">*</span></label>
-                                <input type="number" class="form-control" id="price" name="price" required>
-                            </div>
+
+                            <!--                            <div class="form-group required">
+                                                            <label for="price">Price: <span style="color: red;">*</span></label>
+                                                            <input type="number" class="form-control" id="price" name="price" required>
+                                                        </div>-->
                             <div class="form-group required">
                                 <label for="slot">Slot: <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control" id="slot" name="slot" required>
@@ -211,8 +230,9 @@
                                 <input type="file" class="form-control-file" id="tour_Img" name="tour_Img" multiple required>
                                 <small class="form-text text-muted">Upload image files (JPG, PNG, etc.), each not exceeding 2MB.</small>
                             </div>
-
-                            <button type="submit" class="btn btn-primary btn-block">Add Tour</button>
+                            <div class="action-container">
+                                <button type="submit" class="btn btn-primary btn-block action-link approve">Add Tour</button>
+                            </div>
                         </form>
 
                     </div>
@@ -244,92 +264,26 @@
 
         </script>
         <script>
-            function reloadData() {
-                var date = document.getElementById("date").value;
-                $.ajax({
-                    url: "/Project_SWP/provider-analys",
-                    type: "POST",
-                    data: {
-                        date: date
-                    },
-                    success: function (data) {
-                        // Assuming 'data' is a JSON object
-                        document.querySelector("#totalVisitValue").innerHTML = data.totalVisitATour || 0;
-                        document.querySelector("#visitTodayValue").innerHTML = data.visitToday || 0;
-                        document.querySelector("#bookingThisMonthValue").innerHTML = data.bookingThisMonth || 0;
-                    }
-                });
-            }
-            function validateDates() {
-                const startDateInput = document.getElementById('start_Date');
-                const endDateInput = document.getElementById('end_Date');
-                const startDateError = document.getElementById('startDateError');
-                const endDateError = document.getElementById('endDateError');
-
-                const today = new Date().setHours(0, 0, 0, 0); // Today's date without time
-
-                // Convert input values to date objects
-                const startDate = new Date(startDateInput.value);
-                const endDate = new Date(endDateInput.value);
-
-                // Validate start date
-                if (startDateInput.value && startDate < today) {
-                    startDateError.style.display = 'block';
-                    startDateInput.value = ''; // Clear invalid date
-                } else {
-                    startDateError.style.display = 'none';
-                }
-
-                // Validate end date
-                if (endDateInput.value && endDate < today) {
-                    endDateError.style.display = 'block';
-                    endDateInput.value = ''; // Clear invalid date
-                } else {
-                    endDateError.style.display = 'none';
-                }
-            }
-            // Function to set the minimum start date as today's date
-            document.addEventListener('DOMContentLoaded', function () {
-                const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-                document.getElementById("start_Date").setAttribute("min", today); // Set the min attribute to today's date
-            });
-
-            function calculateDuration() {
-                // Get the values of the start and end dates
-                var startDate = document.getElementById("start_Date").value;
-                var endDate = document.getElementById("end_Date").value;
-
-                if (startDate && endDate) {
-                    // Parse the dates into Date objects
-                    var start = new Date(startDate);
-                    var end = new Date(endDate);
-
-                    // Calculate the difference in time (milliseconds)
-                    var diffTime = end.getTime() - start.getTime();
-
-                    // Convert the time difference to days (1 day = 24*60*60*1000 milliseconds)
-                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    if (diffDays > 0) {
-                        // Set the day value
-                        document.getElementById("day").value = diffDays;
-
-                        // Set the night value (days - 1)
-                        document.getElementById("night").value = diffDays - 1;
-                    } else {
-                        // Reset the fields if the date difference is invalid (e.g., end date is before start date)
-                        document.getElementById("day").value = 0;
-                        document.getElementById("night").value = 0;
-                    }
-                } else {
-                    // Reset the fields if either date is missing
-                    document.getElementById("day").value = 0;
-                    document.getElementById("night").value = 0;
-                }
-            }
 
         </script>
+        <script>
+            window.onload = function () {
+                const message = '${message}';
+                if (message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // Thời gian hiển thị (3 giây)
+                        gravity: "top", // Vị trí hiển thị (top/bottom)
+                        position: 'right', // Vị trí bên trái/bên phải
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Màu nền
+                    }).showToast();
 
+                    // Xóa message sau khi đã hiển thị
+            <c:remove var="message" />
+                }
+            };
+        </script> 
         <script src="dist/js/theme.min.js"></script>
+        <script src="./assests/js/edit-tour.js"></script>
     </body>
 </html>
