@@ -23,6 +23,9 @@
         <link href="assests/css/provider_analysis.css" rel="stylesheet"/>        
         <link rel="stylesheet" href="assests/css/bootstrap.css" />
         <!--<link rel="stylesheet" href="assests/css/style.css" />-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+        <!-- Toasify JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
 
         <title>Analytic</title>
         <style>
@@ -211,19 +214,14 @@
                             <c:when test="${sessionScope.currentUser == null}">
                                 <c:redirect url="home" />
                             </c:when>
-                            <c:otherwise>
-                                <h3 style="<c:if test='${requestScope.message.contains("successfully")}'>color: green;</c:if>
-                                <c:if test='${requestScope.message.contains("Error")}'>color: red;</c:if>">
-                                ${requestScope.message}
-                            </h3>
-                            <c:set value="${requestScope.tourEdit}" var="tour" />
-
-                            <div class="table-data">
-                                <div class="order">
-                                    <h3 class="head">Edit Tour</h3>
-                                    <form action="provider-management?action=save-edit-tour&tourId=${tour.tour_Id}" method="POST" enctype="multipart/form-data">
-                                        <div class="form-group">
-                                            <label for="tour_Name">Tour Name: <span style="color: red;">*</span></label>
+                            <c:otherwise>                               
+                                <c:set value="${requestScope.tourEdit}" var="tour" />
+                                <div class="table-data">
+                                    <div class="order">
+                                        <h3 class="head">Edit Tour</h3>
+                                        <form action="provider-management?action=save-edit-tour&tourId=${tour.tour_Id}" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
+                                            <div class="form-group">
+                                                <label for="tour_Name">Tour Name: <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" value="${tour.tour_Name}" required>
                                         </div>
                                         <div class="form-group">
@@ -272,15 +270,6 @@
                                                 </c:forEach>
                                             </select>
                                         </div>
-
-
-
-
-
-                                        <!--                                        <div class="form-group">
-                                                                                    <label for="price">Price: <span style="color: red;">*</span></label>
-                                                                                    <input type="number" class="form-control" id="price" name="price" value="${tour.price}" required>
-                                                                                </div>-->
                                         <div class="form-group">
                                             <label for="slot">Slot: <span style="color: red;">*</span></label>
                                             <input type="number" class="form-control" id="slot" name="slot" value="${tour.slot}" required>
@@ -289,14 +278,16 @@
                                             <label for="status">Status:</label>
                                             <input type="text" class="form-control" id="status" name="status" value="${tour.tour_Status}" readonly>
                                         </div>
-                                        <div class="form-group required">
+                                        <div class="form-group">
                                             <label for="tour_Img">Tour Images: <span style="color: red;">*</span></label>
-                                            <input type="file" class="form-control-file" id="tour_Img" name="tour_Img" multiple>
+                                            <input type="file" class="form-control-file" id="fileButton" accept=".jpg, .jpeg, .png, .webp" multiple>
+                                            <progress value="0" max="100" id="uploader">0%</progress>
+                                            <input type="hidden" id="tour_Img_URLs" name="tour_Img_URLs">
+                                            <div id="imgDiv"></div>
                                             <small class="form-text text-muted">Upload image files (JPG, PNG, etc.), each not exceeding 2MB.</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="tour_Img">Tour Images:</label>
-                                            <!-- Only display the div if tourEditImages is not empty -->
                                             <c:if test="${empty tourEditImages}">
                                                 No Image Available
                                             </c:if>
@@ -305,7 +296,7 @@
                                                     <c:forEach var="image" items="${tourEditImages}">
                                                         <c:if test="${not empty image}">
                                                             <figure class="tour-image-wrapper">
-                                                                <img src="./assests/images/tour-images/${image}" alt="${tour.tour_Name}" class="tour-image" />
+                                                                <img src="${image}" alt="${tour.tour_Name}" class="tour-image" />
                                                                 <div class="tour-image-caption">
                                                                     <button class="btn btn-danger" 
                                                                             onclick="removeImage('${tour.tour_Id}', '${image}')"
@@ -321,9 +312,9 @@
                                                     </c:forEach>
                                                 </div>
                                             </c:if>
-
                                         </div>
-                                        <button type="submit" class="btn btn-primary btn-block">Save</button>
+
+                                        <button type="submit" class="btn btn-primary btn-block action-link approve">Save</button>
                                     </form>
                                 </c:otherwise>
                             </c:choose>
@@ -357,6 +348,86 @@
 
             </script>
             <script src="./assests/js/edit-tour.js"></script>
+            <!-- Firebase Script Configuration -->
+            <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+            <script type="text/javascript">
+                                                                                const firebaseConfig = {
+                                                                                    apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
+                                                                                    authDomain: "tourhub-41aa5.firebaseapp.com",
+                                                                                    projectId: "tourhub-41aa5",
+                                                                                    storageBucket: "tourhub-41aa5.appspot.com",
+                                                                                    messagingSenderId: "556340467473",
+                                                                                    appId: "1:556340467473:web:2f6de24bdbb33709e51eb0",
+                                                                                    measurementId: "G-0JBZE81PGF"
+                                                                                };
+                                                                                firebase.initializeApp(firebaseConfig);
+
+                                                                                const uploader = document.getElementById('uploader');
+                                                                                const fileButton = document.getElementById('fileButton');
+                                                                                const imageUrls = [];
+
+                                                                                fileButton.addEventListener('change', function (e) {
+                                                                                    const files = e.target.files;
+                                                                                    Array.from(files).forEach(uploadFile);
+                                                                                });
+
+                                                                                function uploadFile(file) {
+                                                                                    const storageRef = firebase.storage().ref('images/' + file.name);
+                                                                                    const uploadTask = storageRef.put(file);
+
+                                                                                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
+                                                                                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                                                                        uploader.value = progress;
+                                                                                    }, function (error) {
+                                                                                        console.error("Upload failed:", error);
+                                                                                    }, function () {
+                                                                                        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                                                                                            imageUrls.push(downloadURL);
+                                                                                            document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
+                                                                                            displayImage(downloadURL);
+                                                                                        });
+                                                                                    });
+                                                                                }
+
+                                                                                function displayImage(url) {
+                                                                                    const imgDiv = document.getElementById("imgDiv");
+                                                                                    const imgElement = document.createElement("img");
+                                                                                    imgElement.src = url;
+                                                                                    imgElement.width = 100;
+                                                                                    imgElement.height = 100;
+                                                                                    imgDiv.appendChild(imgElement);
+                                                                                }
+
+//                                                                                function handleFormSubmit(event) {
+//                                                                                    if (!document.getElementById("tour_Img_URLs").value) {
+//                                                                                        alert("Please wait until all images are uploaded.");
+//                                                                                        return false;
+//                                                                                    }
+//                                                                                    return true;
+//                                                                                }
+            </script>
+            <script>
+                window.onload = function () {
+                    const message = '<c:out value="${message}" />';
+                    if (message) {
+                        Toastify({
+                            text: message,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                            close: true, // Enables the close button
+                            style: {
+                                fontSize: "18px", // Makes the text larger
+                                padding: "20px", // Increases padding for a bigger appearance
+                                borderRadius: "8px" // Optional: makes the corners more rounded
+                            }
+                        }).showToast();
+                    }
+                };
+            </script>
+
+            <c:remove var="message" />
 
             <script src="dist/js/theme.min.js"></script>
         </body>

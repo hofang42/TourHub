@@ -25,6 +25,10 @@
         <link rel="stylesheet" href="assests/css/bootstrap.css" />
         <link rel="stylesheet" href="assests/css/style.css" />
 
+
+        <!-- Toasify JavaScript -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
         <title>Analytic</title>
         <style>
             .darken-effect {
@@ -216,18 +220,17 @@
                                 ${errorMessage}
                             </div>
                         </c:if>
-                        <%--<c:out value="${sessionScope.tourEdit.size()}"/>--%>
                         <!-- Display a Single Tour to Edit if tourEdit is available -->
-                        <c:if test="${not empty tourEdit}">                            
+                        <c:if test="${not empty tours}">                            
                             <div class="table-data">
                                 <div class="order">
                                     <div class="row row-50">
-                                        <c:forEach var="tourEdit" items="${tourEdit}">
+                                        <c:forEach var="tour" items="${tours}">
                                             <div class="col-md-6 col-xl-4">
 
                                                 <article class="event-default-wrap">
                                                     <c:choose>
-                                                        <c:when test="${tourEdit.tour_Status == 'Hidden'}">
+                                                        <c:when test="${tour.tour_Status == 'Hidden'}">
                                                             <div class="event-default darken-effect">
                                                             </c:when>
                                                             <c:otherwise>
@@ -235,9 +238,9 @@
                                                                 </c:otherwise>
                                                             </c:choose>
                                                             <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                                <img src="./assests/images/tour-images/${tourEdit.tour_Img[0]}" alt="${tourEdit.tour_Name}" style="min-height: 250px; max-height: 250px">
+                                                                <img src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 250px">
                                                                 <div class="event-default-caption">                                                           
-                                                                    <a href="provider-management?action=edit-tour&tourId=${tourEdit.tour_Id}" 
+                                                                    <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
                                                                        style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                         Edit
@@ -247,72 +250,9 @@
                                                                        style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                         Add Option
                                                                     </a>
-                                                                    <c:if test="${tourEdit.tour_Status == 'Active'}">
-                                                                        <a href="provider-management?action=set-tour-status&tourId=${tourEdit.tour_Id}&status=Hidden"
-                                                                           class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                           style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                                            Hidden
-                                                                        </a>
-                                                                    </c:if>
-                                                                    <c:if test="${tourEdit.tour_Status == 'Hidden'}">
-                                                                        <a href="provider-management?action=set-tour-status&tourId=${tourEdit.tour_Id}&status=Active" 
-                                                                           class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                           style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                                            Active
-                                                                        </a>
-                                                                    </c:if>
-                                                                </div>
-                                                            </figure>
-                                                        </div>
-                                                        <div class="event-default-inner">
-                                                            <div>
-                                                                <h5>
-                                                                    <a href="provider-management?action=edit-tour&tourId=${tourEdit.tour_Id}" class="event-default-title">${tourEdit.tour_Name}</a>
-                                                                </h5>
-                                                            </div>
-                                                        </div>
-                                                </article>
-                                            </div>
-                                        </c:forEach>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </c:if>
-                        <!-- Display All Tours if providerTours is available -->
-                        <c:if test="${not empty providerTours}">
-                            <div class="table-data">
-                                <div class="order">              
-                                    <div class="row row-50"> 
-                                        <c:forEach var="tour" items="${providerTours}">
-                                            <div class="col-md-6 col-xl-4">
-                                                <article class="event-default-wrap">
-                                                    <c:choose>
-                                                        <c:when test="${tour.tour_Status == 'Hidden'}">
-                                                            <div class="event-default darken-effect">
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <div class="event-default">
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                            <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                                <img src="./assests/images/tour-images/${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="width: 100%; min-height: 250px; max-height: 250px">
-                                                                <div class="event-default-caption">
-                                                                    <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 
-                                                                       class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                                        Edit
-                                                                    </a>
-
-                                                                    <a href="provider-management?action=add-option&tourId=${tour.tour_Id}" 
-                                                                       class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
-                                                                        Add Option
-                                                                    </a>
-
                                                                     <c:if test="${tour.tour_Status == 'Active'}">
-                                                                        <a href="provider-management?action=set-tour-status&tourId=${tour.tour_Id}&status=Hidden" 
-                                                                           class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                        <a href="provider-management?action=set-tour-status&tourId=${tour.tour_Id}&status=Hidden"
+                                                                           class="button button-xs button-secondary button-nina tour-visit-count action-link approve" 
                                                                            style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                             Hidden
                                                                         </a>
@@ -323,7 +263,6 @@
                                                                            style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                             Active
                                                                         </a>
-
                                                                     </c:if>
                                                                 </div>
                                                             </figure>
@@ -341,7 +280,9 @@
                                     </div>
                                 </div>
                             </div>
+
                         </c:if>
+                        <!-- Display All Tours if providerTours is available -->                      
 
 
                     </c:otherwise>
@@ -398,6 +339,28 @@
                 window.location.href = 'sort?sortOrder=' + sortOrder;
             }
         </script>
+        <script>
+            window.onload = function () {
+                const message = '<c:out value="${message}" />';
+                if (message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                        close: true, // Enables the close button
+                        style: {
+                            fontSize: "18px", // Makes the text larger
+                            padding: "20px", // Increases padding for a bigger appearance
+                            borderRadius: "8px" // Optional: makes the corners more rounded
+                        }
+                    }).showToast();
+                }
+            };
+        </script>
+
+        <c:remove var="message" />
 
         <script src="dist/js/theme.min.js"></script>
     </body>

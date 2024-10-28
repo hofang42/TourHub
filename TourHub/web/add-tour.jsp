@@ -21,10 +21,13 @@
         <link rel="stylesheet" href="assests/css/style_profile.css">       
         <link href="assests/css/customer.css" rel="stylesheet" >      
         <link href="assests/css/provider_analysis.css" rel="stylesheet"/>        
-        <link rel="stylesheet" href="assests/css/bootstrap.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
-        <!-- Toasify JavaScript -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+        <link rel="stylesheet" href="assests/css/bootstrap.css" />       
+
+        <!-- Include Toastify CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Toastify/1.11.1/Toastify.min.css">
+
+
+
         <title>Analytic</title>
         <style>
             body {
@@ -155,15 +158,10 @@
 
             <!-- MAIN -->
             <main>
-<!--                <h3 style="<c:if test='${requestScope.message.contains("successfully")}'>color: green;</c:if>
-                <c:if test='${requestScope.message.contains("Error")}'>color: red;</c:if>">
-                ${requestScope.message}
-            </h3>-->
-
                 <div class="table-data">
                     <div class="order">
                         <h3 class="head">Add Tour</h3>                   
-                        <form action="provider-management?action=add-tour" method="POST" enctype="multipart/form-data"> <!-- Combined form with file upload -->
+                        <form action="provider-management?action=add-tour" method="POST" enctype="multipart/form-data" onsubmit="return submitForm(event);" > <!-- Combined form with file upload -->
                             <div class="form-group required">
                                 <label for="tour_Name">Tour Name: <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" id="tour_Name" name="tour_Name" maxlength="255" required>
@@ -195,11 +193,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!--                            <div class="form-group required">
-                                                            <label for="location">Location: <span style="color: red;">*</span></label>
-                                                            <input type="text" class="form-control" id="location" name="location" maxlength="50" required>
-                                                        </div>-->
                             <div class="form-group">
                                 <label for="location">Location: <span style="color: red;">*</span></label>
                                 <select class="form-control" id="location" name="location" style="height: 40px;
@@ -216,23 +209,19 @@
                                     </c:forEach>
                                 </select>
                             </div>
-
-                            <!--                            <div class="form-group required">
-                                                            <label for="price">Price: <span style="color: red;">*</span></label>
-                                                            <input type="number" class="form-control" id="price" name="price" required>
-                                                        </div>-->
                             <div class="form-group required">
                                 <label for="slot">Slot: <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control" id="slot" name="slot" required>
-                            </div>
+                            </div>          
                             <div class="form-group required">
                                 <label for="tour_Img">Tour Images: <span style="color: red;">*</span></label>
-                                <input type="file" class="form-control-file" id="tour_Img" name="tour_Img" multiple required>
+                                <input type="file" class="form-control-file" id="fileButton" accept=".jpg, .jpeg, .png, .webp" multiple required>
+                                <progress value="0" max="100" id="uploader">0%</progress>
+                                <input type="hidden" id="tour_Img_URL" name="tour_Img_URL">                                
                                 <small class="form-text text-muted">Upload image files (JPG, PNG, etc.), each not exceeding 2MB.</small>
                             </div>
-                            <div class="action-container">
-                                <button type="submit" class="btn btn-primary btn-block action-link approve">Add Tour</button>
-                            </div>
+                            <div id="imgDiv"></div>
+                            <button type="submit" class="btn btn-primary btn-block action-link approve">Add Tour</button>
                         </form>
 
                     </div>
@@ -248,42 +237,105 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const burger = document.querySelector('.burger');
-                                        const navigation = document.querySelector('.navigation-admin');
-                                        const main = document.querySelector('.main-admin');
-                                        const profileCard = document.querySelector('.profile-card'); // Select the profile card
+        <!--        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                const burger = document.querySelector('.burger');
+                                                const navigation = document.querySelector('.navigation-admin');
+                                                const main = document.querySelector('.main-admin');
+                                                const profileCard = document.querySelector('.profile-card'); // Select the profile card
+        
+                                                burger.addEventListener('click', function () {
+                                                    navigation.classList.toggle('active');
+                                                    main.classList.toggle('active');
+                                                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                                });
+                                            });
+        
+                </script>-->
+        <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+        <script type="text/javascript">
+                                    // Firebase configuration
+                                    const firebaseConfig = {
+                                        apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
+                                        authDomain: "tourhub-41aa5.firebaseapp.com",
+                                        projectId: "tourhub-41aa5",
+                                        storageBucket: "tourhub-41aa5.appspot.com",
+                                        messagingSenderId: "556340467473",
+                                        appId: "1:556340467473:web:2f6de24bdbb33709e51eb0",
+                                        measurementId: "G-0JBZE81PGF"
+                                    };
+                                    firebase.initializeApp(firebaseConfig);
 
-                                        burger.addEventListener('click', function () {
-                                            navigation.classList.toggle('active');
-                                            main.classList.toggle('active');
-                                            profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                        });
+                                    var uploader = document.getElementById('uploader');
+                                    var fileButton = document.getElementById('fileButton');
+
+                                    // Upload files to Firebase
+                                    fileButton.addEventListener('change', function (e) {
+                                        const files = e.target.files;
+                                        Array.from(files).forEach(uploadFile);
                                     });
 
-        </script>
-        <script>
+                                    function uploadFile(file) {
+                                        const storageRef = firebase.storage().ref('images/' + file.name);
+                                        const uploadTask = storageRef.put(file);
+                                        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
+                                            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                            uploader.value = progress;
+                                        }, function (error) {
+                                            console.error("Upload failed:", error);
+                                        }, function () {
+                                            uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                                                document.getElementById("tour_Img_URL").value += downloadURL + ";";
+                                                displayImage(downloadURL);
+                                            });
+                                        });
+                                    }
 
-        </script>
-        <script>
-            window.onload = function () {
-                const message = '${message}';
-                if (message) {
-                    Toastify({
-                        text: message,
-                        duration: 3000, // Thời gian hiển thị (3 giây)
-                        gravity: "top", // Vị trí hiển thị (top/bottom)
-                        position: 'right', // Vị trí bên trái/bên phải
-                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Màu nền
-                    }).showToast();
+                                    function displayImage(url) {
+                                        const imgDiv = document.getElementById("imgDiv");
+                                        const imgElement = document.createElement("img");
+                                        imgElement.src = url;
+                                        imgElement.width = 100;
+                                        imgElement.height = 100;
+                                        imgDiv.appendChild(imgElement);
+                                    }
 
-                    // Xóa message sau khi đã hiển thị
-            <c:remove var="message" />
-                }
-            };
-        </script> 
+//            function submitForm(event) {
+//                const imageURL = document.getElementById("tour_Img_URL").value;
+//                if (!imageURL) {
+//                    alert("Please wait until all images are uploaded.");
+//                    return false;
+//                }
+//                return true;
+//            }
+        </script>
         <script src="dist/js/theme.min.js"></script>
+        <!-- Include Toastify JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Toastify/1.11.1/Toastify.min.js"></script>
+        <script>
+                                    window.onload = function () {
+                                        const message = '<c:out value="${message}" />';
+                                        if (message) {
+                                            Toastify({
+                                                text: message,
+                                                duration: 3000,
+                                                gravity: "top",
+                                                position: "right",
+                                                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                                                close: true, // Enables the close button
+                                                style: {
+                                                    fontSize: "18px", // Makes the text larger
+                                                    padding: "20px", // Increases padding for a bigger appearance
+                                                    borderRadius: "8px" // Optional: makes the corners more rounded
+                                                }
+                                            }).showToast();
+                                        }
+                                    };
+        </script>
+
+        <c:remove var="message" />
+
         <script src="./assests/js/edit-tour.js"></script>
+
     </body>
 </html>

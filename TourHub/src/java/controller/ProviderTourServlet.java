@@ -78,7 +78,7 @@ public class ProviderTourServlet extends HttpServlet {
 
         TourDB tourDB = new TourDB();
         List<Tour> providerTours = tourDB.getToursByProviderID(companyId);
-        request.setAttribute("providerTours", providerTours);
+        request.setAttribute("tours", providerTours);
         request.getRequestDispatcher("mytour.jsp").forward(request, response);
     }
 

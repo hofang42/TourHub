@@ -428,14 +428,16 @@ public class hoang_UserDB implements DatabaseInfo {
         String sql = "SELECT * "
                 + "FROM Tour "
                 + "WHERE tour_Id = ? "
-                + "OR tour_Name COLLATE Vietnamese_CI_AI LIKE '%' + ? + '%' "
+                + "OR tour_Name COLLATE Vietnamese_CI_AI LIKE '%' + ? + '%'"
+                + " OR location COLLATE Vietnamese_CI_AI LIKE '%' + ? + '%'"
                 + "AND company_Id = ?;";
 
         try (Connection con = getConnect(); PreparedStatement stmt = con.prepareStatement(sql)) {
             // Set the parameters for the prepared statement
             stmt.setString(1, query);
             stmt.setString(2, query);
-            stmt.setInt(3, currentCompanyId);
+            stmt.setString(3, query);
+            stmt.setInt(4, currentCompanyId);
 
             // Execute the query
             try (ResultSet rs = stmt.executeQuery()) {
