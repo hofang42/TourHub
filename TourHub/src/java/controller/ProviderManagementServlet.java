@@ -37,8 +37,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import model.Province;
 import model.Tour;
 import model.Withdrawals;
+import utils.RemoveDiacritics;
 
 /**
  *
@@ -95,6 +97,9 @@ public class ProviderManagementServlet extends HttpServlet {
 
         // Sử dụng switch-case để xử lý các loại yêu cầu khác nhau
         switch (action) {
+            case "show-add-tour":
+                showAddTour(request, response);
+                break;
             case "add-tour":
                 addNewTour(request, response);
                 break;
@@ -119,15 +124,24 @@ public class ProviderManagementServlet extends HttpServlet {
             case "show-withdraw-page":
                 showBalancePage(request, response);
                 break;
-            case "add-option" : {
+            case "add-option": {
                 addOption(request, response);
                 break;
             }
-            case "save-option" : {
+            case "save-option": {
                 saveOption(request, response);
                 break;
             }
         }
+    }
+
+    private void showAddTour(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Province> provinces = new ProvinceDB().getAllProvince();
+        for (Province province : provinces) {
+            province.setProvince_name(new RemoveDiacritics().removeAccent(province.getProvince_name()));
+        }
+        request.setAttribute("provinces", provinces);
+        request.getRequestDispatcher("add-tour.jsp").forward(request, response);
     }
 
     public void addNewTour(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -144,7 +158,7 @@ public class ProviderManagementServlet extends HttpServlet {
         String night = (nightParam != null && !nightParam.isEmpty()) ? nightParam : "0";
 
         String duration = day + "D" + night + "N";
-        double price = Double.parseDouble(request.getParameter("price"));
+//        double price = Double.parseDouble(request.getParameter("price"));
         int slot = Integer.parseInt(request.getParameter("slot"));
 
         // Handle multiple file uploads
@@ -162,12 +176,13 @@ public class ProviderManagementServlet extends HttpServlet {
         }
 
         String imageFilenames = fileNames.toString(); // Convert StringBuilder to String
-        BigDecimal price_db = BigDecimal.valueOf(price);
+//        BigDecimal price_db = BigDecimal.valueOf(price);
         // Save tour information to the database
         try {
-            new TourDB().saveTourToDatabase(request, tourName, tourDescription, startDate, endDate, location,
-                    duration, price_db, slot, imageFilenames);
+            new TourDB().saveTourToDatabase(request, tourName, tourDescription, startDate, endDate, new RemoveDiacritics().removeAccent(location),
+                    duration, slot, imageFilenames);
             request.setAttribute("message", "Tour added successfully!");
+
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("message", "Error adding tour: " + e.getMessage());
@@ -190,8 +205,14 @@ public class ProviderManagementServlet extends HttpServlet {
         System.out.println("TEST Image" + tourEdit.getTour_Img());
         List<String> images = tourEdit.getTour_Img(); // Assuming this is a single String with images separated by commas
         List<String> imageList = images != null ? images : new ArrayList<>(); // Directly assign images if it's not null
-        request.setAttribute("tourEditImages", imageList);
+        List<Province> provinces = new ProvinceDB().getAllProvince();
+        for (Province province : provinces) {
+            province.setProvince_name(new RemoveDiacritics().removeAccent(province.getProvince_name()));
+        }
 
+        request.setAttribute("provinces", provinces);
+        request.setAttribute("tourEditImages", imageList);
+        request.setAttribute("location", new RemoveDiacritics().removeAccent(tourEdit.getLocation()));
         request.setAttribute("tourEdit", tourEdit);
 //        request.setAttribute("tourEditImages", imageList);
         request.getRequestDispatcher("edit-tour-page.jsp").forward(request, response);
@@ -251,63 +272,78 @@ public class ProviderManagementServlet extends HttpServlet {
         String tourId = request.getParameter("tourId");
         TourDB tourDB = new TourDB();
         Tour oldTour = tourDB.getTourFromTourID(tourId);
+
+        // Extract parameters with potential null-checks
         String newTourName = request.getParameter("tour_Name");
         String newTourDescription = request.getParameter("tour_Description");
         String newStartDateStr = request.getParameter("start_Date");
         String newEndDateStr = request.getParameter("end_Date");
-        String newLocation = request.getParameter("location");
+        String newLocation = new RemoveDiacritics().removeAccent(request.getParameter("location"));
         String dayParam = request.getParameter("day");
         String nightParam = request.getParameter("night");
 
-        // Parse date strings to java.util.Date
+        // Parse dates
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date newStartDate = null;
-        Date newEndDate = null;
+        Date newStartDate = null, newEndDate = null;
         try {
             newStartDate = dateFormat.parse(newStartDateStr);
             newEndDate = dateFormat.parse(newEndDateStr);
         } catch (ParseException e) {
             e.printStackTrace();
             request.setAttribute("message", "Invalid date format. Please use yyyy-MM-dd.");
-            try {
-                getServletContext().getRequestDispatcher("my-tour").forward(request, response);
-            } catch (ServletException ex) {
-                Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            forwardToEditPage(request, response, tourId);
             return;
         }
 
-        // Default day and night values to avoid null issues
+        // Set default values if days or nights are missing
         String newDay = (dayParam != null && !dayParam.isEmpty()) ? dayParam : "0";
         String newNight = (nightParam != null && !nightParam.isEmpty()) ? nightParam : "0";
         String newDuration = newDay + "N" + newNight + "D";
 
-        // Parse price to BigDecimal
-        BigDecimal newPrice = new BigDecimal(request.getParameter("price"));
-        int newSlot = Integer.parseInt(request.getParameter("slot"));
-
-        // Handle multiple file uploads for images and store them in a list
-        List<String> newImageFilenames = new ArrayList<>();
+        // Parse price and slot with error handling
+        BigDecimal newPrice;
+        int newSlot;
         try {
+//            newPrice = new BigDecimal(request.getParameter("price"));
+            newSlot = Integer.parseInt(request.getParameter("slot"));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Invalid number format for price or slot.");
+            forwardToEditPage(request, response, tourId);
+            return;
+        }
+
+        // Handle multiple file uploads for images without adding a leading semicolon
+        StringBuilder imageFilenames = new StringBuilder();
+        try {
+            boolean firstImage = true; // Flag to check if it's the first image
             for (Part part : request.getParts()) {
-                if (part.getName().equals("tour_Img") && part.getSize() > 0) {
+                if ("tour_Img".equals(part.getName()) && part.getSize() > 0) {
                     String fileName = extractFileName(part);
                     fileName = new File(fileName).getName(); // Get the file name
                     part.write(getFolderUpload(request).getAbsolutePath() + File.separator + fileName); // Save file
-                    newImageFilenames.add(fileName); // Add filename to the list
+
+                    // Add semicolon only after the first filename has been appended
+                    if (!firstImage) {
+                        imageFilenames.append(";"); // Add separator for subsequent images
+                    } else {
+                        firstImage = false; // Turn off the flag after the first image
+                    }
+                    imageFilenames.append(fileName); // Append filename
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ServletException ex) {
+        } catch (IOException | ServletException ex) {
             Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // Compare and update only if values have changed
-        boolean isUpdated = false;
+        // Ensure no leading semicolon in the final concatenated filenames
+        String newImageFilenames = imageFilenames.toString();
+        if (newImageFilenames.startsWith(";")) {
+            newImageFilenames = newImageFilenames.substring(1);
+        }
 
+        // Compare old and new values, update only if values have changed
+        boolean isUpdated = false;
         if (!newTourName.equals(oldTour.getTour_Name())) {
             oldTour.setTour_Name(newTourName);
             isUpdated = true;
@@ -332,29 +368,27 @@ public class ProviderManagementServlet extends HttpServlet {
             oldTour.setTotal_Time(newDuration);
             isUpdated = true;
         }
-        if (newPrice.compareTo(oldTour.getPrice()) != 0) {  // Using BigDecimal comparison
-            oldTour.setPrice(newPrice);
-            isUpdated = true;
-        }
+//        if (newPrice.compareTo(oldTour.getPrice()) != 0) {
+//            oldTour.setPrice(newPrice);
+//            isUpdated = true;
+//        }
         if (newSlot != oldTour.getSlot()) {
             oldTour.setSlot(newSlot);
             isUpdated = true;
         }
-        if (!newImageFilenames.isEmpty()) {
-            // Fetch the existing list of images from the old tour
-            List<String> existingImages = oldTour.getTour_Img();
 
-            // Check if existingImages is null, and initialize it if necessary
-            if (existingImages == null) {
-                existingImages = new ArrayList<>();
+        // Update images if new ones are uploaded
+        if (!newImageFilenames.isEmpty()) {
+            Set<String> uniqueImages = new HashSet<>(oldTour.getTour_Img() != null ? oldTour.getTour_Img() : new ArrayList<>());
+            uniqueImages.addAll(Arrays.asList(newImageFilenames.split(";")));
+
+            // Convert unique images back to a single string without leading semicolons
+            String updatedImageString = String.join(";", uniqueImages);
+            if (updatedImageString.startsWith(";")) {
+                updatedImageString = updatedImageString.substring(1);
             }
 
-            // Convert existing and new images into a set to remove duplicates
-            Set<String> uniqueImages = new HashSet<>(existingImages);
-            uniqueImages.addAll(newImageFilenames); // Add all new images
-
-            // Set the updated list (convert the set back to a list)
-            oldTour.setTour_Img(new ArrayList<>(uniqueImages));
+            oldTour.setTour_Img(new ArrayList<>(Arrays.asList(updatedImageString.split(";"))));
             isUpdated = true;
         }
 
@@ -370,6 +404,11 @@ public class ProviderManagementServlet extends HttpServlet {
         } else {
             request.setAttribute("message", "No changes made to the tour.");
         }
+        forwardToEditPage(request, response, tourId);
+    }
+
+// Helper method to forward to the edit page
+    private void forwardToEditPage(HttpServletRequest request, HttpServletResponse response, String tourId) throws IOException {
         try {
             getServletContext().getRequestDispatcher("/provider-management?action=edit-tour&tourId=" + tourId).forward(request, response);
         } catch (ServletException ex) {
@@ -408,7 +447,7 @@ public class ProviderManagementServlet extends HttpServlet {
         }
         System.out.println("TESTTTTTT ----- " + query);
         // Retrieve the tour details by tourId
-        List<Tour> tourEdit = tourDBs.getTourFromQuery(removeAccent(query), companyId);
+        List<Tour> tourEdit = tourDBs.getTourFromQuery(new RemoveDiacritics().removeAccent(query), companyId);
         System.out.println("TESTTTTTT ----- " + tourEdit.size());
         // Check if the tour was found
         if (tourEdit == null) {
@@ -591,60 +630,7 @@ public class ProviderManagementServlet extends HttpServlet {
         }
         return originalPath;
     }
-    // Mang cac ky tu goc co dau
-    private static char[] SOURCE_CHARACTERS = {'À', 'Á', 'Â', 'Ã', 'È', 'É',
-        'Ê', 'Ì', 'Í', 'Ò', 'Ó', 'Ô', 'Õ', 'Ù', 'Ú', 'Ý', 'à', 'á', 'â',
-        'ã', 'è', 'é', 'ê', 'ì', 'í', 'ò', 'ó', 'ô', 'õ', 'ù', 'ú', 'ý',
-        'Ă', 'ă', 'Đ', 'đ', 'Ĩ', 'ĩ', 'Ũ', 'ũ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ạ',
-        'ạ', 'Ả', 'ả', 'Ấ', 'ấ', 'Ầ', 'ầ', 'Ẩ', 'ẩ', 'Ẫ', 'ẫ', 'Ậ', 'ậ',
-        'Ắ', 'ắ', 'Ằ', 'ằ', 'Ẳ', 'ẳ', 'Ẵ', 'ẵ', 'Ặ', 'ặ', 'Ẹ', 'ẹ', 'Ẻ',
-        'ẻ', 'Ẽ', 'ẽ', 'Ế', 'ế', 'Ề', 'ề', 'Ể', 'ể', 'Ễ', 'ễ', 'Ệ', 'ệ',
-        'Ỉ', 'ỉ', 'Ị', 'ị', 'Ọ', 'ọ', 'Ỏ', 'ỏ', 'Ố', 'ố', 'Ồ', 'ồ', 'Ổ',
-        'ổ', 'Ỗ', 'ỗ', 'Ộ', 'ộ', 'Ớ', 'ớ', 'Ờ', 'ờ', 'Ở', 'ở', 'Ỡ', 'ỡ',
-        'Ợ', 'ợ', 'Ụ', 'ụ', 'Ủ', 'ủ', 'Ứ', 'ứ', 'Ừ', 'ừ', 'Ử', 'ử', 'Ữ',
-        'ữ', 'Ự', 'ự',};
 
-    // Mang cac ky tu thay the khong dau
-    private static char[] DESTINATION_CHARACTERS = {'A', 'A', 'A', 'A', 'E',
-        'E', 'E', 'I', 'I', 'O', 'O', 'O', 'O', 'U', 'U', 'Y', 'a', 'a',
-        'a', 'a', 'e', 'e', 'e', 'i', 'i', 'o', 'o', 'o', 'o', 'u', 'u',
-        'y', 'A', 'a', 'D', 'd', 'I', 'i', 'U', 'u', 'O', 'o', 'U', 'u',
-        'A', 'a', 'A', 'a', 'A', 'a', 'A', 'a', 'A', 'a', 'A', 'a', 'A',
-        'a', 'A', 'a', 'A', 'a', 'A', 'a', 'A', 'a', 'A', 'a', 'E', 'e',
-        'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E',
-        'e', 'I', 'i', 'I', 'i', 'O', 'o', 'O', 'o', 'O', 'o', 'O', 'o',
-        'O', 'o', 'O', 'o', 'O', 'o', 'O', 'o', 'O', 'o', 'O', 'o', 'O',
-        'o', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u',
-        'U', 'u', 'U', 'u',};
-
-    /**
-     * Bo dau 1 ky tu
-     *
-     * @param ch
-     * @return
-     */
-    public static char removeAccent(char ch) {
-        int index = Arrays.binarySearch(SOURCE_CHARACTERS, ch);
-        if (index >= 0) {
-            ch = DESTINATION_CHARACTERS[index];
-        }
-        return ch;
-    }
-
-
-    /**
-     * Bo dau 1 chuoi
-     *
-     * @param s
-     * @return
-     */
-    public static String removeAccent(String s) {
-        StringBuilder sb = new StringBuilder(s);
-        for (int i = 0; i < sb.length(); i++) {
-            sb.setCharAt(i, removeAccent(sb.charAt(i)));
-        }
-        return sb.toString();
-    }
     public void addOption(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String tourId = request.getParameter("tourId");
         int companyId = 0;
@@ -653,13 +639,13 @@ public class ProviderManagementServlet extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(ProviderManagementServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         Tour tourEdit = new TourDB().getTourFromTourID(tourId, companyId);
         request.setAttribute("tour", tourEdit);
-        
+
         getServletContext().getRequestDispatcher("/add-option.jsp").forward(request, response);
     }
-    
+
     public void saveOption(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         KhanhDB khanhDB = new KhanhDB();
 
@@ -678,10 +664,10 @@ public class ProviderManagementServlet extends HttpServlet {
         String[] peoplePrices = request.getParameterValues("people_Price[]");
 
         // Validation: Check if all required fields are populated
-        if (tourId == null || optionName == null || optionDescription == null || 
-            daysOfWeek == null || startRepeatDate == null || endRepeatDate == null || 
-            slot == null || peopleTypes == null || peopleDescriptions == null || 
-            peopleMinQtys == null || peopleMaxQtys == null || peoplePrices == null) {
+        if (tourId == null || optionName == null || optionDescription == null
+                || daysOfWeek == null || startRepeatDate == null || endRepeatDate == null
+                || slot == null || peopleTypes == null || peopleDescriptions == null
+                || peopleMinQtys == null || peopleMaxQtys == null || peoplePrices == null) {
 
             request.setAttribute("message", "All fields must be filled out.");
             request.getRequestDispatcher("provider-management?action=add-option&tourId=" + tourId).forward(request, response);
@@ -690,9 +676,9 @@ public class ProviderManagementServlet extends HttpServlet {
 
         int optionSlot = Integer.parseInt(slot);
         BigDecimal minPrice = Arrays.stream(peoplePrices)
-                                    .map(BigDecimal::new)
-                                    .min(BigDecimal::compareTo)
-                                    .orElse(BigDecimal.ZERO);
+                .map(BigDecimal::new)
+                .min(BigDecimal::compareTo)
+                .orElse(BigDecimal.ZERO);
 
         int optionId;
         try {
@@ -727,4 +713,5 @@ public class ProviderManagementServlet extends HttpServlet {
 
         request.getRequestDispatcher("provider-management?action=add-option&tourId=" + tourId).forward(request, response);
     }
+
 }

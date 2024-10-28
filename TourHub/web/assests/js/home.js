@@ -71,9 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 resultBox.style.display = 'none';
             }
-            console.log(result);
             displaySearchs(result); // Update the UI with the filtered results
-            console.log("After");
+
         };
     }
 });
@@ -82,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 function displaySearchs(result) {
+    console.log(result);
     if (result.length > 0) {
         const content = result.map(item => {
             return `<li onclick="selectInput('${item.tour_Id}')" style="display: flex; align-items: center; margin-bottom: 10px;">

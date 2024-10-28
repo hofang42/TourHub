@@ -21,6 +21,7 @@ import model.Discount;
 import model.Review;
 import model.Tour;
 import utils.CSVReader;
+import utils.RemoveDiacritics;
 
 /**
  *
@@ -399,7 +400,7 @@ public class hoang_UserDB implements DatabaseInfo {
             stmt.setDate(3, new java.sql.Date(updatedTour.getStart_Date().getTime()));
             stmt.setDate(4, new java.sql.Date(updatedTour.getEnd_Date().getTime()));
 
-            stmt.setString(5, updatedTour.getLocation());
+            stmt.setString(5, new RemoveDiacritics().removeAccent(updatedTour.getLocation()));
             stmt.setString(6, updatedTour.getTotal_Time());
 
             // Assuming price is BigDecimal
@@ -681,8 +682,6 @@ public class hoang_UserDB implements DatabaseInfo {
         }
         return balance;
     }
-
-
 
     public static void main(String[] args) {
         List<Discount> tours = new hoang_UserDB().getAllDiscounts();
