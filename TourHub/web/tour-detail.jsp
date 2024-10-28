@@ -199,8 +199,9 @@
                 scrollbar-width: thin;
                 scrollbar-color: #888 #f1f1f1;
             }
+            /* Popup Background and Content */
             .popup {
-                display: none; /* Ẩn popup ban đầu */
+                display: none;
                 position: fixed;
                 z-index: 9999;
                 left: 0;
@@ -209,7 +210,12 @@
                 height: 100%;
                 background-color: rgba(0, 0, 0, 0.7);
                 opacity: 0;
-                transition: opacity 0.4s ease; /* Hiệu ứng mở popup mượt */
+                transition: opacity 0.4s ease;
+            }
+
+            .popup.show {
+                display: block;
+                opacity: 1;
             }
 
             .popup-content {
@@ -220,23 +226,19 @@
                 width: 80%;
                 max-width: 800px;
                 border-radius: 10px;
-                max-height: 80vh; /* Giới hạn chiều cao của popup */
-                overflow-y: auto; /* Thêm thanh cuộn nếu nội dung quá dài */
+                max-height: 80vh;
+                overflow-y: auto;
                 opacity: 0;
                 transform: translateY(-50px);
-                transition: opacity 0.4s ease, transform 0.4s ease; /* Hiệu ứng popup trượt lên */
-            }
-
-            .popup.show {
-                display: block;
-                opacity: 1;
+                transition: opacity 0.4s ease, transform 0.4s ease;
             }
 
             .popup-content.show {
                 opacity: 1;
-                transform: translateY(0); /* Trượt popup vào vị trí ban đầu */
+                transform: translateY(0);
             }
 
+            /* Close Button */
             .close-btn {
                 position: absolute;
                 top: 10px;
@@ -245,7 +247,8 @@
                 cursor: pointer;
                 color: #333;
             }
-            /* CSS cho thẻ đánh giá */
+
+            /* Review Item Styling */
             .review-item {
                 display: flex;
                 flex-direction: column;
@@ -257,16 +260,17 @@
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
                 width: 100%;
                 max-width: 800px;
-                transition: all 0.3s ease;
+                transition: box-shadow 0.3s ease;
             }
 
             .review-item:hover {
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
 
+            /* Review Header: Align User and Stars to the Left */
             .review-header {
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-start; /* Align to the left */
                 align-items: center;
                 margin-bottom: 10px;
             }
@@ -275,22 +279,26 @@
                 font-weight: bold;
                 font-size: 14px;
                 color: #333;
+                margin-right: 10px; /* Space between name and stars */
             }
 
             .review-stars {
-                color: #f39c12;
+                color: #f39c12; /* Gold color for stars */
                 font-size: 16px;
                 margin-top: 5px;
+                text-align: left;
             }
 
+            /* Review Text */
             .review-text {
                 font-size: 14px;
                 line-height: 1.6;
                 color: #555;
                 margin-top: 10px;
+                text-align: left;
             }
 
-            /* Nút xem tất cả đánh giá */
+            /* Link for Viewing All Reviews */
             .view-review a {
                 font-size: 14px;
                 color: #007bff;
@@ -301,6 +309,59 @@
             .view-review a:hover {
                 color: #0056b3;
             }
+            /* Container for Highlighted Reviews */
+            .highlight-review {
+                max-width: 800px;
+            }
+
+            /* Individual Review Item */
+            .review-item {
+                border: none;
+                border-radius: 8px;
+            }
+
+            .card-title {
+                font-size: 1.1em;
+                font-weight: bold;
+            }
+
+            .card-text {
+                font-size: 0.95em;
+            }
+
+            .text-primary {
+                color: #007bff !important;
+            }
+
+            .text-secondary {
+                color: #6c757d !important;
+            }
+
+            .text-warning {
+                color: #ffc107 !important;
+            }
+
+            /* Review List Styling */
+            .review-list {
+                width: 100%; /* Full width for list items */
+            }
+
+
+            /* No Review Message */
+            .no-review {
+                font-style: italic;
+                color: #777;
+                padding: 10px;
+                text-align: left; /* Left-align message */
+            }
+
+            /* Additional Styling for Strong Labels */
+            .review-item p strong {
+                font-weight: bold;
+                color: #333;
+                margin-right: 5px;
+            }
+
 
             /* Hiệu ứng khi hiển thị popup */
             .popup {
@@ -351,7 +412,7 @@
             }
 
         </style>
-        
+
         <script>
             function toggle(popupId) {
                 var popup = document.getElementById(popupId);
@@ -480,6 +541,7 @@
                     id="input-box"
                     placeholder="Any ideas on what to do for your next trip?"
                     autocomplete="off"
+                    style="margin: 0;"
                     />
                 <button>Search</button>
                 <div class="result-box" id="result-box">                                       
@@ -523,17 +585,16 @@
                                         <span class="tour-duration-text">Tour Duration | </span>
                                         <span class="tour-duration">${tour.total_Time} Hours</span>
                                     </div>
-                                </div>                       
-
-                                <div class="tour-save-share">
-                                    <button class="save-btn">
-                                        <i class="fa-regular fa-bookmark"></i>
-                                    </button>
-                                    <button class="share-btn" onclick="sharePage()">
-                                        <i class="fa-regular fa-share-from-square"></i>
-                                    </button>
-                                </div>
-                            </div>                       
+                                </div>                                                      
+                            </div> 
+                            <div class="tour-save-share">
+                                <button class="save-btn">
+                                    <i class="fa-regular fa-bookmark"></i>
+                                </button>
+                                <button class="share-btn" onclick="sharePage()">
+                                    <i class="fa-regular fa-share-from-square"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -641,7 +702,7 @@
                             <div class="rank">
                                 <span class="rank-type">Excellent</span>
                                 <br>
-                                <span class="number-rating">Từ ${tour.number_Of_Review} đánh giá</span>
+                                <span class="number-rating">From ${tour.number_Of_Review} Review</span>
                             </div>
                         </div>
 
@@ -688,55 +749,59 @@
 
                         <span class="view-review-content">What Travelers Say</span>
                         <a href="#" id="viewAllReviewsBtn">See All Reviews</a>
-                  
+
                     </div>
 
                     <!-- Popup để hiển thị tất cả các đánh giá -->
                     <div id="reviewPopup" class="popup">
-                        <div class="popup-content">
-                            <span class="close-btn" id="closePopup">&times;</span>
-                            <h2>Tất cả đánh giá</h2>
-
-                            <div class="all-reviews">
-                                <c:forEach var="review" items="${allReviews}">
-                                    <div class="review-item">
-                                        <div class="review-header">
-                                            <div class="review-user">${review.first_Name} ${review.last_Name}</div>
+                        <div class="popup-content card shadow-lg">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">All Reviews</h2>
+                                <span class="close-btn" id="closePopup">&times;</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="all-reviews">
+                                    <c:forEach var="review" items="${allReviews}">
+                                        <div class="card mb-3 review-item">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h5 class="card-title text-primary mb-0">${review.first_Name} ${review.last_Name}</h5>
+                                                    <div class="review-stars text-warning">
+                                                        <c:forEach var="i" begin="1" end="${review.rating_Star}">
+                                                            ★
+                                                        </c:forEach>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text text-secondary">${review.comment}</p>
+                                            </div>
                                         </div>
-
-                                        <div class="review-stars">
-                                            <c:forEach var="i" begin="1" end="${review.rating_Star}">
-                                                ★
-                                            </c:forEach>
-                                        </div>
-
-                                        <div class="review-text">${review.comment}</div>
-                                    </div>
-                                </c:forEach>
+                                    </c:forEach>
+                                </div>
                             </div>
                         </div>
                     </div>
 
 
-                    <div class="highlight-review">
+
+                    <div class="highlight-review container mt-4">
                         <div class="review-list">
                             <c:choose>
                                 <c:when test="${not empty reviews}">
                                     <c:forEach var="review" items="${reviews}">
-                                        <div class="review-item">
-                                            <p><strong>Người đánh giá:</strong> ${review.first_Name} ${review.last_Name}</p>
-                                            <p><strong>Bình luận:</strong> ${review.comment}</p>
-                                            <p><strong>Số sao:</strong> ${review.rating_Star} / 5</p>
+                                        <div class="card review-item mb-3 shadow-sm">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-primary">${review.first_Name} ${review.last_Name}</h5>
+                                                <p class="card-text text-secondary mb-2"><i class="fas fa-star text-warning"></i> ${review.rating_Star} / 5</p>
+                                                <p class="card-text"><strong>Comment:</strong> ${review.comment}</p>
+                                            </div>
                                         </div>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="no-review">Không có review nào cho tour này.</div>
+                                    <div class="alert alert-info text-center">No review for this tour.</div>
                                 </c:otherwise>
                             </c:choose>
                         </div>
-
-
                     </div>
                 </div>
             </div>
@@ -755,7 +820,7 @@
 
             <div class="tour-booking">
                 <h4>Available Ticket(s) for You</h4>
-
+                <div id="notification" style="display: none; color: red;">Ngày được chọn không có tour nào!</div>
                 <div class="date-picking">
                     <button class="calendar" onclick="openCalendar(); toggle('blur');">
                         <i class="fa-solid fa-calendar-days"></i>
@@ -879,7 +944,7 @@
         </div>
     </div>
 
-    <!--        Popup1-->
+    <!--Popup1-->
     <div id="popup1">
         <div id="carouselExampleIndicators" class="carousel slide">
             <div class="carousel-indicators">
@@ -909,7 +974,8 @@
         </div>
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup1')"></button>
     </div>
-    <!--        Popup2-->
+    
+    <!--Popup2-->
     <div id="popup2">
         <h3>More Information</h3>
         <div class="information-wrapper">
@@ -955,6 +1021,7 @@
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup2')">
         </button>
     </div>
+                
     <!--Popup3-->
     <div id="popup3">
         <h3>What You'll Experience</h3>
@@ -982,7 +1049,7 @@
 
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup3')"></button>
     </div>
-    
+
     <!--Popup4-->
     <div id="popup4">
         <h3>Tour Itinerary</h3>
@@ -990,117 +1057,120 @@
             <ul>
                 <c:forEach var="itinerary" items="${tourDetailDescription.tourItinerary}">
                     <li>${itinerary}</li>
-                </c:forEach>
+                    </c:forEach>
             </ul>
         </div>
         <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup4')"></button>
     </button>
     </div>
-<!--        Popup5-->
-<div id="popup5">
-    <h4>Tour ghép</h4>
-    <div class="tour-option-detail-wrapper">
-        <div class="tour-time-popup">
-            <span>
-                Thời lượng tour:
-                ${tour.total_Time}
-            </span>
-
-            <span>
-                Thời gian và điểm đón:
-                <ul>
-                    <li>Khách sẽ được đón tại nơi lưu trú nằm tại trung tâm thành phố Đà Nẵng từ 07:30 – 08:30 </li>
-                    <li>Đối với khách nằm ngoài khu vực trung tâm thành phố Đà Nẵng, vui lòng tham khảo Thông tin
-                        thêm trên trang Sản phẩm để biết thêm chi tiết </li>
-                </ul>
-            </span>
-        </div>
-
-        <span class="refund-section-popup">
-            Easy Refund
-        </span>
-
-        <div class="price-wrapper">
-            <span class="price-wrapper-inner">1.216.867 VND</span>
-
-            <button>Chọn vé</button>
-        </div>
-
-        <div>
-            <nav id="navbar-example2" class="navbar-inner bg-body-tertiary px-3 mb-3">
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#scrollspyHeading1">First</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#scrollspyHeading2">Second</a>
-                    </li>
-                    <li class="nav-item"></li>
-                    <a class="nav-link" href="#scrollspyHeading3">Third</a>
-                    </li>
-                    <li class="nav-item"></li>
-                    <a class="nav-link" href="#scrollspyHeading4">Fourth</a>
-                    </li>
-                    <li class="nav-item"></li>
-                    <a class="nav-link" href="#scrollspyHeading5">Fifth</a>
-                    </li>
-                </ul>
-            </nav>
-            <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%"
-                 data-bs-smooth-scroll="true" class="navbar-content scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
-                <h4 id="scrollspyHeading1">First heading</h4>
+    
+    <!--Popup5-->
+    <div id="popup5">
+        <h4>Tour ghép</h4>
+        <div class="tour-option-detail-wrapper">
+            <div class="tour-time-popup">
                 <span>
-                    Giá đã bao gồm
-                    Bữa ăn:
-
-                    1 buffet trưa
-                    Phương tiện di chuyển:
-
-                    Xe có máy điều hoà để đưa đón và trung chuyển
-                    Dịch vụ khác:
-
-                    Vé vào cửa
-                    Bảo hiểm du lịch
-                    Hướng dẫn viên nói tiếng Việt - Anh
-
+                    Thời lượng tour:
+                    ${tour.total_Time}
                 </span>
-                <h4 id="scrollspyHeading2">Second heading</h4>
-                <span>
-                    Hiệu lực của voucher
 
-                    Sử dụng vào ngày đã chọn
-                    Có hiệu lực vào mọi ngày bình thường
-                    Có hiệu lực vào mọi ngày lễ
-                    Dành cho khách Việt Nam
-                </span>
-                <h4 id="scrollspyHeading3">Third heading</h4>
                 <span>
-                    Nếu đặt chỗ của bạn đã được xác nhận, nhân viên điều hành tour sẽ liên hệ với bạn qua điện thoại
-                    ít nhất 24 giờ trước khi tour bắt đầu.
-                </span>
-                <h4 id="scrollspyHeading4">Fourth heading</h4>
-                <span>
-                    Đặt chỗ này không thể thay đổi lịch.
-                    Yêu cầu hoàn tiền muộn nhất là 2 ngày trước ngày đi đã chọn của bạn để nhận được 100% hoàn tiền.
-                    Đặt chỗ của bạn sẽ không được hoàn lại nếu bạn yêu cầu hoàn tiền ít hơn 2 ngày trước ngày đi đã
-                    chọn.
-                </span>
-                <h4 id="scrollspyHeading5">Fifth heading</h4>
-                <span>
-                    Điều khoản & Điều kiện
-                    Thông tin chung
-                    Phụ phí 100.000 VND/khách, thanh toán trực tiếp với nhà cung cấp tour, áp dụng vào các ngày khởi
-                    hành tour sau: 18 Th04, 30 Th04, 1 Th05, 31 Th08 – 3 Th09 2024.
-                    Dịch vụ đón trả miễn phí cho khách ở tại trung tâm thành phố Đà Nẵng.
-                    Phí đón trả khách sẽ được áp dụng nếu khách có nguyện vọng được đón trả tại những địa điểm sau:
+                    Thời gian và điểm đón:
+                    <ul>
+                        <li>Khách sẽ được đón tại nơi lưu trú nằm tại trung tâm thành phố Đà Nẵng từ 07:30 – 08:30 </li>
+                        <li>Đối với khách nằm ngoài khu vực trung tâm thành phố Đà Nẵng, vui lòng tham khảo Thông tin
+                            thêm trên trang Sản phẩm để biết thêm chi tiết </li>
+                    </ul>
                 </span>
             </div>
+
+            <span class="refund-section-popup">
+                Easy Refund
+            </span>
+
+            <div class="price-wrapper">
+                <span class="price-wrapper-inner">1.216.867 VND</span>
+
+                <button>Chọn vé</button>
+            </div>
+
+            <div>
+                <nav id="navbar-example2" class="navbar-inner bg-body-tertiary px-3 mb-3">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#scrollspyHeading1">First</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#scrollspyHeading2">Second</a>
+                        </li>
+                        <li class="nav-item"></li>
+                        <a class="nav-link" href="#scrollspyHeading3">Third</a>
+                        </li>
+                        <li class="nav-item"></li>
+                        <a class="nav-link" href="#scrollspyHeading4">Fourth</a>
+                        </li>
+                        <li class="nav-item"></li>
+                        <a class="nav-link" href="#scrollspyHeading5">Fifth</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%"
+                     data-bs-smooth-scroll="true" class="navbar-content scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
+                    <h4 id="scrollspyHeading1">First heading</h4>
+                    <span>
+                        Giá đã bao gồm
+                        Bữa ăn:
+
+                        1 buffet trưa
+                        Phương tiện di chuyển:
+
+                        Xe có máy điều hoà để đưa đón và trung chuyển
+                        Dịch vụ khác:
+
+                        Vé vào cửa
+                        Bảo hiểm du lịch
+                        Hướng dẫn viên nói tiếng Việt - Anh
+
+                    </span>
+                    <h4 id="scrollspyHeading2">Second heading</h4>
+                    <span>
+                        Hiệu lực của voucher
+
+                        Sử dụng vào ngày đã chọn
+                        Có hiệu lực vào mọi ngày bình thường
+                        Có hiệu lực vào mọi ngày lễ
+                        Dành cho khách Việt Nam
+                    </span>
+                    <h4 id="scrollspyHeading3">Third heading</h4>
+                    <span>
+                        Nếu đặt chỗ của bạn đã được xác nhận, nhân viên điều hành tour sẽ liên hệ với bạn qua điện thoại
+                        ít nhất 24 giờ trước khi tour bắt đầu.
+                    </span>
+                    <h4 id="scrollspyHeading4">Fourth heading</h4>
+                    <span>
+                        Đặt chỗ này không thể thay đổi lịch.
+                        Yêu cầu hoàn tiền muộn nhất là 2 ngày trước ngày đi đã chọn của bạn để nhận được 100% hoàn tiền.
+                        Đặt chỗ của bạn sẽ không được hoàn lại nếu bạn yêu cầu hoàn tiền ít hơn 2 ngày trước ngày đi đã
+                        chọn.
+                    </span>
+                    <h4 id="scrollspyHeading5">Fifth heading</h4>
+                    <span>
+                        Điều khoản & Điều kiện
+                        Thông tin chung
+                        Phụ phí 100.000 VND/khách, thanh toán trực tiếp với nhà cung cấp tour, áp dụng vào các ngày khởi
+                        hành tour sau: 18 Th04, 30 Th04, 1 Th05, 31 Th08 – 3 Th09 2024.
+                        Dịch vụ đón trả miễn phí cho khách ở tại trung tâm thành phố Đà Nẵng.
+                        Phí đón trả khách sẽ được áp dụng nếu khách có nguyện vọng được đón trả tại những địa điểm sau:
+                    </span>
+                </div>
+            </div>
         </div>
+        <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup5')"></button>
+    </button>
     </div>
     <button type="button" class="btn-close" aria-label="Close" onclick="toggle('popup5')"></button>
 </button>
 </div>
-                
 
 <!--    <div id="popup5" class="popup">
         <div class="popup-content">
@@ -1108,29 +1178,30 @@
 
              Dynamic content of the popup 
             <div class="tour-option-detail-wrapper">
-                <c:forEach items="${optionDetails}" var="detail">
-                    <div>
-                        <h4>Category: 
-                            <c:choose>
-                                <c:when test="${detail.categoryId == 1}">Price Includes</c:when>
-                                <c:when test="${detail.categoryId == 2}">Meals</c:when>
-                                <c:when test="${detail.categoryId == 3}">Transport</c:when>
-                                <c:when test="${detail.categoryId == 4}">Additional Services/Items</c:when>
-                                <c:when test="${detail.categoryId == 5}">Price Excludes</c:when>
-                            </c:choose>
-                        </h4>
-                        <span>${detail.detailDescription}</span>
-                    </div>
-                </c:forEach>
-            </div>
-        </div>
-    </div>-->
-                
+<c:forEach items="${optionDetails}" var="detail">
+    <div>
+        <h4>Category: 
+    <c:choose>
+        <c:when test="${detail.categoryId == 1}">Price Includes</c:when>
+        <c:when test="${detail.categoryId == 2}">Meals</c:when>
+        <c:when test="${detail.categoryId == 3}">Transport</c:when>
+        <c:when test="${detail.categoryId == 4}">Additional Services/Items</c:when>
+        <c:when test="${detail.categoryId == 5}">Price Excludes</c:when>
+    </c:choose>
+</h4>
+<span>${detail.detailDescription}</span>
+</div>
+</c:forEach>
+</div>
+</div>
+</div>-->
+
 <div class="tour-content">
 
 
 
 </div>
+                                
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
@@ -1247,36 +1318,28 @@
     let selectedDate = new Date();
 
     // Function để hiển thị 14 ngày với ngày hiện tại hoặc đã chọn ở giữa
-    // Function để hiển thị 14 ngày với ngày hiện tại hoặc đã chọn ở giữa
-    function displayDateRange(centerDate) {
+    function displayDateRange() {
         const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         // Tìm tất cả các phần tử .date-container
         let dateContainers = document.querySelectorAll('.date-container');
 
-        // Tìm tất cả các phần tử .tour-option và lưu trữ ngày tour
+        // Lấy danh sách ngày có tour và sắp xếp theo thứ tự
         const tourOptions = [...document.querySelectorAll('.tour-option')];
-        const availableTourDates = tourOptions.map(option => new Date(option.getAttribute('data-tour-date')).toDateString());
+        const availableTourDates = tourOptions
+            .map(option => new Date(option.getAttribute('data-tour-date')))
+            .sort((a, b) => a - b)
+            .filter(date => date >= new Date()); // Chỉ lấy những ngày từ hiện tại trở đi
 
-        let closestTourDate = null;
+        // Chỉ giữ lại 14 ngày gần nhất có tour
+        const closestTourDates = availableTourDates.slice(0, 14);
 
-        // Vòng lặp để tạo 14 ngày
-        for (let i = 0; i < 14; i++) {
-            let date = new Date(centerDate);
-            date.setDate(centerDate.getDate() + i); // Hiển thị các ngày xung quanh ngày hiện tại
-
-            let dayOfWeek = daysOfWeek[date.getDay()];
-            let formattedDate = date.getDate() + ' thg ' + (date.getMonth() + 1);
-
-            // Chuyển đổi date thành chuỗi để kiểm tra
-            let dateString = date.toDateString();
-
-            // Kiểm tra xem ngày này có trong danh sách availableTourDates không
-            if (availableTourDates.includes(dateString)) {
-                // Nếu chưa có closestTourDate, đặt ngày này làm ngày gần nhất
-                if (!closestTourDate) {
-                    closestTourDate = new Date(date);
-                }
+        // Nếu có ít hơn 14 ngày, ẩn các date-container còn lại
+        for (let i = 0; i < dateContainers.length; i++) {
+            if (i < closestTourDates.length) {
+                const date = closestTourDates[i];
+                const dayOfWeek = daysOfWeek[date.getDay()];
+                const formattedDate = date.getDate() + ' thg ' + (date.getMonth() + 1);
 
                 // Cập nhật nội dung của phần tử date-container
                 dateContainers[i].querySelector('[data-dayofweek]').innerText = dayOfWeek;
@@ -1288,26 +1351,19 @@
                 // Hiển thị date-container nếu có tour
                 dateContainers[i].style.display = 'flex';
 
-                // Nếu là ngày gần nhất có tour, thêm class selected
-                if (dateString === closestTourDate.toDateString()) {
+                // Đặt class 'selected' vào ngày đầu tiên trong danh sách
+                if (i === 0) {
                     dateContainers[i].classList.add('selected');
+                    selectedDate = date;
                 } else {
                     dateContainers[i].classList.remove('selected');
                 }
             } else {
-                // Ẩn date-container nếu không có tour
                 dateContainers[i].style.display = 'none';
             }
         }
 
-        // Nếu tìm thấy ngày gần nhất có tour, cập nhật selectedDate
-        if (closestTourDate) {
-            selectedDate = closestTourDate;
-        } else {
-            // Nếu không có ngày nào có tour, giữ ngày trung tâm mặc định
-            selectedDate = centerDate;
-        }
-
+        // Cập nhật các lựa chọn tour dựa trên selectedDate ban đầu
         filterTourOptions(selectedDate);
     }
 
@@ -1376,21 +1432,25 @@
             minDate: "today",
             onChange: function (selectedDates, dateStr, instance) {
                 if (selectedDates.length > 0) {
-                    const selectedDate = new Date(selectedDates[0]);
+                    // Chuyển selectedDate thành chuỗi không có múi giờ (YYYY-MM-DD)
+                    const selectedDate = selectedDates[0].toISOString().split('T')[0]; 
 
-                    // Kiểm tra xem ngày được chọn có tour hay không
-                    const availableTourDates = getAvailableTourDates();
+                    // Lấy danh sách ngày có tour và chuyển thành chuỗi dạng YYYY-MM-DD
+                    const availableTourDates = getAvailableTourDates().map(date => 
+                        new Date(date).toISOString().split('T')[0]
+                    );
 
-                    // Nếu ngày được chọn không có tourOption
-                    if (!availableTourDates.includes(selectedDate.toDateString())) {
-                        alert("Ngày được chọn không có tour nào!");
-                        // Quay lại ngày mặc định là ngày gần nhất có tour
-                        const closestTourDate = getClosestTourDate();
-                        instance.setDate(closestTourDate, true); // Đặt lại ngày trong flatpickr
-                        displayDateRange(closestTourDate); // Cập nhật UI với ngày gần nhất có tour
+                    // Kiểm tra xem selectedDate có nằm trong availableTourDates không
+                    if (!availableTourDates.includes(selectedDate)) {
+                        // Hiển thị thông báo ngay lập tức
+                        const notification = document.getElementById('notification');
+                        notification.innerText = "Ngày được chọn không có tour nào!";
+                        notification.style.display = 'block';
                     } else {
-                        // Nếu có tour, cập nhật UI
-                        displayDateRange(selectedDate);
+                        // Nếu có tour, cập nhật UI và ẩn thông báo nếu có
+                        displayDateRange(new Date(selectedDate));
+                        const notification = document.getElementById('notification');
+                        notification.style.display = 'none';
                     }
                 }
             },
@@ -1414,7 +1474,7 @@
 
     // Khi trang tải, hiển thị dải ngày với ngày đầu tiên là ngày hiện tại
     window.onload = function () {
-        displayDateRange(new Date());
+        displayDateRange();
     };
 </script>
 

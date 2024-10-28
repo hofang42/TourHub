@@ -106,7 +106,7 @@
                         <a class="nav-link active" href="SubmitReview">Review Tours</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="myreview.jsp">My Reviews</a>
+                        <a class="nav-link" href="myreviews">My Reviews</a>
                     </li>
                 </ul>
             </div>
@@ -119,17 +119,18 @@
                     <p class="alert alert-info">You have no tours to review.</p>
                 </c:if>
 
-                <!-- If there are tours to review -->
                 <c:if test="${not empty bookedTours}">
                     <div class="row">
                         <c:forEach var="booking" items="${bookedTours}">
                             <div class="col-md-4">
                                 <div class="tour-card">
-                                    <img src="${booking.tour_Img}" class="tour-image" alt="Tour Image">
+                                    <!-- Access the tour image from tourImages map using the tour_Id -->
+                                    <img src="${tourImages[booking.tour_Id]}" class="tour-image" alt="Tour Image">
                                     <div class="tour-details">
                                         <h3 class="tour-title">${booking.tour_Name}</h3>
                                         <p class="tour-info">
                                             <strong>Booking Date:</strong> ${booking.created_At} <br>
+                                            <strong>Tour Date:</strong> ${booking.tour_Date} <br>
                                             <strong>Quantity:</strong> ${booking.slot_Order} <br>
                                             <strong>Total Cost:</strong> $${booking.total_Cost}
                                         </p>
@@ -138,6 +139,7 @@
                                 </div>
                             </div>
                         </c:forEach>
+
                     </div>
                 </c:if>
 

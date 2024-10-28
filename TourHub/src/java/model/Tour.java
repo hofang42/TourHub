@@ -53,6 +53,32 @@ public class Tour {
         this.company_Id = company_Id;
     }
 
+    public Tour(String tour_Name, String tour_Description, Date start_Date, Date end_Date, String location, String total_Time, BigDecimal price, int slot, Date created_At, int company_Id) {
+        this.tour_Name = tour_Name;
+        this.tour_Description = tour_Description;
+        this.start_Date = start_Date;
+        this.end_Date = end_Date;
+        this.location = location;
+        this.total_Time = total_Time;
+        this.price = price;
+        this.slot = slot;
+        this.created_At = created_At;
+        this.company_Id = company_Id;
+    }
+
+    public Tour(String tour_Name, String tour_Description, Date start_Date, Date end_Date, String location, String total_Time, BigDecimal price, int slot, String tour_Status, Date created_At) {
+        this.tour_Name = tour_Name;
+        this.tour_Description = tour_Description;
+        this.start_Date = start_Date;
+        this.end_Date = end_Date;
+        this.location = location;
+        this.total_Time = total_Time;
+        this.price = price;
+        this.slot = slot;
+        this.tour_Status = tour_Status;
+        this.created_At = created_At;
+    }
+
     public String getTour_Id() {
         return tour_Id;
     }

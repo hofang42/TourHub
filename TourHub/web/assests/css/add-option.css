@@ -1,0 +1,25 @@
+/* Style cho nhóm checkbox */
+.day-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Khoảng cách giữa các checkbox */
+    margin-top: 5px;
+}
+
+.day-checkbox-group label {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.day-checkbox-group label:hover {
+    background-color: #f0f0f0;
+}
+
+.day-checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+}

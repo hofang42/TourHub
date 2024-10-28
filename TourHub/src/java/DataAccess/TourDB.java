@@ -214,7 +214,7 @@ public class TourDB implements DatabaseInfo {
     }
 
     public void saveTourToDatabase(HttpServletRequest request, String tourName, String tourDescription, String startDate,
-            String endDate, String location, String duration, double price, int slot, String tourImg) throws SQLException {
+            String endDate, String location, String duration, BigDecimal price, int slot, String tourImg) throws SQLException {
         int companyId = new UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
         String tourId = generateTourId();
         String query = "INSERT INTO Tour (tour_Id, tour_Name, tour_Description, start_Date, end_Date, "
@@ -230,7 +230,7 @@ public class TourDB implements DatabaseInfo {
             pstmt.setString(5, endDate);
             pstmt.setString(6, location);
             pstmt.setString(7, duration);
-            pstmt.setDouble(8, price);
+            pstmt.setBigDecimal(8, price);
             pstmt.setInt(9, slot);
             pstmt.setString(10, "Pending");
             pstmt.setString(11, tourImg);

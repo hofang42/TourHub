@@ -154,7 +154,7 @@ public class ReviewDB implements DatabaseInfo {
             e.printStackTrace();
         }
 
-            return imageUrl != null ? imageUrl : "assests/images/1.jpg";
+        return imageUrl != null ? imageUrl : "assests/images/default-tour.jpg";
     }
 
     public List<Review> getReviewsByTourId(String tourId) {
@@ -418,4 +418,23 @@ public class ReviewDB implements DatabaseInfo {
         return comments;
     }
 
+    public static void main(String[] args) {
+        ReviewDB reviewdb = new ReviewDB();
+        int userId = 6; // Replace with an actual user ID
+
+        // Get the booked tours without a review for the specified user ID
+        List<Booking> bookings = reviewdb.getBookedToursWithoutReview(userId);
+        if (bookings.isEmpty()) {
+            System.out.println("No bookings found without reviews for user ID: " + userId);
+        } else {
+            for (Booking booking : bookings) {
+                System.out.println("Booking ID: " + booking.getBook_Id());
+                System.out.println("Created At: " + booking.getCreated_At());
+                System.out.println("Slot Order: " + booking.getSlot_Order());
+                System.out.println("Total Cost: " + booking.getTotal_Cost());
+                System.out.println("Tour ID: " + booking.getTour_Id());
+                System.out.println("-----");
+            }
+        }
+    }
 }

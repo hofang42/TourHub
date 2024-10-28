@@ -5,6 +5,8 @@
 package controller;
 
 import DataAccess.BookingDB;
+import DataAccess.UserDB;
+import DataAccess.hoang_UserDB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,7 +14,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import model.Booking;
 
 /**
@@ -33,39 +42,58 @@ public class ExportCsvServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         // Set UTF-8 encoding for both request and response
+        // Set UTF-8 encoding for both request and response
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
         // Set the content type for CSV export and the file name
         response.setContentType("text/csv; charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename=\"bookings.csv\"");
-        
-        // Get data to be exported (replace this with actual data fetching logic)
-        List<Booking> bookings = getBookingsFromDatabase();
+        response.setHeader("Content-Disposition", "attachment; filename=\"summary-for-provider.csv\"");
 
+        int companyId = 0;
+        try {
+            companyId = new hoang_UserDB().getProviderIdFromUserId(new UserDB().getUserFromSession(request.getSession()).getUser_Id());
+        } catch (SQLException ex) {
+
+        }
+        hoang_UserDB book = new hoang_UserDB();
+        // Get the current year
+        int currentYear = LocalDate.now().getYear();
+        double[] monthlyProfit = book.getMonthlyProfitByYear(companyId, currentYear); // assuming this method exists
+        BigDecimal totalProfitCurrentYear = book.getTotalProfitCurrentYear(companyId);
+
+        int[] monthlyBooking = book.getTotalBookingMonthly(companyId, currentYear);
+        int totalBookingCurrentYear = book.getTotalBookingCurrentYear(companyId);
+
+        List<Map<String, Object>> hotDestinationCurrentYear = book.getHotDestination(companyId, currentYear);
         try (PrintWriter writer = response.getWriter()) {
-            // Write CSV header
-            writer.println("Booking ID, User Name, Tour Name, Booking Date, Price");
+            // Ensure this is written on one line
+            writer.println("\"This summary contains the monthly profit, booking data, and the most popular destinations for the current year.\"");
 
-            // Write booking data (adjust to match your Booking object properties)
-            for (Booking booking : bookings) {
+// Blank line for spacing
+            writer.println();
+
+            // Write CSV header for monthly profit and booking data
+            writer.println("Month, Monthly Profit, Monthly Booking");
+
+            // Write monthly data
+            for (int month = 0; month < 12; month++) {
                 writer.println(
-                    booking.getBook_Id() + "," +
-                    booking.getCus_Id() + "," +
-                    booking.getTour_Name() + "," +
-                    booking.getCreated_At() + "," +
-                    booking.getBooking_Detail()
+                        (month + 1) + ","
+                        + monthlyProfit[month] + ","
+                        + monthlyBooking[month]
                 );
             }
+
+            // Write total data for profit and booking
+            writer.println(); // blank line for spacing
+            writer.println("Total," + totalProfitCurrentYear + "," + totalBookingCurrentYear);
+
+            // Blank line to separate different sections
+            writer.println();
+
         }
-    }
-    
-    private List<Booking> getBookingsFromDatabase() {
-        // Replace this with your actual logic to fetch bookings from the database
-        // Example: Call a DAO method to fetch the bookings
-        BookingDB book = new BookingDB();
-        return book.getAllBookings(); // assuming this method exists
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

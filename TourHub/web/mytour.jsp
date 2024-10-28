@@ -34,6 +34,23 @@
             .no-darken-effect {
                 filter: brightness(1) !important; /* Keeps the content at normal brightness */
             }
+            .button-primary {
+                background-color: #f39c12; /* Orange background */
+                color: white; /* White text */
+                border: none; /* No border */
+                padding: 12px 24px; /* Padding for size */
+                text-align: center; /* Center text */
+                text-decoration: none; /* No underline */
+                font-size: 16px; /* Font size */
+                font-weight: bold; /* Bold text */
+                border-radius: 15px; /* Rounded corners */
+                cursor: pointer; /* Pointer on hover */
+                display: inline-block;
+            }
+
+            .button-primary:hover {
+                background-color: #111E88; /* Slightly darker shade on hover */
+            }
         </style>
     </head>
     <body>
@@ -165,22 +182,31 @@
                         </form>
                         <!-- Add New Tour Button -->
                         <div style="display: flex; justify-content: space-between; align-items: center">
-                            <div style="margin-top: 10px;">
+                            <div style="margin-top: 10px; display: flex; width: 100%">
                                 <form action="add-tour.jsp" method="GET">
                                     <button type="submit" class="button button-primary">Add New Tour</button>
                                 </form>
+                                <form method="post" action="import-tour?action=save-import" enctype="multipart/form-data" style="margin-left: auto;" accept-charset="UTF-8">
+                                    <label for="file-upload" class="button-primary">
+                                        Import Tour
+                                    </label>
+                                    <input type="file" id="file-upload" name="file" style="display: none;" onchange="this.form.submit()" />
+                                </form>
+
                             </div>
+
                             <div class="sort-options">
-                                <!--                                <label for="sortOrder">Sort by:</label>
-                                                                <select id="sortOrder" name="sortOrder" onchange="sortTours()">
-                                                                    <option value="most-booking" ${param.sortOrder == 'most-booking' ? 'selected="selected"' : ''}>Most Booking</option>
-                                                                    <option value="price-asc" ${param.sortOrder == 'price-asc' ? 'selected="selected"' : ''}>Lowest Price</option>
-                                                                    <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected="selected"' : ''}>Highest Price</option>
-                                                                </select>-->
+                                <label for="sortOrder">Sort by:</label>
+                                <select id="sortOrder" name="sortOrder" onchange="sortTours()">
+                                    <option value="most-booking" ${param.sortOrder == 'most-booking' ? 'selected="selected"' : ''}>Most Booking</option>
+                                    <option value="price-asc" ${param.sortOrder == 'price-asc' ? 'selected="selected"' : ''}>Lowest Price</option>
+                                    <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected="selected"' : ''}>Highest Price</option>
+                                </select>
                             </div>
 
 
                         </div>
+                        <div>Or you can add tours by downloading and filling out this <a href="./assests/tour-import-template/addtour.csv" download="addtour.csv">form</a></div>
                         <!-- Error Message Display -->
                         <c:if test="${not empty errorMessage}">
                             <div class="alert alert-danger">
@@ -266,9 +292,16 @@
                                                                 <div class="event-default-caption">
                                                                     <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                       style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
                                                                         Edit
                                                                     </a>
+                                                                       
+                                                                    <a href="provider-management?action=add-option&tourId=${tour.tour_Id}" 
+                                                                       class="button button-xs button-secondary button-nina tour-visit-count" 
+                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                        Add Option
+                                                                    </a>
+                                                                       
                                                                     <c:if test="${tour.tour_Status == 'Active'}">
                                                                         <a href="provider-management?action=set-tour-status&tourId=${tour.tour_Id}&status=Hidden" 
                                                                            class="button button-xs button-secondary button-nina tour-visit-count" 
@@ -317,18 +350,18 @@
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const burger = document.querySelector('.burger');
-                const navigation = document.querySelector('.navigation-admin');
-                const main = document.querySelector('.main-admin');
-                const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const burger = document.querySelector('.burger');
+                                        const navigation = document.querySelector('.navigation-admin');
+                                        const main = document.querySelector('.main-admin');
+                                        const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                burger.addEventListener('click', function () {
-                    navigation.classList.toggle('active');
-                    main.classList.toggle('active');
-                    profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                });
-            });
+                                        burger.addEventListener('click', function () {
+                                            navigation.classList.toggle('active');
+                                            main.classList.toggle('active');
+                                            profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                        });
+                                    });
 
 
         </script>
@@ -354,7 +387,7 @@
             function sortTours() {
                 const sortOrder = document.getElementById('sortOrder').value;
                 // Redirect to the sorted page with the selected order
-                window.location.href = 'provider-management?action=sort&sortOrder=' + sortOrder;
+                window.location.href = 'sort?sortOrder=' + sortOrder;
             }
         </script>
 
