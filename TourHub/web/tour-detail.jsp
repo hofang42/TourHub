@@ -588,7 +588,7 @@
                                 </div>                                                      
                             </div> 
                             <div class="tour-save-share">
-                                <button class="save-btn">
+                                <button class="save-btn" onclick="sharePage()">
                                     <i class="fa-regular fa-bookmark"></i>
                                 </button>
                                 <button class="share-btn" onclick="sharePage()">

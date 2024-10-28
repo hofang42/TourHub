@@ -88,7 +88,7 @@
                 border: none;
                 border-radius: 3px;
                 cursor: pointer;
-                transition: background-color 0.3s ease
+                transition: background-color 0.3s ease;
 
                 </style>
             </head>
@@ -258,12 +258,29 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="location">Location: <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-control" id="location" name="location" value="${tour.location}" maxlength="50" required>
+                                            <select class="form-control" id="location" name="location" style="height: 40px;
+                                                    padding: 8px;
+                                                    font-size: 16px;" required>
+                                                <option value="">Select a province</option>
+                                                <c:set var="location" value="${location}"/> <!-- Move this line outside the forEach -->
+                                                <c:forEach var="province" items="${provinces}">
+                                                    <option value="${province.province_name}" style="height: 40px;
+                                                            padding: 8px;
+                                                            font-size: 16px;"
+                                                            <c:if test="${province.province_name == location}">selected</c:if>
+                                                            >${province.province_name}</option>
+                                                </c:forEach>
+                                            </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="price">Price: <span style="color: red;">*</span></label>
-                                            <input type="number" class="form-control" id="price" name="price" value="${tour.price}" required>
-                                        </div>
+
+
+
+
+
+                                        <!--                                        <div class="form-group">
+                                                                                    <label for="price">Price: <span style="color: red;">*</span></label>
+                                                                                    <input type="number" class="form-control" id="price" name="price" value="${tour.price}" required>
+                                                                                </div>-->
                                         <div class="form-group">
                                             <label for="slot">Slot: <span style="color: red;">*</span></label>
                                             <input type="number" class="form-control" id="slot" name="slot" value="${tour.slot}" required>
