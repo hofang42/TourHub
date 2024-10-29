@@ -364,11 +364,17 @@
 
                                                                                 const uploader = document.getElementById('uploader');
                                                                                 const fileButton = document.getElementById('fileButton');
+                                                                                const saveButton = document.querySelector('button[type="submit"]');
+                                                                                saveButton.disabled = true; // Disable save button initially
+
+                                                                                let uploadedCount = 0; // Track the count of uploaded files
+                                                                                let totalFiles = 0; // Total files selected
                                                                                 const imageUrls = [];
 
                                                                                 fileButton.addEventListener('change', function (e) {
-                                                                                    const files = e.target.files;
-                                                                                    Array.from(files).forEach(uploadFile);
+                                                                                    uploadedCount = 0; // Reset the upload count on new selection
+                                                                                    totalFiles = e.target.files.length; // Set total files selected
+                                                                                    Array.from(e.target.files).forEach(uploadFile);
                                                                                 });
 
                                                                                 function uploadFile(file) {
@@ -378,6 +384,7 @@
                                                                                     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
                                                                                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                                                                                         uploader.value = progress;
+                                                                                        saveButton.disabled = true; // Disable save button during upload
                                                                                     }, function (error) {
                                                                                         console.error("Upload failed:", error);
                                                                                     }, function () {
@@ -385,6 +392,11 @@
                                                                                             imageUrls.push(downloadURL);
                                                                                             document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
                                                                                             displayImage(downloadURL);
+
+                                                                                            uploadedCount++; // Increase the count of uploaded files
+                                                                                            if (uploadedCount === totalFiles) {
+                                                                                                saveButton.disabled = false; // Enable save button when all files are uploaded
+                                                                                            }
                                                                                         });
                                                                                     });
                                                                                 }
@@ -398,14 +410,15 @@
                                                                                     imgDiv.appendChild(imgElement);
                                                                                 }
 
-//                                                                                function handleFormSubmit(event) {
-//                                                                                    if (!document.getElementById("tour_Img_URLs").value) {
-//                                                                                        alert("Please wait until all images are uploaded.");
-//                                                                                        return false;
-//                                                                                    }
-//                                                                                    return true;
-//                                                                                }
+//                                                                                 function handleFormSubmit(event) {
+//                                                                                     if (!document.getElementById("tour_Img_URLs").value) {
+//                                                                                         alert("Please wait until all images are uploaded.");
+//                                                                                         return false;
+//                                                                                     }
+//                                                                                     return true;
+//                                                                                 }
             </script>
+
             <script>
                 window.onload = function () {
                     const message = '<c:out value="${message}" />';

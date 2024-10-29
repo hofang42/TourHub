@@ -254,7 +254,6 @@
                 </script>-->
         <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
         <script type="text/javascript">
-                                    // Firebase configuration
                                     const firebaseConfig = {
                                         apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
                                         authDomain: "tourhub-41aa5.firebaseapp.com",
@@ -266,10 +265,10 @@
                                     };
                                     firebase.initializeApp(firebaseConfig);
 
-                                    var uploader = document.getElementById('uploader');
-                                    var fileButton = document.getElementById('fileButton');
+                                    const uploader = document.getElementById('uploader');
+                                    const fileButton = document.getElementById('fileButton');
+                                    const imageUrls = [];
 
-                                    // Upload files to Firebase
                                     fileButton.addEventListener('change', function (e) {
                                         const files = e.target.files;
                                         Array.from(files).forEach(uploadFile);
@@ -278,14 +277,16 @@
                                     function uploadFile(file) {
                                         const storageRef = firebase.storage().ref('images/' + file.name);
                                         const uploadTask = storageRef.put(file);
+
                                         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
-                                            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                                             uploader.value = progress;
                                         }, function (error) {
                                             console.error("Upload failed:", error);
                                         }, function () {
                                             uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                                                document.getElementById("tour_Img_URL").value += downloadURL + ";";
+                                                imageUrls.push(downloadURL);
+                                                document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
                                                 displayImage(downloadURL);
                                             });
                                         });
@@ -300,14 +301,13 @@
                                         imgDiv.appendChild(imgElement);
                                     }
 
-//            function submitForm(event) {
-//                const imageURL = document.getElementById("tour_Img_URL").value;
-//                if (!imageURL) {
-//                    alert("Please wait until all images are uploaded.");
-//                    return false;
-//                }
-//                return true;
-//            }
+//                                                                                function handleFormSubmit(event) {
+//                                                                                    if (!document.getElementById("tour_Img_URLs").value) {
+//                                                                                        alert("Please wait until all images are uploaded.");
+//                                                                                        return false;
+//                                                                                    }
+//                                                                                    return true;
+//                                                                                }
         </script>
         <script src="dist/js/theme.min.js"></script>
         <!-- Include Toastify JS -->

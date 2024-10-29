@@ -243,7 +243,7 @@ public class ProviderManagementServlet extends HttpServlet {
 
             // Remove the image from the list
             images.remove(imageToRemove);
-
+            request.setAttribute("message", "Image deleted successful");
             // Update the tour's images in the database with the updated list
             hoangDB.updateTourImages(tourId, images);
 
@@ -303,16 +303,31 @@ public class ProviderManagementServlet extends HttpServlet {
         // Get the uploaded image URLs from the hidden input
         String newImageFilenames = request.getParameter("tour_Img_URLs");
 
-        // Combine new images with existing images
-        List<String> combinedImages = new ArrayList<>(oldTour.getTour_Img() != null ? oldTour.getTour_Img() : new ArrayList<>());
-        if (newImageFilenames != null && !newImageFilenames.isEmpty()) {
-            List<String> newImagesList = Arrays.asList(newImageFilenames.split(";"));
-            for (String newImage : newImagesList) {
-                if (!combinedImages.contains(newImage)) {
+        // Initialize combinedImages list with old images
+        List<String> combinedImages = new ArrayList<>();
+        // Initialize combinedImages list with old images
+        if (oldTour.getTour_Img() != null) {
+            combinedImages.addAll(oldTour.getTour_Img()); // Directly add all old images to combinedImages
+        }
+
+        System.out.println("TESTTT COMBINE IMAGE BEFORE: " + combinedImages);
+
+        if (newImageFilenames != null && !newImageFilenames.trim().isEmpty()) {
+            // Split new images by semicolon and iterate, ignoring empty entries
+            for (String newImage : newImageFilenames.split(";")) {
+                newImage = newImage.trim();
+
+                // Check if newImage is non-empty and not already in the list
+                if (!newImage.isEmpty() && !combinedImages.contains(newImage)) {
                     combinedImages.add(newImage); // Add new image if it’s not already in the list
                 }
             }
         }
+
+// Remove any empty string entries from combinedImages, if any slipped in
+        combinedImages.removeIf(String::isEmpty);
+
+        System.out.println("TESTTT COMBINE IMAGE AFTER: " + combinedImages);
 
         // Compare and update fields if changes exist
         boolean isUpdated = false;
@@ -345,7 +360,6 @@ public class ProviderManagementServlet extends HttpServlet {
             isUpdated = true;
         }
 
-        // Update the image list if new images are added
         if (!combinedImages.equals(oldTour.getTour_Img())) {
             oldTour.setTour_Img(combinedImages);
             isUpdated = true;
@@ -365,7 +379,7 @@ public class ProviderManagementServlet extends HttpServlet {
         }
         forwardToEditPage(request, response, tourId);
     }
-// Helper method to forward to the edit page
+    // Helper method to forward to the edit page
 
     private void forwardToEditPage(HttpServletRequest request, HttpServletResponse response, String tourId) throws IOException {
         try {
