@@ -5,7 +5,7 @@
 // Automatically call calculateDuration when the page loads
 window.onload = function () {
     calculateDuration();
-}
+};
 function reloadData() {
     var date = document.getElementById("date").value;
     $.ajax({

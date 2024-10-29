@@ -441,7 +441,7 @@
             </script>
 
             <c:remove var="message" />
-
+            <script src="assests/js/edit-tour.js"></script>
             <script src="dist/js/theme.min.js"></script>
         </body>
     </html>

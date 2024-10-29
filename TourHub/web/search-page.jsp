@@ -1,8 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="java.net.URLEncoder" %>
-<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page buffer="32kb" %>

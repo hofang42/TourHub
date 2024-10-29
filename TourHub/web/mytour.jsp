@@ -238,7 +238,7 @@
                                                                 </c:otherwise>
                                                             </c:choose>
                                                             <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                                <img src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 250px">
+                                                                <img src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 450px; object-fit: cover">
                                                                 <div class="event-default-caption">                                                           
                                                                     <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 

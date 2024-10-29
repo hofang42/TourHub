@@ -243,7 +243,7 @@ public class ProviderManagementServlet extends HttpServlet {
 
             // Remove the image from the list
             images.remove(imageToRemove);
-            request.setAttribute("message", "Image deleted successful");
+
             // Update the tour's images in the database with the updated list
             hoangDB.updateTourImages(tourId, images);
 
