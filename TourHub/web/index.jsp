@@ -138,7 +138,7 @@
                                         <a href="manage.jsp">System Management</a>
                                         <a href="admin-chat.jsp">Chat with customer</a>
                                     </c:if>
-                                    
+
                                     <a href="logout">Logout</a>
                                 </div>
                             </div>

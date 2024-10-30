@@ -313,7 +313,7 @@
                                                 </div>
                                             </c:if>
                                         </div>
-
+                                        <c:out value="${message}" />
                                         <button type="submit" class="btn btn-primary btn-block action-link approve">Save</button>
                                     </form>
                                 </c:otherwise>
@@ -332,96 +332,26 @@
             <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
             <script>
-                                                                                document.addEventListener('DOMContentLoaded', function () {
-                                                                                    const burger = document.querySelector('.burger');
-                                                                                    const navigation = document.querySelector('.navigation-admin');
-                                                                                    const main = document.querySelector('.main-admin');
-                                                                                    const profileCard = document.querySelector('.profile-card'); // Select the profile card
+//                                                                                document.addEventListener('DOMContentLoaded', function () {
+//                                                                                    const burger = document.querySelector('.burger');
+//                                                                                    const navigation = document.querySelector('.navigation-admin');
+//                                                                                    const main = document.querySelector('.main-admin');
+//                                                                                    const profileCard = document.querySelector('.profile-card'); // Select the profile card
+//
+//                                                                                    burger.addEventListener('click', function () {
+//                                                                                        navigation.classList.toggle('active');
+//                                                                                        main.classList.toggle('active');
+//                                                                                        profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+//                                                                                    });
+//                                                                                });
 
-                                                                                    burger.addEventListener('click', function () {
-                                                                                        navigation.classList.toggle('active');
-                                                                                        main.classList.toggle('active');
-                                                                                        profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                                                                    });
-                                                                                });
 
-
-            </script>
-            <script src="./assests/js/edit-tour.js"></script>
-            <!-- Firebase Script Configuration -->
-            <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
-            <script type="text/javascript">
-                                                                                const firebaseConfig = {
-                                                                                    apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
-                                                                                    authDomain: "tourhub-41aa5.firebaseapp.com",
-                                                                                    projectId: "tourhub-41aa5",
-                                                                                    storageBucket: "tourhub-41aa5.appspot.com",
-                                                                                    messagingSenderId: "556340467473",
-                                                                                    appId: "1:556340467473:web:2f6de24bdbb33709e51eb0",
-                                                                                    measurementId: "G-0JBZE81PGF"
-                                                                                };
-                                                                                firebase.initializeApp(firebaseConfig);
-
-                                                                                const uploader = document.getElementById('uploader');
-                                                                                const fileButton = document.getElementById('fileButton');
-                                                                                const saveButton = document.querySelector('button[type="submit"]');
-                                                                                saveButton.disabled = true; // Disable save button initially
-
-                                                                                let uploadedCount = 0; // Track the count of uploaded files
-                                                                                let totalFiles = 0; // Total files selected
-                                                                                const imageUrls = [];
-
-                                                                                fileButton.addEventListener('change', function (e) {
-                                                                                    uploadedCount = 0; // Reset the upload count on new selection
-                                                                                    totalFiles = e.target.files.length; // Set total files selected
-                                                                                    Array.from(e.target.files).forEach(uploadFile);
-                                                                                });
-
-                                                                                function uploadFile(file) {
-                                                                                    const storageRef = firebase.storage().ref('images/' + file.name);
-                                                                                    const uploadTask = storageRef.put(file);
-
-                                                                                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
-                                                                                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                                                                        uploader.value = progress;
-                                                                                        saveButton.disabled = true; // Disable save button during upload
-                                                                                    }, function (error) {
-                                                                                        console.error("Upload failed:", error);
-                                                                                    }, function () {
-                                                                                        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                                                                                            imageUrls.push(downloadURL);
-                                                                                            document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
-                                                                                            displayImage(downloadURL);
-
-                                                                                            uploadedCount++; // Increase the count of uploaded files
-                                                                                            if (uploadedCount === totalFiles) {
-                                                                                                saveButton.disabled = false; // Enable save button when all files are uploaded
-                                                                                            }
-                                                                                        });
-                                                                                    });
-                                                                                }
-
-                                                                                function displayImage(url) {
-                                                                                    const imgDiv = document.getElementById("imgDiv");
-                                                                                    const imgElement = document.createElement("img");
-                                                                                    imgElement.src = url;
-                                                                                    imgElement.width = 100;
-                                                                                    imgElement.height = 100;
-                                                                                    imgDiv.appendChild(imgElement);
-                                                                                }
-
-//                                                                                 function handleFormSubmit(event) {
-//                                                                                     if (!document.getElementById("tour_Img_URLs").value) {
-//                                                                                         alert("Please wait until all images are uploaded.");
-//                                                                                         return false;
-//                                                                                     }
-//                                                                                     return true;
-//                                                                                 }
-            </script>
+            </script>            
 
             <script>
                 window.onload = function () {
                     const message = '<c:out value="${message}" />';
+                    console.log("Message:", message);
                     if (message) {
                         Toastify({
                             text: message,
@@ -429,11 +359,11 @@
                             gravity: "top",
                             position: "right",
                             backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                            close: true, // Enables the close button
+                            close: true,
                             style: {
-                                fontSize: "18px", // Makes the text larger
-                                padding: "20px", // Increases padding for a bigger appearance
-                                borderRadius: "8px" // Optional: makes the corners more rounded
+                                fontSize: "18px",
+                                padding: "20px",
+                                borderRadius: "8px"
                             }
                         }).showToast();
                     }
@@ -441,7 +371,69 @@
             </script>
 
             <c:remove var="message" />
+            <!-- Firebase Script Configuration -->
+            <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+            <script type="text/javascript">
+                const firebaseConfig = {
+                    apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
+                    authDomain: "tourhub-41aa5.firebaseapp.com",
+                    projectId: "tourhub-41aa5",
+                    storageBucket: "tourhub-41aa5.appspot.com",
+                    messagingSenderId: "556340467473",
+                    appId: "1:556340467473:web:2f6de24bdbb33709e51eb0",
+                    measurementId: "G-0JBZE81PGF"
+                };
+                firebase.initializeApp(firebaseConfig);
+
+                const uploader = document.getElementById('uploader');
+                const fileButton = document.getElementById('fileButton');
+                const saveButton = document.querySelector('button[type="submit"]');
+                saveButton.disabled = true; // Disable save button initially
+
+                let uploadedCount = 0; // Track the count of uploaded files
+                let totalFiles = 0; // Total files selected
+                const imageUrls = [];
+
+                fileButton.addEventListener('change', function (e) {
+                    uploadedCount = 0; // Reset the upload count on new selection
+                    totalFiles = e.target.files.length; // Set total files selected
+                    Array.from(e.target.files).forEach(uploadFile);
+                });
+
+                function uploadFile(file) {
+                    const storageRef = firebase.storage().ref('images/' + file.name);
+                    const uploadTask = storageRef.put(file);
+
+                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        uploader.value = progress;
+                        saveButton.disabled = true; // Disable save button during upload
+                    }, function (error) {
+                        console.error("Upload failed:", error);
+                    }, function () {
+                        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                            imageUrls.push(downloadURL);
+                            document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
+                            displayImage(downloadURL);
+
+                            uploadedCount++; // Increase the count of uploaded files
+                            if (uploadedCount === totalFiles) {
+                                saveButton.disabled = false; // Enable save button when all files are uploaded
+                            }
+                        });
+                    });
+                }
+
+                function displayImage(url) {
+                    const imgDiv = document.getElementById("imgDiv");
+                    const imgElement = document.createElement("img");
+                    imgElement.src = url;
+                    imgElement.width = 100;
+                    imgElement.height = 100;
+                    imgDiv.appendChild(imgElement);
+                }
+            </script>
             <script src="assests/js/edit-tour.js"></script>
-            <script src="dist/js/theme.min.js"></script>
+            <!--<script src="dist/js/theme.min.js"></script>-->
         </body>
     </html>

@@ -198,13 +198,7 @@ function displayTours(city) {
         // Append the tour name to the tour info div
         tourInfoDiv.appendChild(tourName);
 
-        // Create the price span, set its content, and append it to the tour info div
-        const priceSpan = document.createElement('span');
-        priceSpan.classList.add('heading-5');
-        const price = tour.price;  // Assuming tour.price contains the price value
-        const formattedPrice = new Intl.NumberFormat('vi-VN').format(price);
-        priceSpan.textContent = `${formattedPrice} VND`;
-        tourInfoDiv.appendChild(priceSpan);
+
         // Append the tour info div to the event default inner div
         eventDefaultInner.appendChild(tourInfoDiv);
 

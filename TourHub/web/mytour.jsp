@@ -26,6 +26,13 @@
         <link rel="stylesheet" href="assests/css/style.css" />
 
 
+        <link rel="stylesheet" href="assests/css/style_profile.css" media="print" onload="this.media = 'all'">
+        <link rel="stylesheet" href="assests/css/customer.css" media="print" onload="this.media = 'all'">
+        <link rel="stylesheet" href="assests/css/provider_analysis.css" media="print" onload="this.media = 'all'">
+        <link rel="stylesheet" href="assests/css/edit-tour.css" media="print" onload="this.media = 'all'">
+        <link rel="stylesheet" href="assests/css/bootstrap.css" media="print" onload="this.media = 'all'">
+        <link rel="stylesheet" href="assests/css/style.css" media="print" onload="this.media = 'all'">
+
         <!-- Toasify JavaScript -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
@@ -55,6 +62,60 @@
             .button-primary:hover {
                 background-color: #111E88; /* Slightly darker shade on hover */
             }
+            /* Skeleton loading effect */
+            .skeleton {
+                background: #eee; /* Light gray placeholder */
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* Animation for skeleton loading effect */
+            .skeleton::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -150px;
+                height: 100%;
+                width: 150px;
+                background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
+                animation: skeleton-loading 1.5s infinite;
+            }
+
+            /* Keyframes for loading animation */
+            @keyframes skeleton-loading {
+                0% {
+                    transform: translateX(-150px);
+                }
+                100% {
+                    transform: translateX(100%);
+                }
+            }
+
+            /* Fade-in effect when image is fully loaded */
+            .lazy {
+                opacity: 0;
+                transition: opacity 0.8s ease;
+            }
+
+            .fade-in {
+                opacity: 1;
+            }
+
+            /* Remove skeleton effect once image is loaded */
+            .fade-in.loaded + .skeleton {
+                display: none;
+            }
+
+            /* Initial hidden state for lazy divs */
+            .lazy {
+                opacity: 0;
+                transition: opacity 0.8s ease; /* Fade-in effect */
+            }
+
+            .fade-in {
+                opacity: 1;
+            }
+
         </style>
     </head>
     <body>
@@ -226,8 +287,7 @@
                                 <div class="order">
                                     <div class="row row-50">
                                         <c:forEach var="tour" items="${tours}">
-                                            <div class="col-md-6 col-xl-4">
-
+                                            <div class="col-md-6 col-xl-4 lazy">
                                                 <article class="event-default-wrap">
                                                     <c:choose>
                                                         <c:when test="${tour.tour_Status == 'Hidden'}">
@@ -238,7 +298,10 @@
                                                                 </c:otherwise>
                                                             </c:choose>
                                                             <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                                <img src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 450px; object-fit: cover">
+                                                                <!--<img src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 450px; object-fit: cover">-->
+                                                                <figure class="event-default-image skeleton" style="max-width: 300px; margin: auto;">
+                                                                    <img data-src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 450px; object-fit: cover" class="lazy fade-in">
+                                                                </figure>
                                                                 <div class="event-default-caption">                                                           
                                                                     <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
@@ -361,6 +424,64 @@
         </script>
 
         <c:remove var="message" />
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const lazyDivs = document.querySelectorAll(".col-md-6.col-xl-4.lazy");
+
+                if ("IntersectionObserver" in window) {
+                    const lazyDivObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add("fade-in"); // Add fade-in class to make the element visible
+                                lazyDivObserver.unobserve(entry.target);
+                            }
+                        });
+                    });
+
+                    lazyDivs.forEach(lazyDiv => {
+                        lazyDivObserver.observe(lazyDiv);
+                    });
+                } else {
+                    // Fallback for older browsers
+                    lazyDivs.forEach(div => {
+                        div.classList.add("fade-in");
+                    });
+                }
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+                const lazyImages = document.querySelectorAll("img.lazy");
+
+                if ("IntersectionObserver" in window) {
+                    const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const lazyImage = entry.target;
+                                lazyImage.src = lazyImage.dataset.src;
+                                lazyImage.classList.add("fade-in"); // Add fade-in class to fade in the image
+                                lazyImage.onload = () => {
+                                    lazyImage.classList.add("loaded"); // Mark as loaded for additional styling
+                                    lazyImage.parentElement.classList.remove("skeleton"); // Remove skeleton effect
+                                };
+                                lazyImageObserver.unobserve(lazyImage);
+                            }
+                        });
+                    });
+
+                    lazyImages.forEach(lazyImage => {
+                        lazyImageObserver.observe(lazyImage);
+                    });
+                } else {
+                    // Fallback for older browsers
+                    lazyImages.forEach(img => {
+                        img.src = img.dataset.src;
+                        img.classList.add("fade-in");
+                        img.onload = () => img.classList.add("loaded");
+                    });
+                }
+            });
+
+        </script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
 
         <script src="dist/js/theme.min.js"></script>
     </body>
