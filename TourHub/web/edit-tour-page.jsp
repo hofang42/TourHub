@@ -24,9 +24,7 @@
         <link rel="stylesheet" href="assests/css/bootstrap.css" />
         <!--<link rel="stylesheet" href="assests/css/style.css" />-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
-        <!-- Toasify JavaScript -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
-
+        <!-- Toasify JavaScript -->        
         <title>Analytic</title>
         <style>
             body {
@@ -301,7 +299,7 @@
                                                                     <button class="btn btn-danger" 
                                                                             onclick="removeImage('${tour.tour_Id}', '${image}')"
                                                                             style="font-size: 12px;
-                                                                            padding: 2px 5px;
+                                                                            padding: 3px 7px;
                                                                             line-height: 1;
                                                                             width: 50px;">
                                                                         Remove
@@ -312,8 +310,7 @@
                                                     </c:forEach>
                                                 </div>
                                             </c:if>
-                                        </div>
-                                        <c:out value="${message}" />
+                                        </div>                                        
                                         <button type="submit" class="btn btn-primary btn-block action-link approve">Save</button>
                                     </form>
                                 </c:otherwise>
@@ -322,6 +319,7 @@
                     </div>
                 </main>          
                 <!-- MAIN -->
+                <div id="toastContainer" data-message="<c:out value='${message}' />"></div>
             </section>
             <!-- CONTENT -->
 
@@ -347,93 +345,72 @@
 
 
             </script>            
-
-            <script>
-                window.onload = function () {
-                    const message = '<c:out value="${message}" />';
-                    console.log("Message:", message);
-                    if (message) {
-                        Toastify({
-                            text: message,
-                            duration: 3000,
-                            gravity: "top",
-                            position: "right",
-                            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                            close: true,
-                            style: {
-                                fontSize: "18px",
-                                padding: "20px",
-                                borderRadius: "8px"
-                            }
-                        }).showToast();
-                    }
-                };
-            </script>
-
             <c:remove var="message" />
             <!-- Firebase Script Configuration -->
             <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
             <script type="text/javascript">
-                const firebaseConfig = {
-                    apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
-                    authDomain: "tourhub-41aa5.firebaseapp.com",
-                    projectId: "tourhub-41aa5",
-                    storageBucket: "tourhub-41aa5.appspot.com",
-                    messagingSenderId: "556340467473",
-                    appId: "1:556340467473:web:2f6de24bdbb33709e51eb0",
-                    measurementId: "G-0JBZE81PGF"
-                };
-                firebase.initializeApp(firebaseConfig);
+                                                                                const firebaseConfig = {
+                                                                                    apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
+                                                                                    authDomain: "tourhub-41aa5.firebaseapp.com",
+                                                                                    projectId: "tourhub-41aa5",
+                                                                                    storageBucket: "tourhub-41aa5.appspot.com",
+                                                                                    messagingSenderId: "556340467473",
+                                                                                    appId: "1:556340467473:web:2f6de24bdbb33709e51eb0",
+                                                                                    measurementId: "G-0JBZE81PGF"
+                                                                                };
+                                                                                firebase.initializeApp(firebaseConfig);
 
-                const uploader = document.getElementById('uploader');
-                const fileButton = document.getElementById('fileButton');
-                const saveButton = document.querySelector('button[type="submit"]');
-                saveButton.disabled = true; // Disable save button initially
+                                                                                const uploader = document.getElementById('uploader');
+                                                                                const fileButton = document.getElementById('fileButton');
+                                                                                const saveButton = document.querySelector('button[type="submit"]');
+                                                                                saveButton.disabled = true; // Disable save button initially
 
-                let uploadedCount = 0; // Track the count of uploaded files
-                let totalFiles = 0; // Total files selected
-                const imageUrls = [];
+                                                                                let uploadedCount = 0; // Track the count of uploaded files
+                                                                                let totalFiles = 0; // Total files selected
+                                                                                const imageUrls = [];
 
-                fileButton.addEventListener('change', function (e) {
-                    uploadedCount = 0; // Reset the upload count on new selection
-                    totalFiles = e.target.files.length; // Set total files selected
-                    Array.from(e.target.files).forEach(uploadFile);
-                });
+                                                                                fileButton.addEventListener('change', function (e) {
+                                                                                    uploadedCount = 0; // Reset the upload count on new selection
+                                                                                    totalFiles = e.target.files.length; // Set total files selected
+                                                                                    Array.from(e.target.files).forEach(uploadFile);
+                                                                                });
 
-                function uploadFile(file) {
-                    const storageRef = firebase.storage().ref('images/' + file.name);
-                    const uploadTask = storageRef.put(file);
+                                                                                function uploadFile(file) {
+                                                                                    const storageRef = firebase.storage().ref('images/' + file.name);
+                                                                                    const uploadTask = storageRef.put(file);
 
-                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        uploader.value = progress;
-                        saveButton.disabled = true; // Disable save button during upload
-                    }, function (error) {
-                        console.error("Upload failed:", error);
-                    }, function () {
-                        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                            imageUrls.push(downloadURL);
-                            document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
-                            displayImage(downloadURL);
+                                                                                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
+                                                                                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                                                                        uploader.value = progress;
+                                                                                        saveButton.disabled = true; // Disable save button during upload
+                                                                                    }, function (error) {
+                                                                                        console.error("Upload failed:", error);
+                                                                                    }, function () {
+                                                                                        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                                                                                            imageUrls.push(downloadURL);
+                                                                                            document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
+                                                                                            displayImage(downloadURL);
 
-                            uploadedCount++; // Increase the count of uploaded files
-                            if (uploadedCount === totalFiles) {
-                                saveButton.disabled = false; // Enable save button when all files are uploaded
-                            }
-                        });
-                    });
-                }
+                                                                                            uploadedCount++; // Increase the count of uploaded files
+                                                                                            if (uploadedCount === totalFiles) {
+                                                                                                saveButton.disabled = false; // Enable save button when all files are uploaded
+                                                                                            }
+                                                                                        });
+                                                                                    });
+                                                                                }
 
-                function displayImage(url) {
-                    const imgDiv = document.getElementById("imgDiv");
-                    const imgElement = document.createElement("img");
-                    imgElement.src = url;
-                    imgElement.width = 100;
-                    imgElement.height = 100;
-                    imgDiv.appendChild(imgElement);
-                }
+                                                                                function displayImage(url) {
+                                                                                    const imgDiv = document.getElementById("imgDiv");
+                                                                                    const imgElement = document.createElement("img");
+                                                                                    imgElement.src = url;
+                                                                                    imgElement.width = 100;
+                                                                                    imgElement.height = 100;
+                                                                                    imgDiv.appendChild(imgElement);
+                                                                                }
             </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+
             <script src="assests/js/edit-tour.js"></script>
-            <!--<script src="dist/js/theme.min.js"></script>-->
-        </body>
-    </html>
+        </script>
+    </body>
+</html>

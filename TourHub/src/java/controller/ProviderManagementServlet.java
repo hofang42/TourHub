@@ -178,7 +178,7 @@ public class ProviderManagementServlet extends HttpServlet {
         }
 
         // Forward to the add-tour page to display the result
-        getServletContext().getRequestDispatcher("/provider-management?action=show-add-tour").forward(request, response);
+        getServletContext().getRequestDispatcher("/my-tour").forward(request, response);
 
     }
 
@@ -247,15 +247,21 @@ public class ProviderManagementServlet extends HttpServlet {
             // Update the tour's images in the database with the updated list
             hoangDB.updateTourImages(tourId, images);
 
+            // Set a flag to indicate the image has been removed
+            request.setAttribute("imageRemoved", true);
+
             // Success, return 200 OK status
             response.setStatus(HttpServletResponse.SC_OK);
+            return;
 
         } catch (Exception e) {
             // Log the exception and return 500 status
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
     }
+    private boolean imageUpdated;
 
     private void saveEditTour(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String tourId = request.getParameter("tourId");
@@ -305,12 +311,9 @@ public class ProviderManagementServlet extends HttpServlet {
 
         // Initialize combinedImages list with old images
         List<String> combinedImages = new ArrayList<>();
-        // Initialize combinedImages list with old images
         if (oldTour.getTour_Img() != null) {
-            combinedImages.addAll(oldTour.getTour_Img()); // Directly add all old images to combinedImages
+            combinedImages.addAll(oldTour.getTour_Img());
         }
-
-        System.out.println("TESTTT COMBINE IMAGE BEFORE: " + combinedImages);
 
         if (newImageFilenames != null && !newImageFilenames.trim().isEmpty()) {
             // Split new images by semicolon and iterate, ignoring empty entries
@@ -319,23 +322,21 @@ public class ProviderManagementServlet extends HttpServlet {
 
                 // Check if newImage is non-empty and not already in the list
                 if (!newImage.isEmpty() && !combinedImages.contains(newImage)) {
-                    combinedImages.add(newImage); // Add new image if it’s not already in the list
+                    combinedImages.add(newImage);
                 }
             }
         }
 
-// Remove any empty string entries from combinedImages, if any slipped in
+        // Remove any empty string entries from combinedImages, if any slipped in
         combinedImages.removeIf(String::isEmpty);
-
-        System.out.println("TESTTT COMBINE IMAGE AFTER: " + combinedImages);
 
         // Compare and update fields if changes exist
         boolean isUpdated = false;
-        if (!newTourName.equals(oldTour.getTour_Name())) {
+        if (newTourName != null && !newTourName.equals(oldTour.getTour_Name())) {
             oldTour.setTour_Name(newTourName);
             isUpdated = true;
         }
-        if (!newTourDescription.equals(oldTour.getTour_Description())) {
+        if (newTourDescription != null && !newTourDescription.equals(oldTour.getTour_Description())) {
             oldTour.setTour_Description(newTourDescription);
             isUpdated = true;
         }
@@ -347,11 +348,11 @@ public class ProviderManagementServlet extends HttpServlet {
             oldTour.setEnd_Date(newEndDate);
             isUpdated = true;
         }
-        if (!newLocation.equals(oldTour.getLocation())) {
+        if (newLocation != null && !newLocation.equals(oldTour.getLocation())) {
             oldTour.setLocation(newLocation);
             isUpdated = true;
         }
-        if (!newDuration.equals(oldTour.getTotal_Time())) {
+        if (newDuration != null && !newDuration.equals(oldTour.getTotal_Time())) {
             oldTour.setTotal_Time(newDuration);
             isUpdated = true;
         }
@@ -363,10 +364,14 @@ public class ProviderManagementServlet extends HttpServlet {
         if (!combinedImages.equals(oldTour.getTour_Img())) {
             oldTour.setTour_Img(combinedImages);
             isUpdated = true;
+            imageUpdated = true;
         }
 
-        // Save changes if any updates were made
-        if (isUpdated) {
+        // Check if image was removed
+        if (request.getAttribute("imageRemoved") != null && (boolean) request.getAttribute("imageRemoved")) {
+            request.setAttribute("message", "Image deleted successfully.");
+        } // Save changes if any updates were made
+        else if (isUpdated) {
             try {
                 new hoang_UserDB().updateTour(oldTour);
                 request.setAttribute("message", "Tour updated successfully!");
@@ -374,13 +379,15 @@ public class ProviderManagementServlet extends HttpServlet {
                 e.printStackTrace();
                 request.setAttribute("message", "Error updating tour: " + e.getMessage());
             }
+        } else if (imageUpdated) {
+            request.setAttribute("message", "Image updated successfully!");
         } else {
             request.setAttribute("message", "No changes made to the tour.");
         }
         forwardToEditPage(request, response, tourId);
     }
-    // Helper method to forward to the edit page
 
+// Helper method to forward to the edit page
     private void forwardToEditPage(HttpServletRequest request, HttpServletResponse response, String tourId) throws IOException {
         try {
             getServletContext().getRequestDispatcher("/provider-management?action=edit-tour&tourId=" + tourId).forward(request, response);

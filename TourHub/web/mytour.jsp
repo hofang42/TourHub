@@ -32,90 +32,12 @@
         <link rel="stylesheet" href="assests/css/edit-tour.css" media="print" onload="this.media = 'all'">
         <link rel="stylesheet" href="assests/css/bootstrap.css" media="print" onload="this.media = 'all'">
         <link rel="stylesheet" href="assests/css/style.css" media="print" onload="this.media = 'all'">
-
+        <link rel="stylesheet" href="assests/css/mytour.css" media="print" onload="this.media = 'all'">
         <!-- Toasify JavaScript -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
         <title>Analytic</title>
         <style>
-            .darken-effect {
-                filter: brightness(0.4); /* Darkens the content by 40% */
-            }
-
-            .no-darken-effect {
-                filter: brightness(1) !important; /* Keeps the content at normal brightness */
-            }
-            .button-primary {
-                background-color: #f39c12; /* Orange background */
-                color: white; /* White text */
-                border: none; /* No border */
-                padding: 12px 24px; /* Padding for size */
-                text-align: center; /* Center text */
-                text-decoration: none; /* No underline */
-                font-size: 16px; /* Font size */
-                font-weight: bold; /* Bold text */
-                border-radius: 15px; /* Rounded corners */
-                cursor: pointer; /* Pointer on hover */
-                display: inline-block;
-            }
-
-            .button-primary:hover {
-                background-color: #111E88; /* Slightly darker shade on hover */
-            }
-            /* Skeleton loading effect */
-            .skeleton {
-                background: #eee; /* Light gray placeholder */
-                position: relative;
-                overflow: hidden;
-            }
-
-            /* Animation for skeleton loading effect */
-            .skeleton::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: -150px;
-                height: 100%;
-                width: 150px;
-                background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
-                animation: skeleton-loading 1.5s infinite;
-            }
-
-            /* Keyframes for loading animation */
-            @keyframes skeleton-loading {
-                0% {
-                    transform: translateX(-150px);
-                }
-                100% {
-                    transform: translateX(100%);
-                }
-            }
-
-            /* Fade-in effect when image is fully loaded */
-            .lazy {
-                opacity: 0;
-                transition: opacity 0.8s ease;
-            }
-
-            .fade-in {
-                opacity: 1;
-            }
-
-            /* Remove skeleton effect once image is loaded */
-            .fade-in.loaded + .skeleton {
-                display: none;
-            }
-
-            /* Initial hidden state for lazy divs */
-            .lazy {
-                opacity: 0;
-                transition: opacity 0.8s ease; /* Fade-in effect */
-            }
-
-            .fade-in {
-                opacity: 1;
-            }
-
         </style>
     </head>
     <body>
@@ -272,15 +194,31 @@
                                     <option value="most-booking" ${param.sortOrder == 'most-booking' ? 'selected="selected"' : ''}>Most Booking</option>
                                     <option value="price-asc" ${param.sortOrder == 'price-asc' ? 'selected="selected"' : ''}>Lowest Price</option>
                                     <option value="price-desc" ${param.sortOrder == 'price-desc' ? 'selected="selected"' : ''}>Highest Price</option>
+<!--                                    <option value="pending-only" ${param.sortOrder == 'pending-only' ? 'selected="selected"' : ''}>Pending Tour</option>
+                                    <option value="active-only" ${param.sortOrder == 'active-only' ? 'selected="selected"' : ''}>Active Tour</option>
+                                    <option value="hidden-tour" ${param.sortOrder == 'hidden-tour' ? 'selected="selected"' : ''}>Hidden Tour</option>-->
                                 </select>
                             </div>
                         </div>
-                        <!-- Error Message Display -->
-                        <c:if test="${not empty errorMessage}">
-                            <div class="alert alert-danger">
-                                ${errorMessage}
+                        <div id="filterStatus" class="filter-status">
+                            <label>Tour Status:</label>
+                            <div class="radio-group">
+                                <input type="radio" id="hidden" name="status" value="Hidden" onchange="sendStatus()" ${param.filterStatus == 'Hidden' ? 'checked' : ''}>
+                                <label for="hidden">Hidden</label>
+
+                                <input type="radio" id="active" name="status" value="Active" onchange="sendStatus()" ${param.filterStatus == 'Active' ? 'checked' : ''}>
+                                <label for="active">Active</label>
+
+                                <input type="radio" id="pending" name="status" value="Pending" onchange="sendStatus()" ${param.filterStatus == 'Pending' ? 'checked' : ''}>
+                                <label for="pending">Pending</label>
+
+                                <input type="radio" id="all" name="status" value="" onchange="sendStatus()" ${param.filterStatus == '' ? 'checked' : ''}>
+                                <label for="all">All</label>
                             </div>
-                        </c:if>
+                        </div>
+
+
+                        <!-- Error Message Display -->                      
                         <!-- Display a Single Tour to Edit if tourEdit is available -->
                         <c:if test="${not empty tours}">                            
                             <div class="table-data">
@@ -288,7 +226,7 @@
                                     <div class="row row-50">
                                         <c:forEach var="tour" items="${tours}">
                                             <div class="col-md-6 col-xl-4 lazy">
-                                                <article class="event-default-wrap">
+                                                <article class="event-default-wrap" style="background: rgba(0, 0, 0, 0.1); border-radius: 10px">
                                                     <c:choose>
                                                         <c:when test="${tour.tour_Status == 'Hidden'}">
                                                             <div class="event-default darken-effect">
@@ -297,40 +235,43 @@
                                                                 <div class="event-default  no-blur-effect">
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <figure class="event-default-image" style="max-width: 250px; margin: auto;">
-                                                                <!--<img src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 450px; object-fit: cover">-->
-                                                                <figure class="event-default-image skeleton" style="max-width: 300px; margin: auto;">
-                                                                    <img data-src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 450px; object-fit: cover" class="lazy fade-in">
+                                                            <figure class="event-default-image" style="position: relative; max-width: 250px; margin: auto;">
+                                                                <figure class="event-default-image skeleton" style="max-width: 300px; margin: auto; margin-top: 15px">
+                                                                    <img data-src="${tour.tour_Img[0]}" alt="${tour.tour_Name}" style="min-height: 250px; max-height: 450px; object-fit: cover; width: 100%;" class="lazy fade-in">
                                                                 </figure>
-                                                                <div class="event-default-caption">                                                           
+                                                                <div class="event-default-caption" style="position: absolute; top: 25%; left: 50%; transform: translate(-50%, -50%); display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; width: 0px; height: 0px">
                                                                     <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                       style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                       style="font-size: 12px; padding: 2px 5px; line-height: 1; display: inline-block; text-align: center;">
                                                                         Edit
                                                                     </a>
                                                                     <a href="provider-management?action=add-option&tourId=${tour.tour_Id}" 
                                                                        class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                       style="font-size: 12px; font-weight: bold; padding: 2px 5px; line-height: 1; display: inline-block; text-align: center;">
                                                                         Add Option
                                                                     </a>
                                                                     <c:if test="${tour.tour_Status == 'Active'}">
-                                                                        <a href="provider-management?action=set-tour-status&tourId=${tour.tour_Id}&status=Hidden"
+                                                                        <a href="javascript:void(0);" 
                                                                            class="button button-xs button-secondary button-nina tour-visit-count action-link approve" 
-                                                                           style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                           style="font-size: 12px; padding: 2px 5px; line-height: 1; display: inline-block; text-align: center;"
+                                                                           onclick="showModal('${tour.tour_Id}', 'Hidden')">
                                                                             Hidden
                                                                         </a>
                                                                     </c:if>
                                                                     <c:if test="${tour.tour_Status == 'Hidden'}">
-                                                                        <a href="provider-management?action=set-tour-status&tourId=${tour.tour_Id}&status=Active" 
+                                                                        <a href="javascript:void(0);" 
                                                                            class="button button-xs button-secondary button-nina tour-visit-count" 
-                                                                           style="font-size: 12px; padding: 2px 5px; line-height: 1; width: 50px; display: inline-block; text-align: center;">
+                                                                           style="font-size: 12px; padding: 2px 5px; line-height: 1; display: inline-block; text-align: center;"
+                                                                           onclick="showModal('${tour.tour_Id}', 'Active')">
                                                                             Active
                                                                         </a>
                                                                     </c:if>
+
                                                                 </div>
                                                             </figure>
+
                                                         </div>
-                                                        <div class="event-default-inner">
+                                                        <div class="event-default-inner"  style="justify-content: center !important; width: 100%";>
                                                             <div>
                                                                 <h5>
                                                                     <a href="provider-management?action=edit-tour&tourId=${tour.tour_Id}" class="event-default-title">${tour.tour_Name}</a>
@@ -357,25 +298,35 @@
             <!-- MAIN -->
         </section>
         <!-- CONTENT -->
-
+        <!-- Modal HTML Structure -->
+        <div id="confirmModal" class="custom-modal">
+            <div class="custom-modal-content">
+                <span class="custom-close">&times;</span>
+                <h4 id="modalTitle">Confirm Action</h4>
+                <p id="modalMessage">Are you sure you want to proceed?</p>
+                <p id="modalDetails" class="custom-modal-details">This action may affect the visibility and availability of your tour.</p>
+                <div class="custom-modal-buttons">
+                    <button id="confirmBtn" class="custom-button-primary">Confirm</button>
+                    <button id="cancelBtn" class="custom-button-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
 
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const burger = document.querySelector('.burger');
-                                        const navigation = document.querySelector('.navigation-admin');
-                                        const main = document.querySelector('.main-admin');
-                                        const profileCard = document.querySelector('.profile-card'); // Select the profile card
+                                                                               document.addEventListener('DOMContentLoaded', function () {
+                                                                                   const burger = document.querySelector('.burger');
+                                                                                   const navigation = document.querySelector('.navigation-admin');
+                                                                                   const main = document.querySelector('.main-admin');
+                                                                                   const profileCard = document.querySelector('.profile-card'); // Select the profile card
 
-                                        burger.addEventListener('click', function () {
-                                            navigation.classList.toggle('active');
-                                            main.classList.toggle('active');
-                                            profileCard.classList.toggle('active'); // Toggle the active class on the profile card
-                                        });
-                                    });
-
-
+                                                                                   burger.addEventListener('click', function () {
+                                                                                       navigation.classList.toggle('active');
+                                                                                       main.classList.toggle('active');
+                                                                                       profileCard.classList.toggle('active'); // Toggle the active class on the profile card
+                                                                                   });
+                                                                               });
         </script>
         <script>
             function reloadData() {
@@ -401,6 +352,15 @@
                 // Redirect to the sorted page with the selected order
                 window.location.href = 'sort?sortOrder=' + sortOrder;
             }
+            function sendStatus() {
+                const selectedStatus = document.querySelector('input[name="status"]:checked').value;
+                console.log("Selected Status:", selectedStatus); // Debugging log
+                // Save the selected status in localStorage
+                localStorage.setItem('selectedStatus', selectedStatus);
+                // Redirect to the sorted page with the selected status
+                window.location.href = 'my-tour?filterStatus=' + selectedStatus;
+            }
+
         </script>
         <script>
             window.onload = function () {
@@ -427,7 +387,6 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const lazyDivs = document.querySelectorAll(".col-md-6.col-xl-4.lazy");
-
                 if ("IntersectionObserver" in window) {
                     const lazyDivObserver = new IntersectionObserver((entries, observer) => {
                         entries.forEach(entry => {
@@ -437,7 +396,6 @@
                             }
                         });
                     });
-
                     lazyDivs.forEach(lazyDiv => {
                         lazyDivObserver.observe(lazyDiv);
                     });
@@ -450,7 +408,6 @@
             });
             document.addEventListener("DOMContentLoaded", function () {
                 const lazyImages = document.querySelectorAll("img.lazy");
-
                 if ("IntersectionObserver" in window) {
                     const lazyImageObserver = new IntersectionObserver((entries, observer) => {
                         entries.forEach(entry => {
@@ -466,7 +423,6 @@
                             }
                         });
                     });
-
                     lazyImages.forEach(lazyImage => {
                         lazyImageObserver.observe(lazyImage);
                     });
@@ -479,7 +435,49 @@
                     });
                 }
             });
+            function showModal(tourId, action) {
+                const modal = document.getElementById("confirmModal");
+                const closeBtn = document.querySelector(".custom-close");
+                const confirmBtn = document.getElementById("confirmBtn");
+                const cancelBtn = document.getElementById("cancelBtn");
+                const modalTitle = document.getElementById("modalTitle");
+                const modalMessage = document.getElementById("modalMessage");
+                const modalDetails = document.getElementById("modalDetails");
 
+                // Set the modal message and title based on the action
+                if (action === 'Hidden') {
+                    modalTitle.textContent = "Confirm Hide Action";
+                    modalMessage.textContent = "Are you sure you want to hide this tour?";
+                    modalDetails.textContent = "Hiding this tour will make it unavailable for booking and it won't be visible to customers. You can make it active again at any time.";
+                } else if (action === 'Active') {
+                    modalTitle.textContent = "Confirm Activate Action";
+                    modalMessage.textContent = "Are you sure you want to activate this tour?";
+                    modalDetails.textContent = "Activating this tour will make it visible to customers and available for booking.";
+                }
+
+                // Show the modal
+                modal.style.display = "block";
+
+                // Close the modal when the close button or cancel button is clicked
+                const closeModal = () => {
+                    modal.style.display = "none";
+                };
+                closeBtn.onclick = closeModal;
+                cancelBtn.onclick = closeModal;
+
+                // Handle the confirmation action
+                confirmBtn.onclick = () => {
+                    // Redirect to the respective action URL based on the given action
+                    window.location.href = 'provider-management?action=set-tour-status&tourId=' + tourId + '&status=' + action;
+                };
+
+                // Close the modal if user clicks outside of it
+                window.onclick = (event) => {
+                    if (event.target === modal) {
+                        closeModal();
+                    }
+                };
+            }
         </script>
         <script defer src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
 

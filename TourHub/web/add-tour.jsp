@@ -25,10 +25,11 @@
 
         <!-- Include Toastify CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Toastify/1.11.1/Toastify.min.css">
+        <!-- Include Toastify JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Toastify/1.11.1/Toastify.min.js"></script>
 
 
-
-        <title>Analytic</title>
+        <title>Add Tour</title>
         <style>
             body {
                 background-color: #f4f4f4;
@@ -221,22 +222,25 @@
                                 <small class="form-text text-muted">Upload image files (JPG, PNG, etc.), each not exceeding 2MB.</small>
                             </div>
                             <div id="imgDiv"></div>
+                            <c:out value="${message}"/>
                             <button type="submit" class="btn btn-primary btn-block action-link approve">Add Tour</button>
-                        </form>
 
+                        </form>
                     </div>
                 </div>
             </main>          
             <!-- MAIN -->
+            <div id="toastContainer" data-message="<c:out value='${message}' />"></div>
         </section>
         <!-- CONTENT -->
-
-
         <script src="assests/js/script_profile.js"></script>     
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+
+
         <!--        <script>
                                             document.addEventListener('DOMContentLoaded', function () {
                                                 const burger = document.querySelector('.burger');
@@ -252,7 +256,7 @@
                                             });
         
                 </script>-->
-        <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+
         <script type="text/javascript">
                                     const firebaseConfig = {
                                         apiKey: "AIzaSyADteJKp4c9C64kC08pMJs_jYh-Fa5EX6o",
@@ -267,11 +271,17 @@
 
                                     const uploader = document.getElementById('uploader');
                                     const fileButton = document.getElementById('fileButton');
+                                    const saveButton = document.querySelector('button[type="submit"]');
+                                    saveButton.disabled = true; // Disable save button initially
+
+                                    let uploadedCount = 0; // Track the count of uploaded files
+                                    let totalFiles = 0; // Total files selected
                                     const imageUrls = [];
 
                                     fileButton.addEventListener('change', function (e) {
-                                        const files = e.target.files;
-                                        Array.from(files).forEach(uploadFile);
+                                        uploadedCount = 0; // Reset the upload count on new selection
+                                        totalFiles = e.target.files.length; // Set total files selected
+                                        Array.from(e.target.files).forEach(uploadFile);
                                     });
 
                                     function uploadFile(file) {
@@ -281,13 +291,19 @@
                                         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function (snapshot) {
                                             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                                             uploader.value = progress;
+                                            saveButton.disabled = true; // Disable save button during upload
                                         }, function (error) {
                                             console.error("Upload failed:", error);
                                         }, function () {
                                             uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                                                 imageUrls.push(downloadURL);
-                                                document.getElementById("tour_Img_URLs").value = imageUrls.join(';');
+                                                document.getElementById("tour_Img_URL").value = imageUrls.join(';');
                                                 displayImage(downloadURL);
+
+                                                uploadedCount++; // Increase the count of uploaded files
+                                                if (uploadedCount === totalFiles) {
+                                                    saveButton.disabled = false; // Enable save button when all files are uploaded
+                                                }
                                             });
                                         });
                                     }
@@ -300,41 +316,8 @@
                                         imgElement.height = 100;
                                         imgDiv.appendChild(imgElement);
                                     }
-
-//                                                                                function handleFormSubmit(event) {
-//                                                                                    if (!document.getElementById("tour_Img_URLs").value) {
-//                                                                                        alert("Please wait until all images are uploaded.");
-//                                                                                        return false;
-//                                                                                    }
-//                                                                                    return true;
-//                                                                                }
         </script>
-        <script src="dist/js/theme.min.js"></script>
-        <!-- Include Toastify JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Toastify/1.11.1/Toastify.min.js"></script>
-        <script>
-                                    window.onload = function () {
-                                        const message = '<c:out value="${message}" />';
-                                        if (message) {
-                                            Toastify({
-                                                text: message,
-                                                duration: 3000,
-                                                gravity: "top",
-                                                position: "right",
-                                                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                                                close: true, // Enables the close button
-                                                style: {
-                                                    fontSize: "18px", // Makes the text larger
-                                                    padding: "20px", // Increases padding for a bigger appearance
-                                                    borderRadius: "8px" // Optional: makes the corners more rounded
-                                                }
-                                            }).showToast();
-                                        }
-                                    };
-        </script>
-
-        <c:remove var="message" />
-
+        <!--<script src="dist/js/theme.min.js"></script>-->
         <script src="./assests/js/edit-tour.js"></script>
 
     </body>

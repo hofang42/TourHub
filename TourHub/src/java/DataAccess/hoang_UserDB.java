@@ -500,6 +500,15 @@ public class hoang_UserDB implements DatabaseInfo {
             case "most-booking":
                 sql.append(" ORDER BY purchases_Time DESC"); // Default to purchases for most booking
                 break;
+            case "pending-only":
+                sql.append(" AND tour_Status = 'Pending'");
+                break;
+            case "active-only":
+                sql.append(" AND tour_Status = 'Active'");
+                break;
+            case "hidden-tour":
+                sql.append(" AND tour_Status = 'Hidden'");
+                break;
             default:
                 sql.append(" ORDER BY purchases_Time DESC"); // Fallback to purchases if no valid sortOrder is provided
                 break;
