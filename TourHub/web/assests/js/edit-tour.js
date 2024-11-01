@@ -138,3 +138,19 @@ function removeImage(tourId, imageToRemove) {
     // Send AJAX request with tourId and imageToRemove parameters
     xhr.send(`tourId=${encodeURIComponent(tourId)}&imageToRemove=${encodeURIComponent(imageToRemove)}`);
 }
+document.addEventListener("DOMContentLoaded", function () {
+    const slotInput = document.getElementById("slot");
+    const errorElement = document.getElementById("slotError");
+
+    slotInput.addEventListener("input", function () {
+        const slotValue = parseFloat(this.value);
+
+        if (isNaN(slotValue) || slotValue < 0) {
+            errorElement.style.display = "block";
+            this.setCustomValidity("Slot must be a non-negative number.");
+        } else {
+            errorElement.style.display = "none";
+            this.setCustomValidity("");
+        }
+    });
+});

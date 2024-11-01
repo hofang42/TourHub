@@ -213,6 +213,7 @@
                             <div class="form-group required">
                                 <label for="slot">Slot: <span style="color: red;">*</span></label>
                                 <input type="number" class="form-control" id="slot" name="slot" required>
+                                <small id="slotError" style="color: red; display: none;">Slot must be a non-negative number.</small>
                             </div>          
                             <div class="form-group required">
                                 <label for="tour_Img">Tour Images: <span style="color: red;">*</span></label>
